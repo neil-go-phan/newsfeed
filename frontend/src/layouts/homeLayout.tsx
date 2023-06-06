@@ -1,6 +1,6 @@
-import Banner from '@/components/banner';
-import FooterComponent from '@/components/footer';
-import NavbarComponent from '@/components/navbar';
+import Banner from '@/common/banner';
+import FooterComponent from '@/common/footer';
+import NavbarComponent from '@/common/navbar';
 import { faArrowUp } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Head from 'next/head';

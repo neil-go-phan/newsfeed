@@ -5,7 +5,13 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-
+  &__brand {
+    text-decoration: none;
+    &--sm {
+      flex-grow: 1;
+      text-decoration: none;
+    }
+  }
   &__mobileNavListItem {
     a {
       text-decoration: none;

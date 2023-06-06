@@ -6,22 +6,29 @@ import type { AppProps } from 'next/app';
 import CssBaseline from '@mui/material/CssBaseline';
 import { CacheProvider, EmotionCache } from '@emotion/react';
 import createEmotionCache from '@/helpers/MUISSRhandle';
+import type { ReactElement, ReactNode } from 'react';
+import type { NextPage } from 'next';
 
-// Client-side cache, shared for the whole session of the user in the browser.
 const clientSideEmotionCache = createEmotionCache();
 
 export interface MyAppProps extends AppProps {
   emotionCache?: EmotionCache;
+  Component: NextPageWithLayout;
 }
+
+export type NextPageWithLayout<P = {}, IP = P> = NextPage<P, IP> & {
+  getLayout?: (page: ReactElement) => ReactNode;
+};
 
 export default function App(props: MyAppProps) {
   const { Component, emotionCache = clientSideEmotionCache, pageProps } = props;
+  const getLayout = Component.getLayout ?? ((page) => page);
   return (
     <CacheProvider value={emotionCache}>
       <SSRProvider>
         <CssBaseline />
         <ProgressBar />
-        <Component {...pageProps} />
+        {getLayout(<Component {...pageProps} />)}
       </SSRProvider>
     </CacheProvider>
   );

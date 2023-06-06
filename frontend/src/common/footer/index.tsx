@@ -12,10 +12,9 @@ function FooterComponent() {
       <div className="footerComponent__logo">
         <Feed sx={{ mr: 1, color: 'white' }} />
         <Typography
-          variant="h6"
+          variant="h5"
           noWrap
-          component="a"
-          href="/"
+          component="span"
           sx={{
             mr: 2,
             fontFamily: 'monospace',

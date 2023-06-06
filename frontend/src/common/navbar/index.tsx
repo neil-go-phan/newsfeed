@@ -95,23 +95,23 @@ function NavbarComponent() {
           <Feed
             sx={{ display: { xs: 'none', md: 'flex' }, mr: 1, color: 'black' }}
           />
-          <Typography
-            variant="h6"
-            noWrap
-            component="a"
-            href="/"
-            sx={{
-              mr: 2,
-              display: { xs: 'none', md: 'flex' },
-              fontFamily: 'monospace',
-              fontWeight: 700,
-              letterSpacing: '.3rem',
-              color: 'black',
-              textDecoration: 'none',
-            }}
-          >
-            Newsfeed
-          </Typography>
+          <Link href={_ROUTES.LADING_PAGE} className="navbarComponent__brand">
+            <Typography
+              variant="h5"
+              noWrap
+              component="span"
+              sx={{
+                mr: 2,
+                display: { xs: 'none', md: 'flex' },
+                fontFamily: 'monospace',
+                fontWeight: 700,
+                letterSpacing: '.3rem',
+                color: 'black',
+              }}
+            >
+              Newsfeed
+            </Typography>
+          </Link>
 
           <Box
             sx={{
@@ -153,24 +153,24 @@ function NavbarComponent() {
           <Feed
             sx={{ display: { xs: 'flex', md: 'none' }, mr: 1, color: 'black' }}
           />
-          <Typography
-            variant="h5"
-            noWrap
-            component="a"
-            href=""
-            sx={{
-              mr: 2,
-              display: { xs: 'flex', md: 'none' },
-              flexGrow: 1,
-              fontFamily: 'monospace',
-              fontWeight: 700,
-              letterSpacing: '.3rem',
-              color: 'black',
-              textDecoration: 'none',
-            }}
-          >
-            Newsfeed
-          </Typography>
+          <Link href={_ROUTES.LADING_PAGE} className="navbarComponent__brand--sm">
+            <Typography
+              variant="h6"
+              noWrap
+              component="span"
+              sx={{
+                mr: 2,
+                display: { xs: 'flex', md: 'none' },
+                fontFamily: 'monospace',
+                fontWeight: 700,
+                letterSpacing: '.3rem',
+                color: 'black',
+              }}
+            >
+              Newsfeed
+            </Typography>
+          </Link>
+
           <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
             {pages.map((page) => (
               <Button
