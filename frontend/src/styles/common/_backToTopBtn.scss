@@ -1,0 +1,16 @@
+.backToTopBtn {
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  width: 56px;
+  height: 56px;
+  font-size: 24px;
+  border-radius: 10px;
+  background: rgba(8, 71, 157, 0.3);
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 99;
+  cursor: pointer;
+}

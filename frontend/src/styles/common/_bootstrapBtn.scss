@@ -1,0 +1,27 @@
+.btn-primary {
+  &:hover {
+    background-color: #1d78f3;
+    border-color: #1d78f3;
+    box-shadow: 0 8px 20px 0 rgba(24, 117, 243, 0.1),
+      0 6px 15px 0 rgba(24, 117, 243, 0.1),
+      0 4px 10px 0 rgba(24, 117, 243, 0.1);
+    transform: translate(0, -2%);
+  }
+}
+
+.btn-tertiary {
+  color: #1875f3;
+  background: transparent;
+  box-shadow: 0 3px 8px transparent;
+  border: 1px solid #1875f3;
+  transition: transform 0.3s cubic-bezier(0.165, 0.84, 0.44, 1),
+    box-shadow 0.3s cubic-bezier(0.165, 0.84, 0.44, 1);
+  transition-duration: 300ms;
+  &:hover {
+    background-color: #dfecfd;
+    border-color: #1875f3;
+    box-shadow: 0 8px 20px 0 transparent, 0 6px 15px 0 transparent,
+      0 4px 10px 0 transparent;
+    transform: translate(0, -2%);
+  }
+}

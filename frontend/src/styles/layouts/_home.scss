@@ -1,0 +1,14 @@
+.landingPageLayout {
+  &__wrapper {
+    color: #203451;
+    background-image: linear-gradient(
+        rgba(243, 243, 243, 0.8),
+        rgba(193, 216, 214, 0.3)
+      ),
+      url('/images/go.avif');
+    background-size: cover;
+    background-attachment: fixed;
+    background-repeat: no-repeat;
+    background-position: center center;
+  }
+}

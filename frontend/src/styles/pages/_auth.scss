@@ -1,0 +1,18 @@
+.auth__login {
+  position: relative;
+	z-index: 2;
+  &--form {
+    background-color: $color-white-2;
+  }
+  &--register {
+    background-color: $color-blue-5;
+  }
+}
+
+.auth__register {
+  position: relative;
+	z-index: 2;
+  &--form {
+    background-color: $color-white-2;
+  }
+}

@@ -1,0 +1,68 @@
+.navbar {
+  height: 72px;
+  background: transparent 0% 0% no-repeat padding-box;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  &__mobileNavListItem {
+    a {
+      text-decoration: none;
+      color: #08234c;
+    }
+    &:hover {
+      a {
+        transition: 0.2s;
+        color: #1875f3;
+      }
+    }
+  }
+
+  &__link {
+    font-size: 16px;
+    a {
+      text-decoration: none;
+      color: #08234c;
+    }
+    &:hover {
+      a {
+        transition: 0.2s;
+        color: #1875f3;
+      }
+    }
+
+    .active {
+      a {
+        color: #1875f3;
+      }
+    }
+  }
+
+
+
+  &__user {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    &--logged {
+      color: black;
+    }
+    a {
+      font-size: 16px;
+      font-weight: bold;
+    }
+    &--unlogged {
+      display: flex;
+      .loginBtn {
+        line-height: 34px;
+        text-decoration: none;
+        color: #08234c;
+        &:hover {
+          transition: 0.2s;
+          color: #1875f3;
+        }
+      }
+    }
+  }
+}

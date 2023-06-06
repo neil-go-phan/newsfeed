@@ -1,0 +1,42 @@
+.landing {
+  padding: 90px 0 0 0;
+  &__introductionParagraph {
+    text-align: center;
+    h1 {
+      font-weight: bold;
+      font-size: 5rem;
+      line-height: 5.2rem;
+      letter-spacing: -0.03em;
+    }
+    p {
+      font-size: 20px;
+      line-height: 28px;
+      letter-spacing: 0;
+    }
+    &--buttons {
+      display: flex;
+      justify-content: center;
+      a {
+        padding: 12px 40px;
+        font-size: 17px;
+        border-radius: 5px;
+        height: 48px;
+        line-height: 22px;
+        font-weight: bold;
+      }
+    }
+    @include mobile {
+      h1 {
+        font-size: 3.5rem;
+        line-height: 3.5rem;    
+      }
+    }
+    @include tablet {
+      h1 {
+        font-size: 3.5rem;
+        line-height: 3.5rem;    
+      }
+    }
+  }
+}
+
