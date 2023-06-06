@@ -1,3 +1,5 @@
+import Banner from '@/components/banner';
+import FooterComponent from '@/components/footer';
 import NavbarComponent from '@/components/navbar';
 import { faArrowUp } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -36,7 +38,8 @@ function HomeLayout({ children }: PropsWithChildren) {
       <div className="landingPageLayout__wrapper">
         <NavbarComponent />
         <div className="container">{children}</div>
-
+        <Banner />
+        <FooterComponent />
         {visible ? (
           <div className="backToTopBtn" onClick={scrollToTop}>
             <FontAwesomeIcon icon={faArrowUp} />

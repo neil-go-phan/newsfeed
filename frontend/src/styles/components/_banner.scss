@@ -1,0 +1,23 @@
+.banner {
+  position: relative;
+  background-color: #031b3c;
+  background-image: url("/images/footer-cta-img.png");
+  background-size: cover;
+  height: 70vh;
+  width: 100%;
+  &__content {
+    position: absolute;
+    top: 50%;
+    left: 10%;
+    transform: translateY(-50%);
+    color: $color-white-1;
+    h1 {
+      margin: 10px 0;
+      font-weight: bold;
+    }
+    a {
+      width: 30%;
+    }
+
+  }
+}
