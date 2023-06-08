@@ -1,11 +1,17 @@
-.navbar {
-  height: 72px;
-  background: transparent 0% 0% no-repeat padding-box;
+.navbarComponent {
+  // background: transparent 0% 0% no-repeat padding-box;
+  background-color: white;
   z-index: 100;
   display: flex;
   align-items: center;
   justify-content: space-between;
-
+  &__brand {
+    text-decoration: none;
+    &--sm {
+      flex-grow: 1;
+      text-decoration: none;
+    }
+  }
   &__mobileNavListItem {
     a {
       text-decoration: none;
@@ -39,14 +45,18 @@
     }
   }
 
-
-
   &__user {
     display: flex;
     flex-direction: row;
     justify-content: center;
     &--logged {
+      display: flex;
       color: black;
+      .newsfeedLink {
+        display:flex;
+        justify-content:center;
+        align-items: center;
+      }
     }
     a {
       font-size: 16px;

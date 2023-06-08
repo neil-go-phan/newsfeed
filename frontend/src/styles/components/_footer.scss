@@ -1,0 +1,58 @@
+.footerComponent {
+  background-color: $color-footer-background;
+
+  &__logo {
+    display: flex;
+    justify-content: center;
+  }
+
+  &__introduction {
+    display: flex;
+    justify-content: center;
+    color: $color-white-5;
+    margin: 20px 0;
+    p {
+      width: 40%;
+      text-align: center;
+      @include mobile {
+        width: 80%;
+      }
+      @include tablet {
+        width: 80%;
+      }
+    }
+  }
+
+  &__navLinks {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 10px;
+    &--link {
+      a {
+        text-decoration: none;
+        color: $color-white-1;
+        &:hover {
+          transition: 0.2s;
+          color: $color-blue-2;
+        }
+      }
+    }
+  }
+  &__line {
+    width: 80%;
+    margin: auto;
+    border: 1px solid $color-blue-3;
+  }
+  &__copyright {
+    display: flex;
+    justify-content: center;
+    &--text {
+      text-decoration: none;
+      color: $color-gray-1;
+      &:hover {
+        transition: 0.2s;
+        color: $color-blue-2;
+      }
+    }
+  }
+}

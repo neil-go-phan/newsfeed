@@ -1,10 +1,14 @@
 import Landing from '@/components/landing';
 import HomeLayout from '@/layouts/homeLayout';
+import type { NextPageWithLayout } from './_app';
+import type { ReactElement } from 'react';
 
-export default function Home() {
-  return (
-    <HomeLayout>
-      <Landing />
-    </HomeLayout>
-  );
-}
+const Home: NextPageWithLayout = () => {
+  return <Landing />;
+};
+
+Home.getLayout = function getLayout(page: ReactElement) {
+  return <HomeLayout>{page}</HomeLayout>;
+};
+
+export default Home;

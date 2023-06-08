@@ -25,7 +25,7 @@ type NavPages = {
   link: string;
   name: string;
 };
-const pages: Array<NavPages> = [
+export const pages: Array<NavPages> = [
   { name: 'Features', link: _ROUTES.FEATURE_PAGE },
   { name: 'Pricing', link: _ROUTES.PRICING_PAGE },
   { name: 'Discover', link: _ROUTES.DISCOVER_PAGE },
@@ -78,7 +78,7 @@ function NavbarComponent() {
           <ListItem key={page.name} disablePadding>
             <ListItemButton
               sx={{ my: 1, display: 'block' }}
-              className="navbar__mobileNavListItem"
+              className="navbarComponent__mobileNavListItem"
             >
               <Link href={page.link}>{page.name}</Link>
             </ListItemButton>
@@ -89,29 +89,29 @@ function NavbarComponent() {
   );
 
   return (
-    <AppBar position="sticky" className="navbar">
+    <AppBar position="sticky" className="navbarComponent">
       <Container maxWidth="xl">
         <Toolbar disableGutters>
           <Feed
             sx={{ display: { xs: 'none', md: 'flex' }, mr: 1, color: 'black' }}
           />
-          <Typography
-            variant="h6"
-            noWrap
-            component="a"
-            href="/"
-            sx={{
-              mr: 2,
-              display: { xs: 'none', md: 'flex' },
-              fontFamily: 'monospace',
-              fontWeight: 700,
-              letterSpacing: '.3rem',
-              color: 'black',
-              textDecoration: 'none',
-            }}
-          >
-            Newsfeed
-          </Typography>
+          <Link href={_ROUTES.LADING_PAGE} className="navbarComponent__brand">
+            <Typography
+              variant="h5"
+              noWrap
+              component="span"
+              sx={{
+                mr: 2,
+                display: { xs: 'none', md: 'flex' },
+                fontFamily: 'monospace',
+                fontWeight: 700,
+                letterSpacing: '.3rem',
+                color: 'black',
+              }}
+            >
+              Newsfeed
+            </Typography>
+          </Link>
 
           <Box
             sx={{
@@ -153,39 +153,48 @@ function NavbarComponent() {
           <Feed
             sx={{ display: { xs: 'flex', md: 'none' }, mr: 1, color: 'black' }}
           />
-          <Typography
-            variant="h5"
-            noWrap
-            component="a"
-            href=""
-            sx={{
-              mr: 2,
-              display: { xs: 'flex', md: 'none' },
-              flexGrow: 1,
-              fontFamily: 'monospace',
-              fontWeight: 700,
-              letterSpacing: '.3rem',
-              color: 'black',
-              textDecoration: 'none',
-            }}
-          >
-            Newsfeed
-          </Typography>
+          <Link href={_ROUTES.LADING_PAGE} className="navbarComponent__brand--sm">
+            <Typography
+              variant="h6"
+              noWrap
+              component="span"
+              sx={{
+                mr: 2,
+                display: { xs: 'flex', md: 'none' },
+                fontFamily: 'monospace',
+                fontWeight: 700,
+                letterSpacing: '.3rem',
+                color: 'black',
+              }}
+            >
+              Newsfeed
+            </Typography>
+          </Link>
+
           <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
             {pages.map((page) => (
               <Button
                 key={page.name}
                 sx={{ my: 2, display: 'block' }}
-                className="navbar__link mx-3"
+                className="navbarComponent__link mx-3"
               >
                 <Link href={page.link}>{page.name}</Link>
               </Button>
             ))}
           </Box>
 
-          <Box sx={{ flexGrow: 0 }} className="navbar__user">
+          <Box sx={{ flexGrow: 0 }} className="navbarComponent__user">
             {auth ? (
-              <div className="navbar__user--logged">
+              <div className="navbarComponent__user--logged">
+                <div className="newsfeedLink">
+                  <Link
+                    className="mx-md-3 mx-1 btn btn-sm btn-primary d-block px-3 text-nowrap"
+                    href={_ROUTES.USER_HOME}
+                  >
+                    <span>My newsfeed</span>
+                  </Link>
+                </div>
+
                 <IconButton
                   size="large"
                   aria-label="account of current user"
@@ -217,7 +226,7 @@ function NavbarComponent() {
                 </Menu>
               </div>
             ) : (
-              <div className="navbar__user--unlogged">
+              <div className="navbarComponent__user--unlogged">
                 <Link className="mx-3 loginBtn" href={_ROUTES.LOGIN_PAGE}>
                   Login
                 </Link>
