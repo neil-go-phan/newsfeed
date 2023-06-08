@@ -2,9 +2,9 @@ package handlers
 
 import (
 	// "backend/helper"
-	"backend/helper"
-	"backend/services"
-	userservice "backend/services/user"
+	"server/helpers"
+	"server/services"
+	userservice "server/services/user"
 	"bytes"
 	"encoding/json"
 	"fmt"
@@ -88,7 +88,7 @@ func (h *UserHandler) Login(c *gin.Context) {
 		return
 	}
 	var accessToken, refreshToken string
-	if !helper.CheckIsEmail(inputUser.Username) {
+	if !helpers.CheckIsEmail(inputUser.Username) {
 		log.Println("login with username")
 		accessToken, refreshToken, err = h.service.LoginWithUsername(&inputUser)
 		if err != nil {
@@ -133,7 +133,7 @@ func (h *UserHandler) GoogleOAuth(c *gin.Context) {
 		return
 	}
 
-	config, _ := helper.LoadEnv(".")
+	config, _ := helpers.LoadEnv(".")
 
 	accessToken, refreshToken, err := h.service.GoogleOAuth(google_user)
 	if err != nil {
@@ -182,7 +182,8 @@ func sendRequestGetGoogleOauthToken(code string) (bytes.Buffer, error){
 	if err != nil {
 		return resBody, err
 	}
-
+	defer res.Body.Close()
+	
 	if res.StatusCode != http.StatusOK {
 		return resBody, fmt.Errorf("could not retrieve token")
 	}
@@ -195,7 +196,7 @@ func sendRequestGetGoogleOauthToken(code string) (bytes.Buffer, error){
 }
 
 func createQueryGetGoogleOauthToken(code string) (string) {
-	config, err := helper.LoadEnv(".")
+	config, err := helpers.LoadEnv(".")
 	if err != nil {
 		log.Error(err)
 	}
@@ -253,7 +254,7 @@ func sendRequestGetGoogleUser(access_token string, id_token string) (bytes.Buffe
 	if err != nil {
 		return resBody, err
 	}
-
+	defer res.Body.Close()
 	if res.StatusCode != http.StatusOK {
 		return resBody, fmt.Errorf("could not retrieve user")
 	}

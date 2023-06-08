@@ -1,15 +1,13 @@
 package userservice
 
 import (
-	"backend/entities"
-	"backend/repository"
-	"backend/services"
+	"server/entities"
+	"server/repository"
+	"server/services"
 	"encoding/base64"
 	"strings"
 
-	// "errors"
 	"fmt"
-	// "strings"
 	log "github.com/sirupsen/logrus"
 )
 

@@ -1,24 +1,18 @@
 package main
 
 import (
+	// "crawler/handlers"
+	// "crawler/helpers"
+	// "crawler/repository"
 	"fmt"
 	"io"
 	"os"
-	"server/db/migrations"
-	"server/helpers"
-	"server/infras"
-	"server/middlewares"
-	"server/repository"
-
 	"time"
 
 	"github.com/evalphobia/logrus_sentry"
 	"github.com/getsentry/sentry-go"
-	"github.com/gin-gonic/gin"
-
 	log "github.com/sirupsen/logrus"
 	easy "github.com/t-tomalak/logrus-easy-formatter"
-	"gorm.io/gorm"
 )
 
 func init() {
@@ -29,61 +23,44 @@ func init() {
 		LogFormat:       "[%lvl%]: %time% - %msg%\n",
 	}
 	log.SetFormatter(format)
-
 	hook, err := logrus_sentry.NewSentryHook("https://4cad04fffc3348dc8d14d1f592f1d014@o4505040225501184.ingest.sentry.io/4505066672947200", []log.Level{
 		log.PanicLevel,
 		log.FatalLevel,
+		log.ErrorLevel,
 	})
 	if err == nil {
 		log.AddHook(hook)
 	}
 }
 
-var (
-	DB  *gorm.DB
-	Gin *gin.Engine
-)
-
 func main() {
-	env, err := helpers.LoadEnv(".")
-	if err != nil {
-		log.Fatalln("cannot load env")
-	}
+	// env, err := helpers.LoadEnv(".")
+	// if err != nil {
+	// 	log.Fatalln("cannot load env: ", err)
+	// }
 
-	// write log file
-	logFile, err := os.OpenFile("serverlog.log", os.O_WRONLY|os.O_CREATE|os.O_APPEND, 0644)
+	logFile, err := os.OpenFile("crawlerlog.log", os.O_WRONLY|os.O_CREATE|os.O_APPEND, 0644)
 	if err != nil {
-		fmt.Println("Failed to create logfile" + "serverlog.log")
+		fmt.Println("Failed to create logfile" + "crawlerlog.log")
 		panic(err)
 	}
 	defer logFile.Close()
+
 	log.SetOutput(io.MultiWriter(logFile, os.Stdout))
 
-	// sentry
 	configSentry()
 	defer sentry.Flush(2 * time.Second)
-	sentry.CaptureMessage("Connect to server success")
+	sentry.CaptureMessage("Connect to crawler success")
 
-	// connect postgres and migration
-	db := repository.ConnectDB(env.DBSource)
-	migrations.RunDBMigration(env.MigrationURL, env.DBSource)
 
-	// app routes
-	log.Infoln("Setup routes")
-	r := gin.Default()
-	r.Use(middlewares.Cors())
-	
-	infras.SetupRoute(db, r)
+	// db := repository.ConnectDB(env.DBSource)
 
-	err = r.Run(env.Port)
-	if err != nil {
-		log.Fatalln("error occurred when run server")
-	}
+	// handlers.GRPCServerListen(env.GRPCPort, db)
 }
 
 func configSentry() {
 	err := sentry.Init(sentry.ClientOptions{
-		Dsn:              "https://dc16289c8fd744249297e6150d4bc9dc@o4505040225501184.ingest.sentry.io/4505277257285632",
+		Dsn:              "https://4cad04fffc3348dc8d14d1f592f1d014@o4505040225501184.ingest.sentry.io/4505066672947200",
 		TracesSampleRate: 1.0,
 	})
 	if err != nil {

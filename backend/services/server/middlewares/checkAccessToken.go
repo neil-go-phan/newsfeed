@@ -3,8 +3,8 @@ package middlewares
 import (
 	"errors"
 	"net/http"
-	"backend/entities"
-	"backend/helper"
+	"server/entities"
+	"server/helpers"
 	"strings"
 
 	"github.com/gin-gonic/gin"
@@ -38,7 +38,7 @@ func validateToken(tokenString string) (*entities.JWTClaim, error) {
 		if _, ok := t.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, errors.New("unexpected signing method")
 		}
-		return helper.TOKEN_SERECT_KEY, nil
+		return helpers.TOKEN_SERECT_KEY, nil
 	})
 	if err != nil {
 		return nil, err

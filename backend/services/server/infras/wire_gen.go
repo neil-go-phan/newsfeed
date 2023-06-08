@@ -7,11 +7,11 @@
 package infras
 
 import (
-	"backend/handlers"
-	"backend/repository"
-	"backend/routes"
-	"backend/services/role"
-	"backend/services/user"
+	"server/handlers"
+	"server/repository"
+	"server/routes"
+	"server/services/role"
+	"server/services/user"
 	"gorm.io/gorm"
 )
 

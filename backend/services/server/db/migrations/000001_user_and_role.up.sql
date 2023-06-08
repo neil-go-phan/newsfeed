@@ -7,6 +7,22 @@ CREATE TABLE roles (
   description text
 );
 
+CREATE TABLE permissions (
+  id SERIAL PRIMARY KEY,
+  created_at timestamp with time zone,
+  updated_at timestamp with time zone,
+  deleted_at timestamp with time zone,
+  entity text,
+  method text,
+  description text
+);
+
+CREATE TABLE role_permission (
+  role_id SERIAL,
+  permission_id SERIAL,
+  PRIMARY KEY (role_id, permission_id)
+);
+
 CREATE TABLE users (
   id SERIAL PRIMARY KEY,
   created_at timestamp with time zone,
@@ -19,16 +35,27 @@ CREATE TABLE users (
   salt text
 );
 
-
 ALTER TABLE
   users
 ADD
   CONSTRAINT fk_users_roles FOREIGN KEY (role_name) REFERENCES roles(name);
 
+ALTER TABLE
+  role_permission
+ADD
+  CONSTRAINT fk_role_permission_role FOREIGN KEY (role_id) REFERENCES roles(id) ON DELETE CASCADE;
+
+ALTER TABLE
+  role_permission
+ADD
+  CONSTRAINT fk_role_permission_permission FOREIGN KEY (permission_id) REFERENCES permissions(id) ON DELETE CASCADE;
+
 CREATE UNIQUE INDEX idx_roles_name ON public.roles USING btree (name);
 
 CREATE UNIQUE INDEX idx_users_username ON public.users USING btree (username);
 CREATE UNIQUE INDEX idx_users_email ON public.users USING btree (email);
+
+
 
 INSERT INTO
   roles(created_at, name, description)

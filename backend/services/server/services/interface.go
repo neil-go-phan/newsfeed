@@ -1,7 +1,7 @@
 package services
 
 import (
-	"backend/entities"
+	"server/entities"
 )
 
 type UserServices interface {
