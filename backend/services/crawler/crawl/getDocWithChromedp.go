@@ -88,7 +88,7 @@ const BYPASS_SECURE_SCRIPT = `(function(w, n, wn) {
 
 })(window, navigator, window.navigator);`
 
-func CrawlWithChromedp(url string) (context.Context, context.CancelFunc, error)  {
+func GetDocWithChromedp(url string) (context.Context, context.CancelFunc, error)  {
 	ctx, cancel := createContext()
 
 	task := getDocTask(url)

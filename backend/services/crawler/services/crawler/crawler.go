@@ -1,7 +1,6 @@
 package crawlerservices
 
 import (
-	"crawler/crawl"
 	"crawler/entities"
 	"crawler/repository"
 	"crawler/services"
@@ -23,12 +22,9 @@ func NewCrawlerService(repo repository.CrawlerRepository, articleService service
 }
 
 func (s *CrawlerService) TestCrawler(crawler *entities.Crawler) (*entities.ArticlesSource, []*entities.Article, error) {
-	articleSource := new(entities.ArticlesSource)
-	articles := make([]*entities.Article, 0)
-
-	feed, err := crawl.ParseRSS(crawler.SourceLink)
-	if ok {
-
+	articleSource, articles, err := TestCrawlWithRSS(crawler)
+	if err == nil {
+		return articleSource, articles, nil
 	}
 
 	return articleSource, articles, nil

@@ -1,12 +1,12 @@
 package main
 
 import (
-	// "crawler/handlers"
-	// "crawler/helpers"
-	// "crawler/repository"
+	"crawler/helpers"
+	"crawler/repository"
 	"fmt"
 	"io"
 	"os"
+	"crawler/infras"
 	"time"
 
 	"github.com/evalphobia/logrus_sentry"
@@ -34,10 +34,10 @@ func init() {
 }
 
 func main() {
-	// env, err := helpers.LoadEnv(".")
-	// if err != nil {
-	// 	log.Fatalln("cannot load env: ", err)
-	// }
+	env, err := helpers.LoadEnv(".")
+	if err != nil {
+		log.Fatalln("cannot load env: ", err)
+	}
 
 	logFile, err := os.OpenFile("crawlerlog.log", os.O_WRONLY|os.O_CREATE|os.O_APPEND, 0644)
 	if err != nil {
@@ -53,9 +53,9 @@ func main() {
 	sentry.CaptureMessage("Connect to crawler success")
 
 
-	// db := repository.ConnectDB(env.DBSource)
+	db := repository.ConnectDB(env.DBSource)
 
-	// handlers.GRPCServerListen(env.GRPCPort, db)
+	infras.Listen(db, env.GRPCPort)
 }
 
 func configSentry() {

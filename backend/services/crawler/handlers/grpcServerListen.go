@@ -12,18 +12,24 @@ import (
 	"google.golang.org/grpc"
 )
 
-type gRPCServer struct {
+type GRPCServer struct {
 	pb.UnimplementedCrawlerServiceServer
 	crawlerService services.CrawlerServices
 }
 
-func GRPCServerListen(port string) {
+func NewGRPCServer(crawlerService services.CrawlerServices) *GRPCServer{
+	return &GRPCServer{
+		crawlerService: crawlerService,
+	}
+}
+
+func (gRPC *GRPCServer)Listen(port string) {
 	s := grpc.NewServer()
 	lis, err := net.Listen("tcp", port)
 	if err != nil {
 		log.Fatalf("Failed to listen: %v", err)
 	}
-	pb.RegisterCrawlerServiceServer(s, &gRPCServer{})
+	pb.RegisterCrawlerServiceServer(s, &GRPCServer{})
 	log.Println("crawler gRPC server start listening")
 	err = s.Serve(lis)
 	if err != nil {
@@ -31,7 +37,7 @@ func GRPCServerListen(port string) {
 	}
 }
 
-func (gRPC *gRPCServer)TestCrawler(ctx context.Context, pbCrawler *pb.Crawler) (*pb.TestResult, error) {
+func (gRPC *GRPCServer)TestCrawler(ctx context.Context, pbCrawler *pb.Crawler) (*pb.TestResult, error) {
 	log.Println("Start test crawler")
 	entityCrawler := castPbCrawlerToEntityCrawler(pbCrawler)
 	
