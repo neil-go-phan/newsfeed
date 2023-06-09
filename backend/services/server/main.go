@@ -4,12 +4,13 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"server/connects"
 	"server/db/migrations"
 	"server/helpers"
 	"server/infras"
 	"server/middlewares"
 	"server/repository"
-
+	pb "server/proto"
 	"time"
 
 	"github.com/evalphobia/logrus_sentry"
@@ -68,12 +69,16 @@ func main() {
 	db := repository.ConnectDB(env.DBSource)
 	migrations.RunDBMigration(env.MigrationURL, env.DBSource)
 
+	// connect crawler
+	conn := connects.ConnectToCrawler(env)
+	grpcClient := pb.NewCrawlerServiceClient(conn)
+
 	// app routes
 	log.Infoln("Setup routes")
 	r := gin.Default()
 	r.Use(middlewares.Cors())
 	
-	infras.SetupRoute(db, r)
+	infras.SetupRoute(db, r, grpcClient)
 
 	err = r.Run(env.Port)
 	if err != nil {

@@ -3,6 +3,8 @@ package crawl
 import (
 	"context"
 	"crawler/entities"
+	"fmt"
+	"time"
 
 	"github.com/PuerkitoBio/goquery"
 	"github.com/chromedp/cdproto/cdp"
@@ -13,19 +15,22 @@ import (
 
 const RSS_XPATH_QUERY = "link[type='application/rss+xml']"
 
-func TestGetRSSFeed(crawler *entities.Crawler) (*gofeed.Feed, error) {
-	link, ok := GetRSSLink(crawler.SourceLink)
-	if !ok {
-		feed, err := ParseRSS(crawler.SourceLink)
-		if err == nil {
-			return feed, nil
-		}
+func TestGetRSSFeed(crawler entities.Crawler) (*gofeed.Feed, error) {
+	feed, err := ParseRSS(crawler.SourceLink)
+	if err == nil {
+		return feed, nil
 	}
 
-	feed, err := ParseRSS(link)
+	link, ok := GetRSSLink(crawler.SourceLink)
+	if !ok {
+		return nil, fmt.Errorf("not found rss link")
+	}
+	log.Printf("export rss link success: %s", link)
+	feed, err = ParseRSS(link)
 	if err != nil {
 		return nil, err
 	}
+
 	return feed, nil
 }
 
@@ -39,11 +44,14 @@ func ParseRSS(url string) (*gofeed.Feed, error) {
 }
 
 func GetRSSLink(url string) (string, bool) {
+	log.Printf("%s is not a feed link, try goquery to export feed link...", url)
 	link, ok := GetRSSWithGoquery(url)
 	if ok {
 		return link, true
 	}
+	log.Println("can not export with goquery, try chromedp...")
 	link, ok = GetRSSWithChromedp(url)
+	log.Printf("%s - %v", link, ok)
 	return link, ok
 }
 
@@ -76,6 +84,7 @@ func GetRSSWithChromedp(url string) (string, bool) {
 		log.Error(err)
 		return "", false
 	}
+	log.Println("chromedp navigate to url success")
 	link, ok := ExportRSSLinkChromedp(ctx)
 	if !ok {
 		return "", false
@@ -89,6 +98,7 @@ func ExportRSSLinkChromedp(ctx context.Context) (string, bool) {
 		log.Error("error occrus while getRSSLink with chromedp ", err)
 		return "", false
 	}
+	log.Println("detect rss node ", len(rssNodes))
 	// most of time it is only one node
 	// sometime it was two or three. But we will only get the first node
 	// cause this is a test. if the user doesn't like the result then they can manually enter the rss link
@@ -98,7 +108,9 @@ func ExportRSSLinkChromedp(ctx context.Context) (string, bool) {
 
 func getRSSNodes(ctx context.Context) ([]*cdp.Node, error) {
 	var rssNodes []*cdp.Node
-	err := chromedp.Run(ctx, chromedp.Nodes(RSS_XPATH_QUERY, &rssNodes))
+	findNodeCtx, cancel := context.WithTimeout(ctx, 1 * time.Second)
+	defer cancel()
+	err := chromedp.Run(findNodeCtx, chromedp.Nodes(RSS_XPATH_QUERY, &rssNodes))
 	if err != nil {
 		return rssNodes, err
 	}

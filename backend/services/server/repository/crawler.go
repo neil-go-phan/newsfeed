@@ -1,14 +1,16 @@
 package repository
 
 import (
-	"crawler/entities"
+	"server/entities"
 
 	"gorm.io/gorm"
 )
 
+
+
 type CrawlerRepository interface {
-	Create(crawler *entities.Crawler) (*entities.Crawler, error) 
 	Get(id uint) (*entities.Crawler, error)
+	// List() (*[]entities.Article, error) 
 }	
 
 type CrawlerRepo struct {
@@ -19,14 +21,6 @@ func NewCrawlerRepo(db *gorm.DB) *CrawlerRepo {
 	return &CrawlerRepo{
 		DB: db,
 	}
-}
-
-func (repo *CrawlerRepo) Create(crawler *entities.Crawler) (*entities.Crawler, error) {
-	err := repo.DB.Create(crawler).Error
-	if err != nil {
-		return nil, err
-	}
-	return crawler, nil
 }
 
 func (repo *CrawlerRepo) Get(id uint) (*entities.Crawler, error) {

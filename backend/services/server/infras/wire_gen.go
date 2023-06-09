@@ -7,12 +7,16 @@
 package infras
 
 import (
+	"gorm.io/gorm"
 	"server/handlers"
+	"server/proto"
 	"server/repository"
 	"server/routes"
+	"server/services/article"
+	"server/services/articlesSource"
+	"server/services/crawler"
 	"server/services/role"
 	"server/services/user"
-	"gorm.io/gorm"
 )
 
 // Injectors from wire.go:
@@ -25,4 +29,16 @@ func InitizeUser(db *gorm.DB) *routes.UserRoutes {
 	userHandler := handlers.NewUserHandler(userService)
 	userRoutes := routes.NewUserRoutes(userHandler)
 	return userRoutes
+}
+
+func InitizeCrawler(db *gorm.DB, grpcClient serverproto.CrawlerServiceClient) *routes.CrawlerRoutes {
+	crawlerRepo := repository.NewCrawlerRepo(db)
+	articleRepo := repository.NewArticleRepo(db)
+	articleService := articleservices.NewArticleService(articleRepo)
+	articlesSourcesRepo := repository.NewArticlesSourcesRepo(db)
+	articlesSourceService := articlessourceservices.NewArticlesSourceService(articlesSourcesRepo)
+	crawlerService := crawlerservices.NewCrawlerService(crawlerRepo, articleService, articlesSourceService, grpcClient)
+	crawlerHandler := handlers.NewCrawlerHandler(crawlerService)
+	crawlerRoutes := routes.NewCrawlerRoutes(crawlerHandler)
+	return crawlerRoutes
 }

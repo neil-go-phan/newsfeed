@@ -33,3 +33,16 @@ type GoogleUserResult struct {
 	Picture        string
 	Locale         string
 }
+
+// type CrawlerFromFrontend struct {
+// 	SourceLink         string `json:"source_link" validate:"required"`
+// 	FeedLink           string `json:"feed_link"`
+// 	CrawlType          string `json:"crawl_type"`
+// 	ArticleDiv         string `json:"article_div"`
+// 	ArticleTitle       string `json:"article_title"`
+// 	ArticleDescription string `json:"article_description"`
+// 	ArticleLink        string `json:"article_link"`
+// 	ArticlePublished   string `json:"article_published"`
+// 	ArticleAuthors     string `json:"article_authors"`
+// 	Schedule           string `json:"schedule"`
+// }

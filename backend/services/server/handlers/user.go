@@ -1,7 +1,6 @@
 package handlers
 
 import (
-	// "backend/helper"
 	"server/helpers"
 	"server/services"
 	userservice "server/services/user"
@@ -10,17 +9,8 @@ import (
 	"fmt"
 	"io"
 	"time"
-
-	// "bytes"
-	// "encoding/json"
-	// "errors"
-	// "fmt"
-	// "io"
 	"net/http"
 	"net/url"
-
-	// "net/url"
-	// "time"
 
 	"github.com/gin-gonic/gin"
 	log "github.com/sirupsen/logrus"

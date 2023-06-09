@@ -1,13 +1,14 @@
+// get one (get full) - get 6 article (get image, title, published)
 package repository
 
 import (
-	"crawler/entities"
+	"server/entities"
 
 	"gorm.io/gorm"
 )
 
 type ArticleRepository interface {
-	CreateIfNotExist(article *entities.Article) (error) 
+	CreateIfNotExist(article *entities.Article) (error)
 }	
 
 type ArticleRepo struct {
