@@ -2,11 +2,11 @@ import axios from 'axios';
 import { getCookie, deleteCookie, setCookie } from 'cookies-next';
 import { _ROUTES } from './constants';
 
-const unProtectedRoutes = [
-  _ROUTES.LADING_PAGE,
-  _ROUTES.LOGIN_PAGE,
-  _ROUTES.REGISTER_PAGE,
-];
+// const unProtectedRoutes = [
+//   _ROUTES.LADING_PAGE,
+//   _ROUTES.LOGIN_PAGE,
+//   _ROUTES.REGISTER_PAGE,
+// ];
 
 const axiosProtectedAPI = axios.create({
   baseURL: process.env.NEXT_PUBLIC_BACKEND_DOMAIN,

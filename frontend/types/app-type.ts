@@ -23,7 +23,7 @@ type Article = {
   title: string;
   description: string;
   link: string;
-  published: Date;
+  published: string;
   authors:string;
 }
 

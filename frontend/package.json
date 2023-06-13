@@ -28,7 +28,6 @@
     "htmlparser2": "^9.0.0",
     "next": "13.4.4",
     "nprogress": "^0.2.0",
-    "parse5": "^7.1.2",
     "react": "18.2.0",
     "react-bootstrap": "^2.7.4",
     "react-dom": "18.2.0",
@@ -44,6 +43,7 @@
   },
   "devDependencies": {
     "@types/crypto-js": "^4.1.1",
+    "@types/domutils": "^1.7.4",
     "@types/node": "^20.2.5",
     "@types/nprogress": "^0.2.0",
     "@types/react": "^18.2.8",
@@ -51,8 +51,8 @@
     "@types/react-table": "^7.7.14",
     "@typescript-eslint/eslint-plugin": "^5.59.8",
     "@typescript-eslint/parser": "^5.59.8",
-    "eslint": "^8.41.0",
-    "eslint-config-next": "^13.4.4",
+    "eslint": "^8.42.0",
+    "eslint-config-next": "^13.4.5",
     "sass": "^1.62.1"
   }
 }

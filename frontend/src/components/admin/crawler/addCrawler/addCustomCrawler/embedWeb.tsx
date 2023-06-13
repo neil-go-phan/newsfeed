@@ -67,7 +67,7 @@ const EmbedWeb: React.FC<Props> = (props: Props) => {
         });
       };
     }
-      // eslint-disable-next-line react-hooks/exhaustive-deps
+
   }, [htmlContent]);
 
   const handleMouseOver = (event:Event) => {
@@ -82,7 +82,6 @@ const EmbedWeb: React.FC<Props> = (props: Props) => {
 
   const handleClick = useCallback((event:Event) => {
     props.handleClick(event)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const requestHtmlPage = async (url: string) => {

@@ -1,7 +1,7 @@
-import { toast } from "react-toastify";
-import { TOASTIFY_TIME } from "./constants";
+import { toast } from 'react-toastify';
+import { TOASTIFY_TIME } from './constants';
 
-export const toastifyError = (message:string) => {
+export const toastifyError = (message: string) => {
   toast.error(message, {
     position: 'top-right',
     autoClose: TOASTIFY_TIME,
@@ -12,9 +12,9 @@ export const toastifyError = (message:string) => {
     progress: undefined,
     theme: 'light',
   });
-}
+};
 
-export const toastifySuccess = (message:string) => {
+export const toastifySuccess = (message: string) => {
   toast.success(message, {
     position: 'top-right',
     autoClose: TOASTIFY_TIME,
@@ -25,4 +25,4 @@ export const toastifySuccess = (message:string) => {
     progress: undefined,
     theme: 'light',
   });
-}
+};

@@ -36,15 +36,38 @@
   }
 
   &__testResult {
+    .notFound {
+      p {
+        color: red;
+      }
+    }
+    &--title {
+      text-align: center;
+      h2 {
+        font-size: 2rem;
+        font-weight: bold;
+      }
+      .lineWraper {
+        display: flex;
+        justify-content: center;
+        margin: 10px 0;
+        .line {
+          width: 60%;
+          border: 1px solid #afabab;
+        }
+      }
+    }
     &--articles_source {
       .title {
-        text-align: center;
-        font-size: 1rem;
+        h3 {
+          text-align: center;
+          font-size: 1.5rem;
+        }
       }
       .info {
         .field {
           .sourceLogo {
-            position: relative;    
+            position: relative;
             .image {
               object-fit: contain;
               width: 100% !important;
@@ -52,6 +75,16 @@
               height: unset !important;
             }
           }
+        }
+      }
+    }
+
+    &--articles {
+      margin: 10px 0;
+      .title {
+        h3 {
+          text-align: center;
+          font-size: 1.5rem;
         }
       }
     }

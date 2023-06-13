@@ -1,10 +1,11 @@
+import { toDataUrl } from '@/helpers/imgUrlToData';
 import axios from 'axios';
 import Image from 'next/image';
 import React, { useEffect, useState } from 'react';
 import { Button, Form, InputGroup } from 'react-bootstrap';
 
 type Props = {
-  articlesSource: ArticlesSource | undefined;
+  articlesSource: ArticlesSource;
   url: string;
 };
 
@@ -20,57 +21,39 @@ type ImageField = {
 const IMAGE_SIZE = 200;
 
 const ArticlesSource: React.FC<Props> = (props: Props) => {
-  if (props.articlesSource) {
-    const [title, setTitle] = useState<Field>({
-      value: props.articlesSource.title,
-      disable: true,
-    });
-    const [description, setDescription] = useState<Field>({
-      value: props.articlesSource.description,
-      disable: true,
-    });
-    const [feedLink, setFeedLink] = useState<Field>({
-      value: props.articlesSource.feed_link,
-      disable: true,
-    });
-    const [link, setLink] = useState<Field>({
-      value: props.articlesSource.link,
-      disable: true,
-    });
-    const [image, setImage] = useState<string>();
-    const [imageBlob, setImageBlob] = useState<Promise<unknown>>();
+  const [image, setImage] = useState<string>();
+  const [title, setTitle] = useState<Field>({
+    value: props.articlesSource.title,
+    disable: true,
+  });
+  const [description, setDescription] = useState<Field>({
+    value: props.articlesSource.description,
+    disable: true,
+  });
+  const [feedLink, setFeedLink] = useState<Field>({
+    value: props.articlesSource.feed_link,
+    disable: true,
+  });
+  const [link, setLink] = useState<Field>({
+    value: props.articlesSource.link,
+    disable: true,
+  });
 
-    const toDataUrl = (url: string, callback: Function) => {
-      var xhr = new XMLHttpRequest();
-      xhr.onload = function () {
-        var reader = new FileReader();
-        reader.onloadend = function () {
-          callback(reader.result);
-        };
-        reader.readAsDataURL(xhr.response);
-      };
-      xhr.open('GET', url);
-      xhr.responseType = 'blob';
-      xhr.send();
-    };
-    useEffect(() => {
-      if (props.articlesSource) {
-        toDataUrl(
-          props.articlesSource.image,
-          (base64: string | ArrayBuffer | null) => {
-            if (base64) {
-              const str = base64.toString();
-              setImage(str);
-            }
+  useEffect(() => {
+    if (props.articlesSource) {
+      toDataUrl(
+        props.articlesSource.image,
+        (base64: string | ArrayBuffer | null) => {
+          if (base64) {
+            const str = base64.toString();
+            setImage(str);
           }
-        );
-        // if (props.articlesSource.link) {
-        //   setLink({ ...link, value: props.url})
-        // }
-      }
-    }, []);
+        }
+      );
+    }
+  }, []);
 
-    // test()
+  if (props.articlesSource) {
     return (
       <div className="addCrawler__testResult--articles_source">
         <div className="title">

@@ -19,6 +19,12 @@ $sidebar-overlay-z-index: 1025;
 }
 
 .adminSidebar {
+  position: fixed;
+  top:0px;
+  bottom:0px;
+  left:0px;   
+  z-index: 1;
+
   flex: 0 0 var(--sidebar-width);
   width: var(--sidebar-width);
   background: $sidebar-background;

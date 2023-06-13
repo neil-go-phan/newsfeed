@@ -38,7 +38,7 @@ const TestResult: React.FC<Props> = (props: Props) => {
       setErrorMessage(error.data.message || ERROR_MESSAGE_WHEN_TEST_FAIL);
     }
   };
-  console.log(articles);
+
   useEffect(() => {
     if (props.url) {
       setIsloading(true);
@@ -61,7 +61,10 @@ const TestResult: React.FC<Props> = (props: Props) => {
       ) : (
         <>
           <div className="addCrawler__testResult--title">
-            <h1>Test result</h1>
+            <h2>Test result</h2>
+            <div className="lineWraper">
+              <div className="line"></div>
+            </div>
           </div>
           <div
             className={
@@ -75,14 +78,18 @@ const TestResult: React.FC<Props> = (props: Props) => {
               {errorMessage}
             </p>
           </div>
-          <ArticlesSource url={props.url} articlesSource={articlesSource} />
+          {articlesSource ? <ArticlesSource url={props.url} articlesSource={articlesSource} /> : <div className='notFound'><p>Not found article source</p></div>}
           <div className="addCrawler__testResult--articles">
+            <div className="title">
+              <h3>Articles</h3>
+            </div>
             {articles ? (
               <Grid container spacing={3}>
                 {articles.map((article) => (
                   <Grid item key={article.title} xs={12} md={4}>
                     <ArticleCard
                       articleSourceTitle={articlesSource?.title}
+                      articleSourceLink={articlesSource?.link}
                       article={article}
                       isAdmin={true}
                     />
@@ -90,7 +97,9 @@ const TestResult: React.FC<Props> = (props: Props) => {
                 ))}
               </Grid>
             ) : (
-              <></>
+              <div className='notFound'>
+                <p>Not found article</p>
+              </div>
             )}
           </div>
         </>

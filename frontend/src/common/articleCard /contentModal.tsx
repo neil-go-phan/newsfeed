@@ -1,51 +1,64 @@
-import React, { useEffect, useRef, useState } from 'react';
-import * as htmlparser2 from 'htmlparser2';
-import * as domutils from 'domutils';
-import { parse } from 'parse5';
-
+import React, { useEffect, useState } from 'react';
 
 type Props = {
   article: Article;
+  sourceTitle: string | undefined;
+  sourceLink: string | undefined;
   handleContentModalClose: () => void;
+  doc: any;
 };
 
 const ContentModal: React.FC<Props> = (props: Props) => {
-  const contentRef = useRef<any>(null);
-  const [dom, setDom] = useState<Document>();
-  useEffect(() => {
-    if (props.article.description !== '') {
-      const doc = parse(props.article.description)
-      const nodes = doc.childNodes;
-      
-      // const newdom = htmlparser2.parseDocument(props.article.description);
-      // const fragment = document
-      //   .createRange()
-      //   .createContextualFragment(props.article.description);
-      // if (contentRef.current) {
-      //   contentRef.current.appendChild(fragment);
-      // }
-      // const links = domutils.getElementsByTagName('a', fragment);
-      // links.forEach((link) => {
-      //   // Kiểm tra xem phần tử a có thuộc tính href không
-      //   const href = link.getAttributeValue(link, 'href');
-      //   if (href) {
-      //     // Thêm thuộc tính target="_blank"
-      //     link.setAttribute(link, 'target', '_blank');
-      //   }
-      // });
-    }
-  }, [props.article]);
+  const [renderedContent, setRenderedContent] = useState<
+    Array<JSX.Element | string | null>
+  >([]);
+  const [str, setStr] = useState<string>('');
+  const renderNode = (node: any): JSX.Element | string | null => {
+    if (node.type === 'tag') {
+      const { name, children, attribs } = node;
+      const props: { [key: string]: string } = Object.entries(attribs).reduce(
+        (props, [key, value]) => ({ ...props, [key]: value }),
+        {}
+      );
+      const childElements = children.map((child: any) => renderNode(child));
 
-  useEffect(() => {
-    if (dom) {
+      return React.createElement(name, props, ...childElements);
+    } else if (node.type === 'text') {
+      return node.data;
     }
-  }, [dom]);
 
+    return null;
+  };
+  const renderDate = (dateString: string): string => {
+    const date = new Date(dateString);
+    return date.toLocaleString();
+  };
+  useEffect(() => {
+    const temp: Array<JSX.Element | string | null> = [];
+    props.doc.childNodes.forEach((node: any) => {
+      temp.push(renderNode(node));
+    });
+    setRenderedContent(temp);
+    if (props.article.published) {
+      const dateString = renderDate(props.article.published);
+      setStr(dateString);
+    }
+  }, []);
   return (
     <div className="articleCard__contentModal">
-      <div className="content">
-        <div ref={contentRef}></div>
+      <div className="title">
+        <a href={props.article.link} target="_blank">
+          {props.article.title}
+        </a>
       </div>
+      <div className="info">
+        <a href={props.sourceLink} target="_blank" className="source">
+          {props.sourceTitle},{' '}
+        </a>
+        <span className="authors">by {props.article.authors}, </span>
+        <span className="published">{str}</span>
+      </div>
+      {renderedContent}
     </div>
   );
 };

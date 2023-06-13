@@ -21,7 +21,7 @@ function Tutorial() {
         <p><strong>Step 1:</strong> Check if the website you are using provides an RSS feed</p>
         <p>
         <strong>Step 2:</strong> If they already provide an RSS feed then
-          <strong>enter the RSS link</strong>. In case you can't find it then
+          <strong>enter the RSS link</strong>. In case you can not find it then
           enter the site url
         </p>
         <p><strong>Step 3:</strong> Wait a moment to receive test results</p>
