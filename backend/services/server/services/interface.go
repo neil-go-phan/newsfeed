@@ -31,7 +31,7 @@ type ArticlesSourceServices interface {
 }
 
 type CrawlerServices interface {
-	TestCrawler(crawler *entities.Crawler) (*entities.ArticlesSource, []*entities.Article, error)
+	TestCrawler(crawler *entities.Crawler) (*ArticlesSourceResponse, []*ArticleResponse, error)
 	FirstCrawl(crawler *entities.Crawler) (error)
 	ScheduledCrawl(crawlerID uint) (error)
 }

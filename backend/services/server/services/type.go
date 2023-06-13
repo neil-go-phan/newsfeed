@@ -1,5 +1,7 @@
 package services
 
+import "time"
+
 type LoginUserInput struct {
 	Username             string `json:"username" validate:"required"`
 	Password             string `json:"password" validate:"required"`
@@ -33,6 +35,23 @@ type GoogleUserResult struct {
 	Picture        string
 	Locale         string
 }
+
+type ArticlesSourceResponse struct {
+	Title       string `json:"title"`
+	Description string `json:"description"`
+	Link        string `json:"link"`
+	FeedLink    string `json:"feed_link"`
+	Image       string `json:"image"` // link or a base64 image
+}
+
+type ArticleResponse struct {
+	Title            string    `json:"title"`
+	Description      string    `json:"description"`
+	Link             string    `json:"link"`
+	Published        time.Time `json:"published"`
+	Authors          string    `json:"authors"`
+}
+
 
 // type CrawlerFromFrontend struct {
 // 	SourceLink         string `json:"source_link" validate:"required"`

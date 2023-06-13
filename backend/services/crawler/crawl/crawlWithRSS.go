@@ -30,7 +30,6 @@ func TestGetRSSFeed(crawler entities.Crawler) (*gofeed.Feed, error) {
 	if err != nil {
 		return nil, err
 	}
-
 	return feed, nil
 }
 
@@ -51,7 +50,6 @@ func GetRSSLink(url string) (string, bool) {
 	}
 	log.Println("can not export with goquery, try chromedp...")
 	link, ok = GetRSSWithChromedp(url)
-	log.Printf("%s - %v", link, ok)
 	return link, ok
 }
 

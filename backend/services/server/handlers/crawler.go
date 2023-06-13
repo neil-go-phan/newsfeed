@@ -35,7 +35,7 @@ func (h *CrawlerHandler) TestCrawler(c *gin.Context) {
 	articlesSource, articles, err := h.service.TestCrawler(&inputCrawler)
 	if err != nil {
 		log.Error("error occrus: %s", err)
-		c.JSON(http.StatusInternalServerError, gin.H{"success": false, "message": err.Error()})
+		c.JSON(http.StatusBadRequest, gin.H{"success": false, "message": err.Error()})
 		return
 	}
 

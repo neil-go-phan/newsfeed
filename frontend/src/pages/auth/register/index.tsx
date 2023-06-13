@@ -21,13 +21,6 @@ import { _REGEX, _ROUTES } from '@/helpers/constants';
 import axiosClient from '@/helpers/axiosClient';
 import AuthLayout from '@/layouts/authLayout';
 
-interface RegisterFormProperty {
-  email: string;
-  username: string;
-  password: string;
-  passwordConfirmation?: string;
-}
-
 const Register: NextPage = () => {
   const router = useRouter();
 

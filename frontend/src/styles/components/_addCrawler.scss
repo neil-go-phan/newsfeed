@@ -1,0 +1,59 @@
+.addCrawler {
+  padding: 1rem;
+  &__tutorial {
+    &--title {
+      h1 {
+        text-align: center;
+        font-size: 1.5rem;
+      }
+    }
+    &--note {
+      margin-bottom: 10px;
+      p {
+        margin: 0;
+      }
+    }
+    &--step {
+      p {
+        margin: 0;
+      }
+    }
+  }
+
+  &__inputUrl {
+    .radioBtn {
+      font-size: 20px;
+    }
+    &--title {
+      font-size: 1.5rem;
+      text-align: center;
+      margin: 0;
+    }
+    &--line {
+      border-bottom: 2px solid #000;
+      margin: 1rem 0;
+    }
+  }
+
+  &__testResult {
+    &--articles_source {
+      .title {
+        text-align: center;
+        font-size: 1rem;
+      }
+      .info {
+        .field {
+          .sourceLogo {
+            position: relative;    
+            .image {
+              object-fit: contain;
+              width: 100% !important;
+              position: relative !important;
+              height: unset !important;
+            }
+          }
+        }
+      }
+    }
+  }
+}

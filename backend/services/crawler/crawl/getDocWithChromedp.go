@@ -112,7 +112,7 @@ func createContext() (context.Context, context.CancelFunc) {
 		allocCtx,
 		chromedp.WithLogf(log.Printf),
 	)
-	ctx, cancel := context.WithTimeout(ctx, 1*time.Minute)
+	ctx, cancel := context.WithTimeout(ctx, 45*time.Second)
 	return ctx, cancel
 }
 

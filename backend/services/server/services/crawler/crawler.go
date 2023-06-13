@@ -25,7 +25,7 @@ func NewCrawlerService(repo repository.CrawlerRepository, articleService service
 	return crawlerService
 }
 
-func (s *CrawlerService) TestCrawler(crawler *entities.Crawler) (*entities.ArticlesSource, []*entities.Article, error) {
+func (s *CrawlerService) TestCrawler(crawler *entities.Crawler) (*services.ArticlesSourceResponse, []*services.ArticleResponse, error) {
 	err := validateCrawler(crawler)
 	if err != nil {
 		return nil, nil, err

@@ -1,9 +1,12 @@
 @import "~nprogress/nprogress.css";
 @import "~bootstrap/scss/bootstrap";
+@import 'react-toastify/dist/ReactToastify.css';
+@import "reactjs-popup/dist/index.css";
 @import '@fontsource/roboto/300.css';
 @import '@fontsource/roboto/400.css';
 @import '@fontsource/roboto/500.css';
 @import '@fontsource/roboto/700.css';
+
 // html *
 // {
 //    font-family: Arial !important;
@@ -15,9 +18,17 @@
 // variable
 @import "./variables/colors";
 
+// commom
+@import "./common/errorMessage";
+@import "./common/backToTopBtn";
+@import "./common/bootstrapBtn";
+@import "./common/loading";
+@import "./common/articleCard";
+
 // layout 
 @import "./layouts/auth";
 @import "./layouts/home";
+@import "./layouts/adminSidebar";
 
 // pages
 @import "./pages/auth";
@@ -27,8 +38,6 @@
 @import "./components/landing";
 @import "./components/banner";
 @import "./components/footer";
+@import "./components/admin";
+@import "./components/addCrawler";
 
-// commom
-@import "./common/errorMessage";
-@import "./common/backToTopBtn";
-@import "./common/bootstrapBtn";

@@ -1,0 +1,17 @@
+.articleCard {
+  &__title {
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 2; /* number of lines to show */
+            line-clamp: 2; 
+    -webkit-box-orient: vertical;
+    height: 45px;
+    font-size: 1rem;
+    font-weight: bold;
+    text-overflow: ellipsis;
+  }
+  &__contentModal {
+      overflow: scroll;
+      height: 60%;
+  }
+}

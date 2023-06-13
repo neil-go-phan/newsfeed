@@ -20,6 +20,6 @@ func NewCrawlerRoutes(handler handlers.CrawlerHandlerInterface) *CrawlerRoutes {
 func (crawlerRoutes *CrawlerRoutes) Setup(r *gin.Engine) {
 	route := r.Group("crawler")
 	{
-		route.POST("test", middlewares.CheckAccessToken(), crawlerRoutes.handler.TestCrawler)
+		route.POST("test-rss", middlewares.CheckAccessToken(), crawlerRoutes.handler.TestCrawler)
 	}
 }

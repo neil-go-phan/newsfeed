@@ -8,6 +8,7 @@ import { CacheProvider, EmotionCache } from '@emotion/react';
 import createEmotionCache from '@/helpers/MUISSRhandle';
 import type { ReactElement, ReactNode } from 'react';
 import type { NextPage } from 'next';
+import { ToastContainer } from 'react-toastify';
 
 const clientSideEmotionCache = createEmotionCache();
 
@@ -29,6 +30,7 @@ export default function App(props: MyAppProps) {
         <CssBaseline />
         <ProgressBar />
         {getLayout(<Component {...pageProps} />)}
+        <ToastContainer />
       </SSRProvider>
     </CacheProvider>
   );

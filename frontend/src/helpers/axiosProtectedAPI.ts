@@ -38,10 +38,10 @@ axiosProtectedAPI.interceptors.response.use(
       ) {
         config.sent = true;
         const res = await newToken();
-
         if (res?.data) {
           setCookie('access_token', res.data.access_token);
           config.headers['Authorization'] = `Bearer ${res.data.access_token}`;
+          return axiosProtectedAPI(config)
         }
         return config;
       }
@@ -49,12 +49,12 @@ axiosProtectedAPI.interceptors.response.use(
       deleteCookie('refresh_token');
       deleteCookie('access_token');
     }
-    deleteCookie('refresh_token');
-    deleteCookie('access_token');
-    if (!unProtectedRoutes.includes(window.location.pathname)) {
-      window.location.href = '/login';
-    }
-    return error;
+    // deleteCookie('refresh_token');
+    // deleteCookie('access_token');
+    // if (!unProtectedRoutes.includes(window.location.pathname)) {
+    //   window.location.href = '/auth/login';
+    // }
+    return error.response;
   }
 );
 
@@ -63,7 +63,7 @@ const newToken = async () => {
   if (token) {
     try {
       const res = await axios.get(
-        `${process.env.NEXT_PUBLIC_DOMAIN}/auth/token`,
+        `${process.env.NEXT_PUBLIC_BACKEND_DOMAIN}auth/token`,
         {
           headers: {
             'X-Refresh-Token': token,
