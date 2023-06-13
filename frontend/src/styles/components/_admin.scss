@@ -1,0 +1,59 @@
+.adminProfile {
+  padding: 1rem;
+  &__title {
+    font-size: 2rem;
+    text-align: center;
+    margin: 0;
+  }
+  &__line {
+    border-bottom: 2px solid #000;
+    margin: 1rem 0;
+  }
+}
+
+.adminCrawler {
+  &__list {
+    &--title {
+      text-align: center;
+      font-size: 1.5rem;
+    }
+  }
+  &__addCrawler {
+    &--embed {
+      border: 2px solid #f1af79;
+    }
+    &--form {
+      overflow: auto;
+      padding: 20px;
+      .title {
+        font-size: 2rem;
+        text-align: center;
+        margin: 0;
+      }
+      .line {
+        border-bottom: 2px solid #000;
+        margin: 1rem 0;
+      }
+    }
+  }
+
+  &__addBtn {
+    a {
+      text-decoration: none;
+      color: $color-white-2;
+    }
+  }
+
+  &__iFrame {
+    &--embed {
+      height: 500px;
+      width: 100%;
+      overflow: auto;
+    }
+    &--loading {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+  }
+}

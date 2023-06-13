@@ -1,0 +1,42 @@
+syntax = "proto3";
+option go_package="github.com/neil-go-phan/newsfeed/backend/grpc";
+
+package crawlerproto;
+
+service CrawlerService {
+  rpc TestCrawler(Crawler) returns (TestResult) {}
+}
+
+message Crawler {
+  string source_link = 1;
+  string feed_link = 2;
+  string crawl_type = 3;
+  string article_div = 4;
+  string article_title = 5;
+  string article_description = 6;
+  string article_link = 7;
+  string article_published = 8;
+  string article_authors = 9;
+  string schedule = 10;
+}
+
+message TestResult {
+  repeated Article articles = 1;
+  ArticlesSource articles_source = 2;
+}
+
+message Article {
+  string title = 1;
+  string description = 2;
+  string link = 3;
+  string published = 4;
+  string authors = 5;
+}
+
+message ArticlesSource {
+  string title = 1;
+  string description = 2;
+  string link = 3;
+  string feed_link = 4;
+  string image = 5;
+}

@@ -1,8 +1,8 @@
 package roleservice
 
 import (
-	"backend/entities"
-	"backend/repository"
+	"server/entities"
+	"server/repository"
 	"errors"
 )
 

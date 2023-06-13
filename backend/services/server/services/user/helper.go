@@ -1,10 +1,9 @@
 package userservice
 
 import (
-	// "backend/entities"
-	"backend/entities"
-	"backend/helper"
-	"backend/services"
+	"server/entities"
+	"server/helpers"
+	"server/services"
 	"crypto/rand"
 	"crypto/subtle"
 	"encoding/base64"
@@ -224,7 +223,7 @@ func GenerateAccessToken(username, role string) (string, error) {
 		},
 	}
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	return token.SignedString(helper.TOKEN_SERECT_KEY)
+	return token.SignedString(helpers.TOKEN_SERECT_KEY)
 }
 
 func GenerateRefreshToken(username, role string) (string, error) {
@@ -242,7 +241,7 @@ func GenerateRefreshToken(username, role string) (string, error) {
 		},
 	}
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	return token.SignedString(helper.TOKEN_SERECT_KEY)
+	return token.SignedString(helpers.TOKEN_SERECT_KEY)
 }
 
 func generateRandomTokenString() ([]byte, error) {

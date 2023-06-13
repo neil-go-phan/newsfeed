@@ -1,7 +1,7 @@
 package services
 
 import (
-	"backend/entities"
+	"server/entities"
 )
 
 type UserServices interface {
@@ -22,4 +22,16 @@ type RoleServices interface {
 	GetRole(roleName string) (*entities.Role, error)
 }
 
+type ArticleServices interface {
+	CreateIfNotExist(article *entities.Article) error
+}
 
+type ArticlesSourceServices interface {
+	Create(articlesSource *entities.ArticlesSource) error
+}
+
+type CrawlerServices interface {
+	TestCrawler(crawler *entities.Crawler) (*ArticlesSourceResponse, []*ArticleResponse, error)
+	FirstCrawl(crawler *entities.Crawler) (error)
+	ScheduledCrawl(crawlerID uint) (error)
+}

@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/http/httptest"
-	"backend/entities"
+	"server/entities"
 	"strings"
 	"testing"
 

@@ -1,7 +1,7 @@
 package repository
 
 import (
-	"backend/entities"
+	"server/entities"
 
 	"gorm.io/gorm"
 )

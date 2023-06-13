@@ -18,11 +18,6 @@ import { getGoogleUrl } from '@/helpers/getGoogleUrl';
 import Image from 'next/image';
 import AuthLayout from '@/layouts/authLayout';
 
-interface LoginFormProperty {
-  username: string;
-  password: string;
-}
-
 const Login: NextPage = () => {
   const router = useRouter();
   const logged = useContext(IsLoggedContext);
