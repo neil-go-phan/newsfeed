@@ -1,4 +1,4 @@
-import Swal from "sweetalert2";
+import Swal from 'sweetalert2';
 
 export const alertSuccess = (message:string) => {
   return Swal.fire({
