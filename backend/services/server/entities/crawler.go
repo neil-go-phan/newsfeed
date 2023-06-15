@@ -4,9 +4,9 @@ import "gorm.io/gorm"
 
 type Crawler struct {
 	gorm.Model
-	SourceLink         string `json:"source_link"`
+	SourceLink         string `json:"source_link" validate:"required,url"`
 	FeedLink           string `json:"feed_link"`
-	CrawlType          string `json:"crawl_type"` // two type: "RSS link", "custom crawler"
+	CrawlType          string `json:"crawl_type" validate:"required"`
 	ArticleDiv         string `json:"article_div"`
 	ArticleTitle       string `json:"article_title"`
 	ArticleDescription string `json:"article_description"`

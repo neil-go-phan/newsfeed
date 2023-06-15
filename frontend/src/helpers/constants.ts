@@ -10,7 +10,8 @@ export const _ROUTES = {
   ADMIN_PAGE: '/admin',
   ADMIN_CRAWLER: '/admin/crawler',
   ADMIN_ARTICLES: '/admin/articles',
-  ADD_CRAWLER :'/admin/crawler/add-custom',
+  ADD_CRAWLER :'/admin/crawler/add',
+  ADD_CUSTOM_CRAWLER :'/admin/crawler/add/custom',
   ADMIN_CRONJOB: '/admin/cronjob'
 }
 

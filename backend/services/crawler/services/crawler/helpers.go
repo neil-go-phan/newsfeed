@@ -18,7 +18,18 @@ func TestCrawlWithRSS(crawler entities.Crawler) (*entities.ArticlesSource, []*en
 	return articleSource, articles, nil
 }
 
+func TestCustomCrawl(crawler entities.Crawler) (entities.ArticlesSource, []*entities.Article, error) {
+	articles, err := crawl.CrawlWithGoQuery(crawler)
+	if err != nil {
+		return entities.ArticlesSource{}, []*entities.Article{}, err
+	}
 
+	articleSource := entities.ArticlesSource{
+		Link: crawler.SourceLink,
+	}
+
+	return articleSource, articles, nil
+}
 
 func TestCrawlWithGoQuery(crawler *entities.Crawler) {
 

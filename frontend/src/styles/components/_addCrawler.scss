@@ -89,4 +89,60 @@
       }
     }
   }
+
+  &__confirmModal {
+    height: 90vh;
+    padding: 20px;
+    overflow-y: scroll;
+    .questionMark {
+      display: flex;
+      h4 {
+        margin-right: 10px;
+      }
+    }
+    .title {
+      text-align: center;
+      h3 {
+        font-size: 2rem;
+        font-weight: bold;
+      }
+      .lineWraper {
+        display: flex;
+        justify-content: center;
+        margin: 10px 0;
+        .line {
+          width: 60%;
+          border: 1px solid #afabab;
+        }
+      }
+    }
+  }
+
+  .bgDisable {
+    background-color: #afabab;
+  }
+
+}
+
+.addCustomCrawler {
+  .colorRed {
+    color: red;
+  }
+  &__embedweb {
+    margin: 20px 0;
+    .lineWraper {
+      display: flex;
+      justify-content: center;
+      margin: 10px 0;
+      .line {
+        width: 60%;
+        border: 1px solid #afabab;
+      }
+    }
+    .title{
+      h4 {
+        text-align: center;
+      }
+    }
+  }
 }

@@ -4,6 +4,7 @@ type Props = {
   article: Article;
   sourceTitle: string | undefined;
   sourceLink: string | undefined;
+
   handleContentModalClose: () => void;
   doc: any;
 };
@@ -12,6 +13,9 @@ const ContentModal: React.FC<Props> = (props: Props) => {
   const [renderedContent, setRenderedContent] = useState<
     Array<JSX.Element | string | null>
   >([]);
+  const [customCrawlerArticleDescription, setCustomCrawlerArticleDescription] =
+    useState<string>('Not found');
+  const [isCustomCrawler, setIsCustomCrawler] = useState<boolean>(false);
   const [str, setStr] = useState<string>('');
   const renderNode = (node: any): JSX.Element | string | null => {
     if (node.type === 'tag') {
@@ -29,19 +33,30 @@ const ContentModal: React.FC<Props> = (props: Props) => {
 
     return null;
   };
+
   const renderDate = (dateString: string): string => {
     const date = new Date(dateString);
     return date.toLocaleString();
   };
+
   useEffect(() => {
-    const temp: Array<JSX.Element | string | null> = [];
-    props.doc.childNodes.forEach((node: any) => {
-      temp.push(renderNode(node));
-    });
-    setRenderedContent(temp);
-    if (props.article.published) {
-      const dateString = renderDate(props.article.published);
-      setStr(dateString);
+    if (props.doc) {
+      if (props.doc.childNodes) {
+        const temp: Array<JSX.Element | string | null> = [];
+        props.doc.childNodes.forEach((node: any) => {
+          temp.push(renderNode(node));
+        });
+        setRenderedContent(temp);
+        if (props.article.published) {
+          const dateString = renderDate(props.article.published);
+          setStr(dateString);
+        }
+      }
+    } else {
+      if (props.article.description) {
+        setIsCustomCrawler(true);
+        setCustomCrawlerArticleDescription(props.article.description);
+      }
     }
   }, []);
   return (
@@ -53,12 +68,16 @@ const ContentModal: React.FC<Props> = (props: Props) => {
       </div>
       <div className="info">
         <a href={props.sourceLink} target="_blank" className="source">
-          {props.sourceTitle},{' '}
+          {props.sourceTitle},
         </a>
         <span className="authors">by {props.article.authors}, </span>
         <span className="published">{str}</span>
       </div>
-      {renderedContent}
+      {isCustomCrawler ? (
+        <p>{customCrawlerArticleDescription}</p>
+      ) : (
+        renderedContent
+      )}
     </div>
   );
 };

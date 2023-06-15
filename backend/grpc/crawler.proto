@@ -4,7 +4,8 @@ option go_package="github.com/neil-go-phan/newsfeed/backend/grpc";
 package crawlerproto;
 
 service CrawlerService {
-  rpc TestCrawler(Crawler) returns (TestResult) {}
+  rpc TestRSSCrawler(Crawler) returns (TestResult) {}
+  rpc TestCustomCrawler(Crawler) returns (TestResult) {}
 }
 
 message Crawler {

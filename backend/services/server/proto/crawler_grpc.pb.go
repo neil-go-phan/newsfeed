@@ -19,14 +19,16 @@ import (
 const _ = grpc.SupportPackageIsVersion7
 
 const (
-	CrawlerService_TestCrawler_FullMethodName = "/crawlerproto.CrawlerService/TestCrawler"
+	CrawlerService_TestRSSCrawler_FullMethodName    = "/crawlerproto.CrawlerService/TestRSSCrawler"
+	CrawlerService_TestCustomCrawler_FullMethodName = "/crawlerproto.CrawlerService/TestCustomCrawler"
 )
 
 // CrawlerServiceClient is the client API for CrawlerService service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type CrawlerServiceClient interface {
-	TestCrawler(ctx context.Context, in *Crawler, opts ...grpc.CallOption) (*TestResult, error)
+	TestRSSCrawler(ctx context.Context, in *Crawler, opts ...grpc.CallOption) (*TestResult, error)
+	TestCustomCrawler(ctx context.Context, in *Crawler, opts ...grpc.CallOption) (*TestResult, error)
 }
 
 type crawlerServiceClient struct {
@@ -37,9 +39,18 @@ func NewCrawlerServiceClient(cc grpc.ClientConnInterface) CrawlerServiceClient {
 	return &crawlerServiceClient{cc}
 }
 
-func (c *crawlerServiceClient) TestCrawler(ctx context.Context, in *Crawler, opts ...grpc.CallOption) (*TestResult, error) {
+func (c *crawlerServiceClient) TestRSSCrawler(ctx context.Context, in *Crawler, opts ...grpc.CallOption) (*TestResult, error) {
 	out := new(TestResult)
-	err := c.cc.Invoke(ctx, CrawlerService_TestCrawler_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, CrawlerService_TestRSSCrawler_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *crawlerServiceClient) TestCustomCrawler(ctx context.Context, in *Crawler, opts ...grpc.CallOption) (*TestResult, error) {
+	out := new(TestResult)
+	err := c.cc.Invoke(ctx, CrawlerService_TestCustomCrawler_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -50,7 +61,8 @@ func (c *crawlerServiceClient) TestCrawler(ctx context.Context, in *Crawler, opt
 // All implementations must embed UnimplementedCrawlerServiceServer
 // for forward compatibility
 type CrawlerServiceServer interface {
-	TestCrawler(context.Context, *Crawler) (*TestResult, error)
+	TestRSSCrawler(context.Context, *Crawler) (*TestResult, error)
+	TestCustomCrawler(context.Context, *Crawler) (*TestResult, error)
 	mustEmbedUnimplementedCrawlerServiceServer()
 }
 
@@ -58,8 +70,11 @@ type CrawlerServiceServer interface {
 type UnimplementedCrawlerServiceServer struct {
 }
 
-func (UnimplementedCrawlerServiceServer) TestCrawler(context.Context, *Crawler) (*TestResult, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method TestCrawler not implemented")
+func (UnimplementedCrawlerServiceServer) TestRSSCrawler(context.Context, *Crawler) (*TestResult, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method TestRSSCrawler not implemented")
+}
+func (UnimplementedCrawlerServiceServer) TestCustomCrawler(context.Context, *Crawler) (*TestResult, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method TestCustomCrawler not implemented")
 }
 func (UnimplementedCrawlerServiceServer) mustEmbedUnimplementedCrawlerServiceServer() {}
 
@@ -74,20 +89,38 @@ func RegisterCrawlerServiceServer(s grpc.ServiceRegistrar, srv CrawlerServiceSer
 	s.RegisterService(&CrawlerService_ServiceDesc, srv)
 }
 
-func _CrawlerService_TestCrawler_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _CrawlerService_TestRSSCrawler_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(Crawler)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(CrawlerServiceServer).TestCrawler(ctx, in)
+		return srv.(CrawlerServiceServer).TestRSSCrawler(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: CrawlerService_TestCrawler_FullMethodName,
+		FullMethod: CrawlerService_TestRSSCrawler_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(CrawlerServiceServer).TestCrawler(ctx, req.(*Crawler))
+		return srv.(CrawlerServiceServer).TestRSSCrawler(ctx, req.(*Crawler))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _CrawlerService_TestCustomCrawler_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(Crawler)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(CrawlerServiceServer).TestCustomCrawler(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: CrawlerService_TestCustomCrawler_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(CrawlerServiceServer).TestCustomCrawler(ctx, req.(*Crawler))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -100,8 +133,12 @@ var CrawlerService_ServiceDesc = grpc.ServiceDesc{
 	HandlerType: (*CrawlerServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "TestCrawler",
-			Handler:    _CrawlerService_TestCrawler_Handler,
+			MethodName: "TestRSSCrawler",
+			Handler:    _CrawlerService_TestRSSCrawler_Handler,
+		},
+		{
+			MethodName: "TestCustomCrawler",
+			Handler:    _CrawlerService_TestCustomCrawler_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

@@ -21,7 +21,7 @@ func NewCrawlerService(repo repository.CrawlerRepository, articleService service
 	return crawlerService
 }
 
-func (s *CrawlerService) TestCrawler(crawler entities.Crawler) (*entities.ArticlesSource, []*entities.Article, error) {
+func (s *CrawlerService) TestRSSCrawler(crawler entities.Crawler) (*entities.ArticlesSource, []*entities.Article, error) {
 	articleSource, articles, err := TestCrawlWithRSS(crawler)
 	if err != nil {
 		return nil, nil, err
@@ -30,7 +30,14 @@ func (s *CrawlerService) TestCrawler(crawler entities.Crawler) (*entities.Articl
 	return articleSource, articles, nil
 }
 
+func (s *CrawlerService) TestCustomCrawler(crawler entities.Crawler) (entities.ArticlesSource, []*entities.Article, error) {
+	articleSource, articles, err := TestCustomCrawl(crawler)
+	if err != nil {
+		return articleSource, articles, err
+	}
 
+	return articleSource, articles, nil
+}
 
 func (s *CrawlerService) FirstCrawl(crawler entities.Crawler) (error) {
 	return nil

@@ -61,3 +61,13 @@ INSERT INTO
   roles(created_at, name, description)
 values
   (current_timestamp, 'customer', 'customer role');
+
+INSERT INTO
+  roles(created_at, name, description)
+values
+  (current_timestamp, 'superadmin', 'can do anything');
+
+-- INSERT INTO
+--   users(created_at, username, password, role_name, salt)
+-- values
+--   (current_timestamp, 'superadmin', 'customer role', 'superadmin', '');

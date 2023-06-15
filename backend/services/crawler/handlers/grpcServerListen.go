@@ -38,16 +38,31 @@ func (gRPC *GRPCServer) Listen(port string) {
 	}
 }
 
-func (gRPC *GRPCServer) TestCrawler(ctx context.Context, pbCrawler *pb.Crawler) (*pb.TestResult, error) {
-	log.Println("Start test crawler")
+func (gRPC *GRPCServer) TestRSSCrawler(ctx context.Context, pbCrawler *pb.Crawler) (*pb.TestResult, error) {
+	log.Println("Start test rss crawler")
 	entityCrawler := helpers.CastPbCrawlerToEntityCrawler(pbCrawler)
-	articlesSource, article, err := gRPC.crawlerService.TestCrawler(entityCrawler)
+	articlesSource, article, err := gRPC.crawlerService.TestRSSCrawler(entityCrawler)
 	if err != nil {
 		log.Error(err)
 		return nil, err
 	}
 
 	testResult := helpers.NewTestResult(*articlesSource, article)
+
+	log.Println("Test complete")
+	return testResult, nil
+}
+
+func (gRPC *GRPCServer) TestCustomCrawler(ctx context.Context, pbCrawler *pb.Crawler) (*pb.TestResult, error) {
+	log.Println("Start test custom crawler")
+	entityCrawler := helpers.CastPbCrawlerToEntityCrawler(pbCrawler)
+	articlesSource, article, err := gRPC.crawlerService.TestCustomCrawler(entityCrawler)
+	if err != nil {
+		log.Error(err)
+		return nil, err
+	}
+
+	testResult := helpers.NewTestResult(articlesSource, article)
 
 	log.Println("Test complete")
 	return testResult, nil

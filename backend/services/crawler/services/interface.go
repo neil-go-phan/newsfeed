@@ -11,8 +11,8 @@ type ArticlesSourceServices interface {
 }
 
 type CrawlerServices interface {
-	TestCrawler(crawler entities.Crawler) (*entities.ArticlesSource, []*entities.Article, error)
-	// first crawl (when admin click submit a new crawler - crawl and create a new articleSource)
+	TestRSSCrawler(crawler entities.Crawler) (*entities.ArticlesSource, []*entities.Article, error)
+	TestCustomCrawler(crawler entities.Crawler) (entities.ArticlesSource, []*entities.Article, error)
 	FirstCrawl(crawler entities.Crawler) (error)
 	ScheduledCrawl(crawlerID uint) (error)
 }

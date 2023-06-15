@@ -5,9 +5,14 @@ import { ThreeDots } from 'react-loader-spinner';
 import ArticlesSource from './articlesSource';
 import ArticleCard from '@/common/articleCard ';
 import Grid from '@mui/material/Grid';
+import { CRAWLER_FEED_TYPE } from '..';
+import { CRAWLER_CUSTOM_TYPE } from '../addCustomCrawler';
 
 type Props = {
   url: string;
+  testType: string;
+  crawler: Crawler | undefined;
+  handleSubmitArticleSource: (articlesSource: ArticlesSource) => void;
 };
 
 const ERROR_MESSAGE_WHEN_TEST_FAIL = 'Test fail';
@@ -39,12 +44,55 @@ const TestResult: React.FC<Props> = (props: Props) => {
     }
   };
 
+  const requestTestCustomCrawler = async (crawler: Crawler) => {
+    try {
+      const res = await axiosProtectedAPI.post('crawler/test-custom', {
+        source_link: crawler.source_link,
+        crawl_type: crawler.crawl_type,
+        article_div: crawler.article_div,
+        article_title: crawler.article_title,
+        article_description: crawler.article_description,
+        article_link: crawler.article_link,
+        article_published: crawler.article_published,
+        article_authors: crawler.article_authors,
+      });
+      setArticles(res.data.articles);
+      const articlesource: ArticlesSource = res.data.articles_source
+      setArticlesSource({...articlesource, feed_link: articlesource.link});
+      setIsloading(false);
+    } catch (error: any) {
+      toastifyError(ERROR_MESSAGE_WHEN_TEST_FAIL);
+      setIsloading(false);
+      setErrorMessage(error.data.message || ERROR_MESSAGE_WHEN_TEST_FAIL);
+    }
+  };
+
+  const handleSubmitArticleSource = (articlesSource: ArticlesSource) => {
+    props.handleSubmitArticleSource(articlesSource);
+  };
+
   useEffect(() => {
     if (props.url) {
+      setArticles(undefined);
+      setArticlesSource(undefined);
+      setErrorMessage('');
       setIsloading(true);
-      requestTestCrawlerRSS(props.url);
+      if (props.testType === CRAWLER_FEED_TYPE) {
+        requestTestCrawlerRSS(props.url);
+      }
     }
   }, [props.url]);
+
+  useEffect(() => {
+    if (props.crawler) {
+      setArticles(undefined);
+      setArticlesSource(undefined);
+      setErrorMessage('');
+      setIsloading(true);
+      requestTestCustomCrawler(props.crawler)
+    }
+  }, [props.crawler]);
+
   return (
     <div className="addCrawler__testResult">
       {isLoading ? (
@@ -73,12 +121,27 @@ const TestResult: React.FC<Props> = (props: Props) => {
                 : 'addCrawler__testResult--error d-block'
             }
           >
-            <p>
-              <span>Error: </span>
-              {errorMessage}
-            </p>
+            <div className="notFound">
+              <p>{errorMessage}</p>
+            </div>
           </div>
-          {articlesSource ? <ArticlesSource url={props.url} articlesSource={articlesSource} /> : <div className='notFound'><p>Not found article source</p></div>}
+          <div className="addCrawler__testResult--articles_source">
+            <div className="title">
+              <h3>Articles source</h3>
+            </div>
+            {articlesSource ? (
+              <ArticlesSource
+                url={props.url}
+                articlesSource={articlesSource}
+                handleSubmit={handleSubmitArticleSource}
+              />
+            ) : (
+              <div className="notFound">
+                <p>not found article source</p>
+              </div>
+            )}
+          </div>
+
           <div className="addCrawler__testResult--articles">
             <div className="title">
               <h3>Articles</h3>
@@ -88,6 +151,7 @@ const TestResult: React.FC<Props> = (props: Props) => {
                 {articles.map((article) => (
                   <Grid item key={article.title} xs={12} md={4}>
                     <ArticleCard
+                      key={`${article.title}-card`}
                       articleSourceTitle={articlesSource?.title}
                       articleSourceLink={articlesSource?.link}
                       article={article}
@@ -97,8 +161,8 @@ const TestResult: React.FC<Props> = (props: Props) => {
                 ))}
               </Grid>
             ) : (
-              <div className='notFound'>
-                <p>Not found article</p>
+              <div className="notFound">
+                <p>not found article</p>
               </div>
             )}
           </div>

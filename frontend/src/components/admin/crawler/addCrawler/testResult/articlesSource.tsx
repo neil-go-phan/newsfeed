@@ -1,43 +1,90 @@
 import { toDataUrl } from '@/helpers/imgUrlToData';
-import axios from 'axios';
 import Image from 'next/image';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { Button, Form, InputGroup } from 'react-bootstrap';
+import { useForm, SubmitHandler } from 'react-hook-form';
+import * as yup from 'yup';
+import { yupResolver } from '@hookform/resolvers/yup';
 
 type Props = {
   articlesSource: ArticlesSource;
   url: string;
+  handleSubmit: (articlesSource: ArticlesSource) => void;
 };
 
-type Field = {
-  value: string;
-  disable: boolean;
-};
-
-type ImageField = {
-  value: string | ArrayBuffer | null;
-};
-
-const IMAGE_SIZE = 200;
+const IMAGE_SIZE_PIXEL = 200;
+const IMAGE_FILE_SIZE_BYTES = 1000000; // 1mb
+const DEFAULT_IMG_SIZE = 0;
 
 const ArticlesSource: React.FC<Props> = (props: Props) => {
   const [image, setImage] = useState<string>();
-  const [title, setTitle] = useState<Field>({
-    value: props.articlesSource.title,
-    disable: true,
+  const [isTitleBtnDisable, setIsTitleBtnDisable] = useState<boolean>(true);
+  const [isDescriptionBtnDisable, setIsDescriptionBtnDisable] =
+    useState<boolean>(true);
+  const [isFeedLinkBtnDisable, setIsFeedLinkBtnDisable] =
+    useState<boolean>(true);
+  const [isLinkBtnDisable, setIsLinkBtnDisable] = useState<boolean>(true);
+  const schema = yup.object().shape({
+    imgSize: yup
+      .number()
+      .required('logo image must not be empty')
+      .max(IMAGE_FILE_SIZE_BYTES, 'image too big')
+      .min(DEFAULT_IMG_SIZE + 1, 'please submit logo'),
+    title: yup.string().required('title must not be empty'),
+    description: yup.string().required('description must not be empty'),
+    feed_link: yup.string().required('feed link must not be empty').url(),
+    link: yup.string().required('link to website must not be empty').url(),
   });
-  const [description, setDescription] = useState<Field>({
-    value: props.articlesSource.description,
-    disable: true,
+
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    formState: { errors },
+  } = useForm<ArticlesSourceYupValidateProp>({
+    resolver: yupResolver(schema),
+    defaultValues: useMemo(() => {
+      return {
+        title: props.articlesSource.title,
+        description: props.articlesSource.description,
+        feed_link: props.articlesSource.feed_link,
+        link: props.articlesSource.link,
+        imgSize: DEFAULT_IMG_SIZE,
+      };
+    }, [props]),
   });
-  const [feedLink, setFeedLink] = useState<Field>({
-    value: props.articlesSource.feed_link,
-    disable: true,
-  });
-  const [link, setLink] = useState<Field>({
-    value: props.articlesSource.link,
-    disable: true,
-  });
+
+  const onSubmit: SubmitHandler<ArticlesSourceYupValidateProp> = async (
+    data
+  ) => {
+    let base64Img: string = '';
+    if (image) {
+      base64Img = image;
+    }
+    const articlesSource: ArticlesSource = {
+      title: data.title,
+      description: data.description,
+      feed_link: data.feed_link,
+      link: data.link,
+      image: base64Img,
+    };
+    props.handleSubmit(articlesSource);
+  };
+
+  const photoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    e.preventDefault();
+    const reader = new FileReader();
+    if (e.target.files) {
+      const file = e.target.files[0];
+      if (reader !== undefined && file !== undefined) {
+        reader.onloadend = () => {
+          setImage(reader.result?.toString());
+          setValue('imgSize', file.size);
+        };
+        reader.readAsDataURL(file);
+      }
+    }
+  };
 
   useEffect(() => {
     if (props.articlesSource) {
@@ -46,6 +93,8 @@ const ArticlesSource: React.FC<Props> = (props: Props) => {
         (base64: string | ArrayBuffer | null) => {
           if (base64) {
             const str = base64.toString();
+            const buffer = Buffer.from(str.substring(str.indexOf(',') + 1));
+            setValue('imgSize', buffer.length);
             setImage(str);
           }
         }
@@ -55,136 +104,152 @@ const ArticlesSource: React.FC<Props> = (props: Props) => {
 
   if (props.articlesSource) {
     return (
-      <div className="addCrawler__testResult--articles_source">
-        <div className="title">
-          <h3>Articles source</h3>
-        </div>
-        <div className="info">
+      <div className="info">
+        <form onSubmit={handleSubmit(onSubmit)}>
           <div className="field">
             <label> Title </label>
             <InputGroup className="mb-3">
               <Form.Control
-                placeholder="Article source title"
+                {...register('title')}
+                placeholder="Please type article source title"
                 type="text"
                 required
-                className={title.disable ? 'bg-secondary' : 'bg-light'}
-                disabled={title.disable}
-                value={title.value}
-                onChange={(event) =>
-                  setTitle({ ...title, value: event.target.value })
-                }
+                className={isTitleBtnDisable ? 'bgDisable' : 'bg-light'}
+                disabled={isTitleBtnDisable}
               />
               <Button
                 className="px-4"
-                variant={title.disable ? 'primary' : 'success'}
+                variant={isTitleBtnDisable ? 'primary' : 'success'}
                 onClick={() => {
-                  setTitle({ ...title, disable: !title.disable });
+                  setIsTitleBtnDisable(!isTitleBtnDisable);
                 }}
               >
-                {title.disable ? 'Edit' : 'OK'}
+                {isTitleBtnDisable ? 'Edit' : 'OK'}
               </Button>
             </InputGroup>
+
+            {errors.title && (
+              <p className="errorMessage">{errors.title.message}</p>
+            )}
           </div>
           <div className="field">
             <label> Description </label>
             <InputGroup className="mb-3">
               <Form.Control
-                placeholder="Article source description"
+                {...register('description')}
+                placeholder="Please type article source description"
                 type="text"
                 required
-                className={description.disable ? 'bg-secondary' : 'bg-light'}
-                disabled={description.disable}
-                value={description.value}
-                onChange={(event) =>
-                  setDescription({ ...description, value: event.target.value })
-                }
+                className={isDescriptionBtnDisable ? 'bgDisable' : 'bg-light'}
+                disabled={isDescriptionBtnDisable}
               />
               <Button
                 className="px-4"
-                variant={description.disable ? 'primary' : 'success'}
+                variant={isDescriptionBtnDisable ? 'primary' : 'success'}
                 onClick={() => {
-                  setDescription({
-                    ...description,
-                    disable: !description.disable,
-                  });
+                  setIsDescriptionBtnDisable(!isDescriptionBtnDisable);
                 }}
               >
-                {description.disable ? 'Edit' : 'OK'}
+                {isDescriptionBtnDisable ? 'Edit' : 'OK'}
               </Button>
             </InputGroup>
+
+            {errors.description && (
+              <p className="errorMessage">{errors.description.message}</p>
+            )}
           </div>
           <div className="field">
             <label> Feed link </label>
             <InputGroup className="mb-3">
               <Form.Control
-                placeholder="Article source feed link"
+                {...register('feed_link')}
+                placeholder="Please type article source feed link"
                 type="text"
                 required
-                className={feedLink.disable ? 'bg-secondary' : 'bg-light'}
-                disabled={feedLink.disable}
-                value={feedLink.value}
-                onChange={(event) =>
-                  setFeedLink({ ...feedLink, value: event.target.value })
-                }
+                className={isFeedLinkBtnDisable ? 'bgDisable' : 'bg-light'}
+                disabled={isFeedLinkBtnDisable}
               />
               <Button
                 className="px-4"
-                variant={feedLink.disable ? 'primary' : 'success'}
+                variant={isFeedLinkBtnDisable ? 'primary' : 'success'}
                 onClick={() => {
-                  setFeedLink({ ...feedLink, disable: !feedLink.disable });
+                  setIsFeedLinkBtnDisable(!isFeedLinkBtnDisable);
                 }}
               >
-                {feedLink.disable ? 'Edit' : 'OK'}
+                {isFeedLinkBtnDisable ? 'Edit' : 'OK'}
               </Button>
             </InputGroup>
+
+            {errors.feed_link && (
+              <p className="errorMessage">{errors.feed_link.message}</p>
+            )}
           </div>
           <div className="field">
             <label> Source link </label>
             <InputGroup className="mb-3">
               <Form.Control
-                placeholder="Article source link"
+                {...register('link')}
+                placeholder="Please type article source link"
                 type="text"
                 required
-                className={link.disable ? 'bg-secondary' : 'bg-light'}
-                disabled={link.disable}
-                value={link.value}
-                onChange={(event) =>
-                  setLink({ ...link, value: event.target.value })
-                }
+                className={isLinkBtnDisable ? 'bgDisable' : 'bg-light'}
+                disabled={isLinkBtnDisable}
               />
               <Button
                 className="px-4"
-                variant={link.disable ? 'primary' : 'success'}
+                variant={isLinkBtnDisable ? 'primary' : 'success'}
                 onClick={() => {
-                  setLink({ ...link, disable: !link.disable });
+                  setIsLinkBtnDisable(!isLinkBtnDisable);
                 }}
               >
-                {link.disable ? 'Edit' : 'OK'}
+                {isLinkBtnDisable ? 'Edit' : 'OK'}
               </Button>
             </InputGroup>
+
+            {errors.link && (
+              <p className="errorMessage">{errors.link.message}</p>
+            )}
           </div>
           <div className="field">
             <label> Image </label>
-            <div className="sourceLogo">
-              {image ? (
-                <Image
-                  alt="article source logo"
+            <div className="sourceLogo d-flex">
+              <div className="col-6">
+                {image ? (
+                  <Image
+                    alt="article source logo"
+                    src={image}
+                    width={IMAGE_SIZE_PIXEL}
+                    height="0"
+                    style={{ height: 'auto' }}
+                  />
+                ) : (
+                  <div>Not found article source logo, please add one</div>
+                )}
+              </div>
+              <div className="col-6">
+                <input
+                  type="file"
+                  name="source-logo"
+                  id="file"
+                  accept=".jpef, .png, .jpg"
+                  onChange={(event) => photoUpload(event)}
                   src={image}
-                  width={IMAGE_SIZE}
-                  height="0"
-                  style={{ height: 'auto' }}
                 />
-              ) : (
-                <div>Not found article source logo, please add one</div>
-              )}
-              <input type="file" name="file" />
+              </div>
             </div>
+            {errors.imgSize && (
+              <p className="errorMessage">{errors.imgSize.message}</p>
+            )}
           </div>
-        </div>
+
+          <Button className="px-4 m-3" variant="primary" type="submit">
+            Create crawler
+          </Button>
+        </form>
       </div>
     );
   }
-  return <div className="adminCrawler__testResult--articles_source"></div>;
+  return <div className="info"></div>;
 };
 
 export default ArticlesSource;
