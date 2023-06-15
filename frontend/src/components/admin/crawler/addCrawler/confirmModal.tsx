@@ -157,10 +157,6 @@ const ConfirmModal: React.FC<Props> = (props: Props) => {
               <td>{props.crawler?.article_link}</td>
             </tr>
             <tr>
-              <td>article_published</td>
-              <td>{props.crawler?.article_published}</td>
-            </tr>
-            <tr>
               <td>article_authors</td>
               <td>{props.crawler?.article_authors}</td>
             </tr>

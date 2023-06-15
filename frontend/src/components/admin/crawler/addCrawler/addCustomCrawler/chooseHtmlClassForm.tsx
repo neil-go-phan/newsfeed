@@ -24,13 +24,11 @@ const ChooseHtmlClassForm: React.FC<Props> = (props: Props) =>{
     trigger: false,
     message: '',
   });
-  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [divClass, setDivClass] = useState<string>('');
   const [titleClass, setTitleClass] = useState<string>('');
   const [descriptionClass, setDescriptionClass] = useState<string>('');
   const [linkClass, setLinkClass] = useState<string>('');
   const [authorsClass, setAuthorsClass] = useState<string>('');
-  const [publishedCLass, setPublishedClass] = useState<string>('');
   const router = useRouter();
   const { url } = router.query;
 
@@ -60,9 +58,6 @@ const ChooseHtmlClassForm: React.FC<Props> = (props: Props) =>{
       case 'authors':
         setAuthorsClass(classname);
         break;
-      case 'published':
-        setPublishedClass(classname);
-        break;
       default:
         break;
     }
@@ -77,7 +72,6 @@ const ChooseHtmlClassForm: React.FC<Props> = (props: Props) =>{
   const handleTest = async (
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>
   ) => {
-    setIsLoading(true);
     e.preventDefault();
     // validate
     try {
@@ -96,7 +90,7 @@ const ChooseHtmlClassForm: React.FC<Props> = (props: Props) =>{
         article_title: titleClass,
         article_link: linkClass,
         article_description: descriptionClass,
-        article_published: publishedCLass,
+        article_published: '',
         article_authors: authorsClass,
         feed_link: '',
         schedule: '',
@@ -133,7 +127,7 @@ const ChooseHtmlClassForm: React.FC<Props> = (props: Props) =>{
             <div className="line" />
             <h2 className="title">Input article class</h2>
             <div className="line" />
-            <label> Article div </label>
+            <label> Article div <span className='colorRed'>*</span> </label>
             <InputGroup className="my-3">
               <InputGroup.Text>
                 <FontAwesomeIcon icon={faTag} fixedWidth />
@@ -155,7 +149,7 @@ const ChooseHtmlClassForm: React.FC<Props> = (props: Props) =>{
               </Button>
             </InputGroup>
 
-            <label> Article title </label>
+            <label> Article title <span className='colorRed'>*</span></label>
             <InputGroup className="my-3">
               <InputGroup.Text>
                 <FontAwesomeIcon icon={faHeading} fixedWidth />
@@ -199,7 +193,7 @@ const ChooseHtmlClassForm: React.FC<Props> = (props: Props) =>{
               </Button>
             </InputGroup>
 
-            <label> Article link </label>
+            <label> Article link <span className='colorRed'>*</span></label>
             <InputGroup className="my-3">
               <InputGroup.Text>
                 <FontAwesomeIcon icon={faLink} fixedWidth />
@@ -216,28 +210,6 @@ const ChooseHtmlClassForm: React.FC<Props> = (props: Props) =>{
                 className="px-4"
                 variant="primary"
                 onClick={() => handleChoose('link')}
-              >
-                Choose
-              </Button>
-            </InputGroup>
-
-            <label> Article published date </label>
-            <InputGroup className="my-3">
-              <InputGroup.Text>
-                <FontAwesomeIcon icon={faUpload} fixedWidth />
-              </InputGroup.Text>
-              <Form.Control
-                className="bg-white"
-                placeholder="Type of choose article published classname"
-                type="text"
-                required
-                value={publishedCLass}
-                onChange={(event) => setPublishedClass(event.target.value)}
-              />
-              <Button
-                className="px-4"
-                variant="primary"
-                onClick={() => handleChoose('published')}
               >
                 Choose
               </Button>
