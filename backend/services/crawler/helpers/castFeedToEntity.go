@@ -50,3 +50,11 @@ func createAuthorsNameString(authors []*gofeed.Person) (string) {
 	}
 	return authorsNameString
 }
+
+func CastEntityArticleToPbArticles(items []*gofeed.Item) []*entities.Article {
+	articles := make([]*entities.Article, 0)
+	for _, item := range items {
+		articles = append(articles, castFeedItemToArticle(item))
+	}
+	return articles
+}

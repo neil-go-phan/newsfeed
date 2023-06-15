@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { _ROUTES } from '@/helpers/constants';
 import AddCrawler from './crawler/addCrawler';
 import CrawlerComponent from './crawler';
+import AddCustomCrawler from './crawler/addCrawler/addCustomCrawler';
 
 function AdminComponent() {
   const router = useRouter();
@@ -18,6 +19,8 @@ function AdminComponent() {
         return <CrawlerComponent />;
       case _ROUTES.ADD_CRAWLER:
         return <AddCrawler />;
+      case _ROUTES.ADD_CUSTOM_CRAWLER: 
+        return <AddCustomCrawler/>
       default:
         return <CrawlerComponent />
     }

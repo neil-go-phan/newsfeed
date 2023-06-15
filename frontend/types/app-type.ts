@@ -37,6 +37,14 @@ type ArticlesSource = {
   image: string;
 }
 
+type ArticlesSourceYupValidateProp = {
+  title: string;
+  description: string;
+  link: string;
+  feed_link: string;
+  imgSize: number;
+}
+
 type Crawler = {
   source_link: string;
   feed_link: string;
@@ -48,4 +56,9 @@ type Crawler = {
   article_published: string;
   article_authors: string;
   schedule: string;
+}
+
+type CreateCrawlerPayload = {
+  articles_source: ArticlesSource;
+  crawler: Crawler;
 }

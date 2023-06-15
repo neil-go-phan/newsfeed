@@ -5,7 +5,7 @@ import (
 	pb "server/proto"
 )
 
-func CastEntityCrawlerToPbCrawler(entityCrawler *entities.Crawler ) (*pb.Crawler) {
+func CastEntityCrawlerToPbCrawler(entityCrawler entities.Crawler ) (*pb.Crawler) {
 	return &pb.Crawler{
 		SourceLink: entityCrawler.SourceLink,
 		FeedLink: entityCrawler.FeedLink,

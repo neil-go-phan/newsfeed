@@ -1,6 +1,7 @@
 package services
 
 import (
+	"net/url"
 	"server/entities"
 )
 
@@ -27,11 +28,16 @@ type ArticleServices interface {
 }
 
 type ArticlesSourceServices interface {
-	Create(articlesSource *entities.ArticlesSource) error
+	CreateIfNotExist(articlesSource entities.ArticlesSource) error
 }
 
 type CrawlerServices interface {
-	TestCrawler(crawler *entities.Crawler) (*ArticlesSourceResponse, []*ArticleResponse, error)
+	TestRSSCrawler(crawler entities.Crawler) (*ArticlesSourceResponse, []*ArticleResponse, error)
+	TestCustomCrawler(crawler entities.Crawler) (*ArticlesSourceResponse, []*ArticleResponse, error)
+	
+	CreateCrawlerWithCorrespondingArticlesSource(payload CreateCrawlerPayload) error
+	GetHtmlPage(url *url.URL) error
+
 	FirstCrawl(crawler *entities.Crawler) (error)
 	ScheduledCrawl(crawlerID uint) (error)
 }

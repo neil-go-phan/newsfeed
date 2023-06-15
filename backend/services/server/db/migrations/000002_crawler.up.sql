@@ -3,7 +3,7 @@ CREATE TABLE crawlers (
   created_at timestamp with time zone,
   updated_at timestamp with time zone,
   deleted_at timestamp with time zone,
-  source_link text,
+  source_link text UNIQUE,
   feed_link text UNIQUE,
   crawl_type text,
   article_div text,
@@ -12,7 +12,7 @@ CREATE TABLE crawlers (
   article_link text,
   article_published text,
   article_authors text,
-  schedule text
+  schedule text DEFAULT '@daily' NOT NULL
 );
 
 CREATE TABLE articles_sources (
@@ -20,7 +20,7 @@ CREATE TABLE articles_sources (
   created_at timestamp with time zone,
   updated_at timestamp with time zone,
   deleted_at timestamp with time zone,
-  link text,
+  link text UNIQUE,
   feed_link text UNIQUE,
   title text,
   description text,
@@ -43,7 +43,7 @@ CREATE TABLE articles (
 ALTER TABLE
   crawlers
 ADD
-  CONSTRAINT fk_crawlers_articlesource_feed_link FOREIGN KEY (feed_link) REFERENCES articles_sources(feed_link);
+  CONSTRAINT fk_crawlers_articlesource_source_link FOREIGN KEY (source_link) REFERENCES articles_sources(link);
 
 ALTER TABLE
   articles

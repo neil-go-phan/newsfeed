@@ -1,16 +1,15 @@
 package repository
 
 import (
+	"fmt"
 	"server/entities"
 
 	"gorm.io/gorm"
 )
 
-
-
 type CrawlerRepository interface {
 	Get(id uint) (*entities.Crawler, error)
-	// List() (*[]entities.Article, error) 
+	CreateIfNotExist(crawler entities.Crawler) (error) 
 }	
 
 type CrawlerRepo struct {
@@ -31,4 +30,17 @@ func (repo *CrawlerRepo) Get(id uint) (*entities.Crawler, error) {
 		return nil, err
 	}
 	return crawler, nil
+}
+
+func (repo *CrawlerRepo) CreateIfNotExist(crawler entities.Crawler) (error) {
+	crawler.Schedule = "@daily"
+	result := repo.DB.Where(entities.Crawler{SourceLink: crawler.SourceLink}).FirstOrCreate(&crawler)
+	if result.Error != nil {
+		return result.Error
+	}
+	if result.RowsAffected == 0 {
+		return fmt.Errorf("crawler already exist")
+	}
+
+	return nil
 }
