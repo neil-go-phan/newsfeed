@@ -1,9 +1,10 @@
 import type { ReactElement } from 'react';
 import { NextPageWithLayout } from '../_app';
-import FeedsLayout from '@/layouts/feedsLayout';
+import FeedsLayout from '@/layouts/feedLayout';
+import FeedsComponent from '@/components/feeds';
 
 const Feeds: NextPageWithLayout = () => {
-  return <p>Feeds</p>
+  return <FeedsComponent />
 };
 
 Feeds.getLayout = function getLayout(page: ReactElement) {

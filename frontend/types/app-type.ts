@@ -1,3 +1,8 @@
+type WindowDimentions = {
+  width: number | undefined;
+  height: number | undefined;
+};
+
 type ChangePasswordFormProperty = {
   password: string;
   password_confirmation?: string;
