@@ -20,14 +20,18 @@ type CrawlerService struct {
 	repo                   repository.CrawlerRepository
 	articleService         services.ArticleServices
 	articlesSourceServices services.ArticlesSourceServices
+	cronjobService         services.CronjobServices
 	grpcClient             pb.CrawlerServiceClient
 }
 
-func NewCrawlerService(repo repository.CrawlerRepository, articleService services.ArticleServices, articlesSourceServices services.ArticlesSourceServices, grpcClient pb.CrawlerServiceClient) *CrawlerService {
+const DEFAULT_SCHEDULE =  "@every 0h1m"
+
+func NewCrawlerService(repo repository.CrawlerRepository, articleService services.ArticleServices, articlesSourceServices services.ArticlesSourceServices, cronjobService services.CronjobServices, grpcClient pb.CrawlerServiceClient) *CrawlerService {
 	crawlerService := &CrawlerService{
 		repo:                   repo,
 		articleService:         articleService,
 		articlesSourceServices: articlesSourceServices,
+		cronjobService:         cronjobService,
 		grpcClient:             grpcClient,
 	}
 	return crawlerService
@@ -48,7 +52,7 @@ func (s *CrawlerService) TestRSSCrawler(crawler entities.Crawler) (*services.Art
 	return articlesSource, articles, nil
 }
 
-func (s *CrawlerService) TestCustomCrawler(crawler entities.Crawler)  (*services.ArticlesSourceResponse, []*services.ArticleResponse, error) {
+func (s *CrawlerService) TestCustomCrawler(crawler entities.Crawler) (*services.ArticlesSourceResponse, []*services.ArticleResponse, error) {
 	err := validateCrawler(crawler)
 	if err != nil {
 		return nil, nil, err
@@ -62,6 +66,7 @@ func (s *CrawlerService) TestCustomCrawler(crawler entities.Crawler)  (*services
 	articlesSource, articles := helpers.CastTestResult(result)
 	return articlesSource, articles, nil
 }
+
 func (s *CrawlerService) CreateCrawlerWithCorrespondingArticlesSource(payload services.CreateCrawlerPayload) error {
 	articlesSource, crawler := exportPayload(payload)
 	err := validateCreateCrawlerPayload(articlesSource, crawler)
@@ -69,15 +74,21 @@ func (s *CrawlerService) CreateCrawlerWithCorrespondingArticlesSource(payload se
 		return fmt.Errorf("validate error: %s", err.Error())
 	}
 
-	err = s.articlesSourceServices.CreateIfNotExist(articlesSource)
+	articlesSource, err = s.articlesSourceServices.CreateIfNotExist(articlesSource)
 	if err != nil {
 		return err
 	}
 
-	err = s.repo.CreateIfNotExist(crawler)
+	crawler.Schedule = DEFAULT_SCHEDULE
+	crawler.ArticlesSourceID = articlesSource.ID
+
+	crawler, err = s.repo.CreateIfNotExist(crawler)
 	if err != nil {
 		return err
 	}
+
+	s.cronjobService.CreateCrawlerCronjob(crawler)
+
 	return nil
 }
 
@@ -108,10 +119,13 @@ func (s *CrawlerService) GetHtmlPage(url *url.URL) error {
 	return nil
 }
 
-func (s *CrawlerService) FirstCrawl(crawler *entities.Crawler) error {
-	return nil
-}
-
-func (s *CrawlerService) ScheduledCrawl(crawlerID uint) error {
+func (s *CrawlerService) CreateCrawlerCronjobFromDB() error {
+	crawlers, err := s.repo.List()
+	if err != nil {
+		return err
+	}
+	for _, crawler := range crawlers {
+		s.cronjobService.CreateCrawlerCronjob(crawler)
+	}
 	return nil
 }

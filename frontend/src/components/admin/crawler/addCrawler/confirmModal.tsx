@@ -12,7 +12,7 @@ type Props = {
   handleIsConfirmModalClose: () => void;
 };
 
-const ALERT_SUCCESS_MESSAGE = 'Create crawler success'
+const ALERT_SUCCESS_MESSAGE = 'Create crawler success';
 const IMAGE_SIZE_PIXEL = 50;
 const ERROR_MESSAGE_WHEN_CREATE_FAIL = 'error occrus when create crawler';
 
@@ -29,7 +29,7 @@ const ConfirmModal: React.FC<Props> = (props: Props) => {
       if (res?.data.success) {
         setErrorMessage('');
         props.handleIsConfirmModalClose();
-        alertSuccess(ALERT_SUCCESS_MESSAGE)
+        alertSuccess(ALERT_SUCCESS_MESSAGE);
       }
       if (!res?.data.success) {
         throw res;
@@ -114,9 +114,8 @@ const ConfirmModal: React.FC<Props> = (props: Props) => {
             on={['hover', 'focus']}
           >
             <span>
-              {' '}
               If crawl type is feed then there is no need for article html
-              classes{' '}
+              classes
             </span>
           </Popup>
         </div>

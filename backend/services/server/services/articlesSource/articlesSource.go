@@ -16,6 +16,6 @@ func NewArticlesSourceService(repo repository.ArticlesSourcesRepository) *Articl
 	return articlesSourceService
 }
 
-func (s *ArticlesSourceService) CreateIfNotExist(articlesSource entities.ArticlesSource) (error) {
+func (s *ArticlesSourceService) CreateIfNotExist(articlesSource entities.ArticlesSource) (entities.ArticlesSource, error) {
 	return s.repo.CreateIfNotExist(articlesSource) 
 }

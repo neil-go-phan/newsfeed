@@ -6,8 +6,8 @@ import (
 	"github.com/mmcdole/gofeed"
 )
 
-func CastFeedToArticlesSource(feed *gofeed.Feed) *entities.ArticlesSource {
-	articleSource := &entities.ArticlesSource{
+func CastFeedToArticlesSource(feed *gofeed.Feed) entities.ArticlesSource {
+	articleSource := entities.ArticlesSource{
 		Title: feed.Title,
 		Description: feed.Description,
 		Link: feed.Link,
@@ -19,16 +19,16 @@ func CastFeedToArticlesSource(feed *gofeed.Feed) *entities.ArticlesSource {
 	return articleSource
 }
 
-func CastFeedItemsToArticles(items []*gofeed.Item) []*entities.Article {
-	articles := make([]*entities.Article, 0)
+func CastFeedItemsToArticles(items []*gofeed.Item) []entities.Article {
+	articles := make([]entities.Article, 0)
 	for _, item := range items {
 		articles = append(articles, castFeedItemToArticle(item))
 	}
 	return articles
 }
 
-func castFeedItemToArticle(item *gofeed.Item) (*entities.Article){
-	article := &entities.Article{
+func castFeedItemToArticle(item *gofeed.Item) (entities.Article){
+	article := entities.Article{
 		Title: item.Title,
 		Description: item.Description,
 		Link: item.Link,
@@ -51,10 +51,10 @@ func createAuthorsNameString(authors []*gofeed.Person) (string) {
 	return authorsNameString
 }
 
-func CastEntityArticleToPbArticles(items []*gofeed.Item) []*entities.Article {
-	articles := make([]*entities.Article, 0)
-	for _, item := range items {
-		articles = append(articles, castFeedItemToArticle(item))
-	}
-	return articles
-}
+// func CastEntityArticleToPbArticles(items []*gofeed.Item) []*entities.Article {
+// 	articles := make([]*entities.Article, 0)
+// 	for _, item := range items {
+// 		articles = append(articles, castFeedItemToArticle(item))
+// 	}
+// 	return articles
+// }

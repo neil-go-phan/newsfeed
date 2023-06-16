@@ -7,8 +7,8 @@ import (
 	"github.com/PuerkitoBio/goquery"
 )
 
-func CrawlWithGoQuery(crawler entities.Crawler) ([]*entities.Article, error) {
-	var articles []*entities.Article
+func CrawlWithGoQuery(crawler entities.Crawler) ([]entities.Article, error) {
+	var articles []entities.Article
 
 	doc, err := GetDocWithGoquery(crawler.SourceLink)
 	if err != nil {
@@ -21,8 +21,8 @@ func CrawlWithGoQuery(crawler entities.Crawler) ([]*entities.Article, error) {
 	return articles, nil
 }
 
-func goqueryCrawl(doc *goquery.Document, crawler entities.Crawler) ([]*entities.Article) {
-	var articles []*entities.Article
+func goqueryCrawl(doc *goquery.Document, crawler entities.Crawler) ([]entities.Article) {
+	var articles []entities.Article
 	doc.Find(helpers.FormatClassName(crawler.ArticleDiv)).Each(func(i int, s *goquery.Selection) {
 		articles = append(articles, goqueryCrawlOneArticle(crawler, s)) 
 	})
@@ -30,13 +30,13 @@ func goqueryCrawl(doc *goquery.Document, crawler entities.Crawler) ([]*entities.
 	return articles
 }
 
-func goqueryCrawlOneArticle(crawler entities.Crawler, s *goquery.Selection) *entities.Article {
+func goqueryCrawlOneArticle(crawler entities.Crawler, s *goquery.Selection) entities.Article {
 	var article entities.Article
 	article.Title = s.Find(helpers.FormatClassName(crawler.ArticleTitle)).Text()
 	article.Description = s.Find(helpers.FormatClassName(crawler.ArticleDescription)).Text()
 	article.Link = goqueryCrawlLink(crawler, s)
 	article.Authors = s.Find(helpers.FormatClassName(crawler.ArticleAuthors)).Text()
-	return &article
+	return article
 }
 
 func goqueryCrawlLink(crawler entities.Crawler, s *goquery.Selection) string {

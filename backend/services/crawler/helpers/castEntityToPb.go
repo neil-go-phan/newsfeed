@@ -17,7 +17,7 @@ func CastEntityArticleSourceToPbArticlesSource(entity entities.ArticlesSource) (
 	}
 }
 
-func CastArrayEntityArticleToPbType(entityArticles []*entities.Article) ([]*pb.Article) {
+func CastArrayEntityArticleToPbType(entityArticles []entities.Article) ([]*pb.Article) {
 	pbArticles := make([]*pb.Article, 0)
 
 	articlesByte, err := json.Marshal(entityArticles)

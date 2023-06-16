@@ -7,6 +7,7 @@
 package infras
 
 import (
+	"github.com/robfig/cron/v3"
 	"gorm.io/gorm"
 	"server/handlers"
 	"server/proto"
@@ -15,6 +16,7 @@ import (
 	"server/services/article"
 	"server/services/articlesSource"
 	"server/services/crawler"
+	"server/services/cronjob"
 	"server/services/role"
 	"server/services/user"
 )
@@ -31,13 +33,15 @@ func InitizeUser(db *gorm.DB) *routes.UserRoutes {
 	return userRoutes
 }
 
-func InitizeCrawler(db *gorm.DB, grpcClient serverproto.CrawlerServiceClient) *routes.CrawlerRoutes {
+func InitizeCrawler(db *gorm.DB, grpcClient serverproto.CrawlerServiceClient, cronjob *cron.Cron, jobIDMap map[string]cron.EntryID) *routes.CrawlerRoutes {
 	crawlerRepo := repository.NewCrawlerRepo(db)
 	articleRepo := repository.NewArticleRepo(db)
 	articleService := articleservices.NewArticleService(articleRepo)
 	articlesSourcesRepo := repository.NewArticlesSourcesRepo(db)
 	articlesSourceService := articlessourceservices.NewArticlesSourceService(articlesSourcesRepo)
-	crawlerService := crawlerservices.NewCrawlerService(crawlerRepo, articleService, articlesSourceService, grpcClient)
+	cronjobRepo := repository.NewCronjobRepo(db)
+	cronjobService := cronjobservices.NewCronjobService(cronjobRepo, cronjob, grpcClient, jobIDMap)
+	crawlerService := crawlerservices.NewCrawlerService(crawlerRepo, articleService, articlesSourceService, cronjobService, grpcClient)
 	crawlerHandler := handlers.NewCrawlerHandler(crawlerService)
 	crawlerRoutes := routes.NewCrawlerRoutes(crawlerHandler)
 	return crawlerRoutes

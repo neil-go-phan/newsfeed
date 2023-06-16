@@ -33,6 +33,24 @@ func TestGetRSSFeed(crawler entities.Crawler) (*gofeed.Feed, error) {
 	return feed, nil
 }
 
+func GetRSSFeed(feedLink string)  (*gofeed.Feed, error) {
+	feed, err := ParseRSS(feedLink)
+	if err == nil {
+		return feed, nil
+	}
+
+	link, ok := GetRSSLink(feedLink)
+	if !ok {
+		return nil, fmt.Errorf("not found rss link")
+	}
+	log.Printf("export rss link success: %s", link)
+	feed, err = ParseRSS(link)
+	if err != nil {
+		return nil, err
+	}
+	return feed, nil
+}
+
 func ParseRSS(url string) (*gofeed.Feed, error) {
 	fp := gofeed.NewParser()
 	feed, err := fp.ParseURL(url)

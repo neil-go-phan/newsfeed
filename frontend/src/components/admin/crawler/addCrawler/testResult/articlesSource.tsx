@@ -13,7 +13,8 @@ type Props = {
 };
 
 const IMAGE_SIZE_PIXEL = 200;
-const IMAGE_FILE_SIZE_BYTES = 1000000; // 1mb
+// 1mb
+const IMAGE_FILE_SIZE_BYTES = 1000000; 
 const DEFAULT_IMG_SIZE = 0;
 
 const ArticlesSource: React.FC<Props> = (props: Props) => {

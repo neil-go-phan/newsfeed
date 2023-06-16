@@ -2,12 +2,13 @@ package repository
 
 import (
 	"crawler/entities"
+	"fmt"
 
 	"gorm.io/gorm"
 )
 
 type ArticleRepository interface {
-	CreateIfNotExist(article *entities.Article) (error) 
+	CreateIfNotExist(article entities.Article) (error) 
 }	
 
 type ArticleRepo struct {
@@ -20,10 +21,13 @@ func NewArticleRepo(db *gorm.DB) *ArticleRepo {
 	}
 }
 
-func (repo *ArticleRepo) CreateIfNotExist(article *entities.Article) (error) {
-	err := repo.DB.FirstOrCreate(article, entities.Article{Title: article.Title, Link: article.Link}).Error
-	if err != nil {
-		return err
+func (repo *ArticleRepo) CreateIfNotExist(article entities.Article) (error) {
+	result := repo.DB.FirstOrCreate(&article, entities.Article{Title: article.Title, Link: article.Link})
+	if result.Error != nil {
+		return result.Error
+	}
+	if result.RowsAffected == 0 {
+		return fmt.Errorf("article already exist")
 	}
 	return nil
 }

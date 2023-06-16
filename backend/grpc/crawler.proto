@@ -1,11 +1,10 @@
 syntax = "proto3";
 option go_package="github.com/neil-go-phan/newsfeed/backend/grpc";
 
-package crawlerproto;
-
 service CrawlerService {
   rpc TestRSSCrawler(Crawler) returns (TestResult) {}
   rpc TestCustomCrawler(Crawler) returns (TestResult) {}
+  rpc Crawl(Crawler) returns (NewArticlesCount) {}
 }
 
 message Crawler {
@@ -19,6 +18,7 @@ message Crawler {
   string article_published = 8;
   string article_authors = 9;
   string schedule = 10;
+  int32 articles_source_id = 11;
 }
 
 message TestResult {
@@ -40,4 +40,8 @@ message ArticlesSource {
   string link = 3;
   string feed_link = 4;
   string image = 5;
+}
+
+message NewArticlesCount {
+  int32 count = 1;
 }

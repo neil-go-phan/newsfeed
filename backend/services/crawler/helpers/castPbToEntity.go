@@ -17,10 +17,11 @@ func CastPbCrawlerToEntityCrawler(pbCrawler *pb.Crawler) (entities.Crawler) {
 		ArticlePublished: pbCrawler.ArticlePublished,
 		ArticleAuthors: pbCrawler.ArticleAuthors,
 		Schedule: pbCrawler.Schedule,
+		ArticlesSourceID: uint(pbCrawler.ArticlesSourceId),
 	}
 }
 
-func NewTestResult(articlesSource entities.ArticlesSource, articles []*entities.Article) (*pb.TestResult){
+func NewTestResult(articlesSource entities.ArticlesSource, articles []entities.Article) (*pb.TestResult){
 	return &pb.TestResult{
 		Articles: CastArrayEntityArticleToPbType(articles),
 		ArticlesSource: CastEntityArticleSourceToPbArticlesSource(articlesSource),

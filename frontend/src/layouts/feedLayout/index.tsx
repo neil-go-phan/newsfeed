@@ -1,4 +1,4 @@
-import React, { PropsWithChildren } from 'react'
+import React, { PropsWithChildren } from 'react';
 import Head from 'next/head';
 
 function FeedsLayout({ children }: PropsWithChildren) {
@@ -10,11 +10,9 @@ function FeedsLayout({ children }: PropsWithChildren) {
         <meta name="viewport" content="initial-scale=1, width=device-width" />
         <link rel="icon" href="/feed_black_48dp.svg" />
       </Head>
-      <div className="feeds">
-        <div className="container">{children}</div>
-      </div>
+      <div className="wrapper">{children}</div>
     </>
-  )
+  );
 }
 
-export default FeedsLayout
+export default FeedsLayout;

@@ -8,7 +8,7 @@ import (
 )
 
 type ArticlesSourcesRepository interface {
-	CreateIfNotExist(articlesSource entities.ArticlesSource) (error)
+	CreateIfNotExist(articlesSource entities.ArticlesSource) (entities.ArticlesSource, error)
 }	
 
 type ArticlesSourcesRepo struct {
@@ -21,16 +21,16 @@ func NewArticlesSourcesRepo(db *gorm.DB) *ArticlesSourcesRepo {
 	}
 }
 
-func (repo *ArticlesSourcesRepo) CreateIfNotExist(articlesSource entities.ArticlesSource) (error) {
+func (repo *ArticlesSourcesRepo) CreateIfNotExist(articlesSource entities.ArticlesSource) (	entities.ArticlesSource, error) {
 	result := repo.DB.Where(entities.ArticlesSource{Link: articlesSource.Link}).FirstOrCreate(&articlesSource)
 	if result.Error != nil {
-		return result.Error
+		return articlesSource, result.Error
 	}
 	if result.RowsAffected == 0 {
-		return fmt.Errorf("article source already exist")
+		return articlesSource, fmt.Errorf("article source already exist")
 	}
 
-	return nil
+	return articlesSource, nil
 }
 
 // func (repo *ArticlesSourcesRepo) Upsert(articlesSource entities.ArticlesSource) (error) {

@@ -1,3 +1,4 @@
+import { alertNotFoundLink } from '@/helpers/alert';
 import React, { useEffect, useState } from 'react';
 
 type Props = {
@@ -39,7 +40,18 @@ const ContentModal: React.FC<Props> = (props: Props) => {
     return date.toLocaleString();
   };
 
+  const handleOpenUrl = () => {
+    if (props.article.link) {
+      window.open(props.article.link, '_blank');
+    } else {
+      alertNotFoundLink('Not found link to article')
+    }
+  }
+
   useEffect(() => {
+    if (!props.article.link) {
+      alertNotFoundLink('Not found link to article')
+    }
     if (props.doc) {
       if (props.doc.childNodes) {
         const temp: Array<JSX.Element | string | null> = [];
@@ -62,15 +74,15 @@ const ContentModal: React.FC<Props> = (props: Props) => {
   return (
     <div className="articleCard__contentModal">
       <div className="title">
-        <a href={props.article.link} target="_blank">
-          {props.article.title}
-        </a>
+          <p onClick={handleOpenUrl}>
+            {props.article.title}
+          </p>
       </div>
       <div className="info">
         <a href={props.sourceLink} target="_blank" className="source">
-          {props.sourceTitle},
+          {`${props.sourceTitle},`}
         </a>
-        <span className="authors">by {props.article.authors}, </span>
+        <span className="authors">{`by ${props.article.authors},`}</span>
         <span className="published">{str}</span>
       </div>
       {isCustomCrawler ? (
