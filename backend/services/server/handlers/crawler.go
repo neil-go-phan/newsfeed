@@ -23,6 +23,7 @@ type CrawlerHandlerInterface interface {
 	TestCustomCrawler(c *gin.Context)
 	CreateCrawler(c *gin.Context)
 	GetHtmlPage(c *gin.Context)
+	CreateCrawlerCronjobFromDB() error
 }
 
 func NewCrawlerHandler(service services.CrawlerServices) *CrawlerHandler {
@@ -128,4 +129,8 @@ func (h *CrawlerHandler) GetHtmlPage(c *gin.Context) {
 	if err != nil {
 		log.Errorln("error occurs when delete html file: ", err)
 	}
+}
+
+func (h *CrawlerHandler) CreateCrawlerCronjobFromDB() error {
+	return h.service.CreateCrawlerCronjobFromDB()
 }

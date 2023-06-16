@@ -2,7 +2,12 @@ package helpers
 
 import "crawler/entities"
 
-// TODO: complete this func
-func CheckEmptyArticle(article entities.Article) bool{
-	return false	
+func CheckEmptyArticles(articles []entities.Article) bool {
+	var count int
+	for _, article := range articles {
+		if article.Title == "" && article.Description == "" && article.Link == "" {
+			count++
+		}
+	}
+	return count == len(articles)
 }

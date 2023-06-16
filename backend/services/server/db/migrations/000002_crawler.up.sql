@@ -12,7 +12,8 @@ CREATE TABLE crawlers (
   article_link text,
   article_published text,
   article_authors text,
-  schedule text DEFAULT '@daily' NOT NULL
+  schedule text DEFAULT '@daily' NOT NULL, 
+  articles_source_id SERIAL
 );
 
 CREATE TABLE articles_sources (
@@ -37,7 +38,7 @@ CREATE TABLE articles (
   link text,
   published timestamp with time zone,
   authors text,
-  articles_sources_id SERIAL
+  articles_source_id SERIAL
 );
 
 ALTER TABLE
@@ -46,10 +47,17 @@ ADD
   CONSTRAINT fk_crawlers_articlesource_source_link FOREIGN KEY (source_link) REFERENCES articles_sources(link);
 
 ALTER TABLE
+  crawlers
+ADD
+  CONSTRAINT fk_crawlers_articlesource_id FOREIGN KEY (articles_source_id) REFERENCES articles_sources(id);
+
+ALTER TABLE
   articles
 ADD
-  CONSTRAINT fk_articles_articlesource_id FOREIGN KEY (articles_sources_id) REFERENCES articles_sources(id);
+  CONSTRAINT fk_articles_articlesource_id FOREIGN KEY (articles_source_id) REFERENCES articles_sources(id);
 
-CREATE UNIQUE INDEX idx_articles_id ON public.articles USING btree (id);
+
 
 CREATE UNIQUE INDEX idx_crawlers_id ON public.crawlers USING btree (id);
+
+CREATE UNIQUE INDEX idx_articlessource_link ON public.articles_sources USING btree (link);

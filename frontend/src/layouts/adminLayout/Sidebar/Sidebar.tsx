@@ -23,7 +23,7 @@ export default function Sidebar(props: { isShow: boolean; isShowMd: boolean }) {
       id="sidebar"
     >
       <div className="sidebar-brand d-none d-md-flex align-items-center justify-content-center">
-        <h1 className="fs-6">Football news aggregation</h1>
+        <h1 className="fs-6">Newsfeed</h1>
       </div>
 
       <div className="sidebar-nav flex-fill">

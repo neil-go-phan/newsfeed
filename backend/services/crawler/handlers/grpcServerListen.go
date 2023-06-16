@@ -47,7 +47,7 @@ func (gRPC *GRPCServer) TestRSSCrawler(ctx context.Context, pbCrawler *pb.Crawle
 		return nil, err
 	}
 
-	testResult := helpers.NewTestResult(*articlesSource, article)
+	testResult := helpers.NewTestResult(articlesSource, article)
 
 	log.Println("Test complete")
 	return testResult, nil
@@ -66,4 +66,21 @@ func (gRPC *GRPCServer) TestCustomCrawler(ctx context.Context, pbCrawler *pb.Cra
 
 	log.Println("Test complete")
 	return testResult, nil
+}
+
+func (gRPC *GRPCServer) Crawl(ctx context.Context, pbCrawler *pb.Crawler) (*pb.NewArticlesCount, error) {
+	log.Println("Start crawl")
+	entityCrawler := helpers.CastPbCrawlerToEntityCrawler(pbCrawler)
+
+	newArticlesCount, err := gRPC.crawlerService.Crawl(entityCrawler)
+	count := &pb.NewArticlesCount{
+		Count: newArticlesCount,
+	}
+
+	if err != nil {
+		log.Error(err)
+		return count, err
+	}
+
+	return count, nil
 }

@@ -17,5 +17,6 @@ func CastEntityCrawlerToPbCrawler(entityCrawler entities.Crawler ) (*pb.Crawler)
 		ArticlePublished: entityCrawler.ArticlePublished,
 		ArticleAuthors: entityCrawler.ArticleAuthors,
 		Schedule: entityCrawler.Schedule,
+		ArticlesSourceId: int32(entityCrawler.ArticlesSourceID),
 	}
 }

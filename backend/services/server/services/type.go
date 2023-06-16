@@ -77,3 +77,27 @@ type CreateCrawlerPayload struct {
 	ArticlesSource ArticlesSourceFromFrontend `json:"articles_source"`
 	Crawler        CrawlerFromFrontend        `json:"crawler"`
 }
+
+type CronjobResponse struct {
+	Name     string `json:"name"`
+	Url      string `json:"url"`
+	Schedule string `json:"schedulte"`
+}
+
+type CronjobInChart struct {
+	Name    string `json:"name"`
+	StartAt string `json:"start_at"` // ex: "16:01"
+	EndAt   string `json:"end_at"`   // ex: "16:02"
+}
+
+type ChartHour struct {
+	Minute      int              `json:"minute"`
+	AmountOfJob int              `json:"amount_of_jobs"`
+	Cronjobs    []CronjobInChart `json:"cronjobs"`
+}
+
+type ChartDay struct {
+	Hour        int            `json:"hour"`
+	AmountOfJob int            `json:"amount_of_jobs"`
+	Cronjobs    map[string]int // map[cronjob_name]runnng_times
+}

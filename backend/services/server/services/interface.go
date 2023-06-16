@@ -28,7 +28,7 @@ type ArticleServices interface {
 }
 
 type ArticlesSourceServices interface {
-	CreateIfNotExist(articlesSource entities.ArticlesSource) error
+	CreateIfNotExist(articlesSource entities.ArticlesSource) (entities.ArticlesSource, error)
 }
 
 type CrawlerServices interface {
@@ -38,6 +38,12 @@ type CrawlerServices interface {
 	CreateCrawlerWithCorrespondingArticlesSource(payload CreateCrawlerPayload) error
 	GetHtmlPage(url *url.URL) error
 
-	FirstCrawl(crawler *entities.Crawler) (error)
-	ScheduledCrawl(crawlerID uint) (error)
+	CreateCrawlerCronjobFromDB() error
+}
+
+type CronjobServices interface {
+	CreateCrawlerCronjob(crawler entities.Crawler)
+	GetCronjobRuntime() []CronjobResponse
+	CronjobOnHour(timeString string) (*[60]ChartHour, error)
+	CronjobOnDay(timeString string) (*[24]ChartDay, error)
 }
