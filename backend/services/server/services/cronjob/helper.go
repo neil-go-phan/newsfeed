@@ -51,11 +51,11 @@ func newMapKey(url string, schedule string) string {
 }
 
 func newCronjobInChart(cronjob entities.Cronjob) services.CronjobInChart {
-	startAt := castTimeToString(cronjob.StartAt)
+	startAt := castTimeToString(cronjob.StartedAt)
 
 	var endAt string
-	if cronjob.EndAt.Year() != DEFAULT_YEAR {
-		endAt = castTimeToString(cronjob.EndAt)
+	if cronjob.EndedAt.Year() != DEFAULT_YEAR {
+		endAt = castTimeToString(cronjob.EndedAt)
 	} else {
 		endAt = "runing"
 	}
@@ -117,9 +117,9 @@ func fillHourChartData(cronjobs []entities.Cronjob, charts [60]services.ChartHou
 	minuteNow := time.Now().Minute()
 	for _, entityChart := range cronjobs {
 
-		minuteStart := entityChart.StartAt.Minute()
-		if entityChart.EndAt.Year() != DEFAULT_YEAR {
-			minuteEnd := entityChart.EndAt.Minute()
+		minuteStart := entityChart.StartedAt.Minute()
+		if entityChart.EndedAt.Year() != DEFAULT_YEAR {
+			minuteEnd := entityChart.EndedAt.Minute()
 			for i := minuteStart; i <= minuteEnd; i++ {
 				charts[i].AmountOfJob += 1
 				charts[i].Cronjobs = append(charts[i].Cronjobs, newCronjobInChart(entityChart))
@@ -170,7 +170,7 @@ func readDayFromFrontend(timeString string) (day time.Time, endOfDay time.Time, 
 
 func fillDayChartData(cronjobs []entities.Cronjob, charts [24]services.ChartDay) [24]services.ChartDay{
 	for _, entityChart := range cronjobs {
-		hour := entityChart.StartAt.Hour()
+		hour := entityChart.StartedAt.Hour()
 		charts[hour].AmountOfJob += 1
 		if charts[hour].Cronjobs == nil {
 			charts[hour].Cronjobs = map[string]int{}

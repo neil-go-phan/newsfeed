@@ -1,0 +1,88 @@
+package topicservices
+
+import (
+	"fmt"
+	"server/entities"
+	"server/repository"
+	"server/services"
+	"strings"
+)
+
+const ORPHANS_TOPIC_ID = 1
+
+type TopicService struct {
+	repo                    repository.TopicRepository
+	articlesSourcesServices services.ArticlesSourceServices
+}
+
+func NewTopicService(repo repository.TopicRepository, articlesSourcesServices services.ArticlesSourceServices) *TopicService {
+	topicService := &TopicService{
+		repo:                    repo,
+		articlesSourcesServices: articlesSourcesServices,
+	}
+	return topicService
+}
+
+func (s *TopicService) CreateIfNotExist(topic entities.Topic) error {
+	topic.Name = strings.TrimSpace(topic.Name)
+	err := validateTopic(topic)
+	if err != nil {
+		return fmt.Errorf("validate error: %s", err.Error())
+	}
+	return s.repo.CreateIfNotExist(topic)
+}
+
+func (s *TopicService) List() ([]services.TopicResponse, error) {
+	topicsResponse := make([]services.TopicResponse, 0)
+	topics, err := s.repo.List()
+	if err != nil {
+		return topicsResponse, err
+	}
+	for _, topic := range topics {
+		topicsResponse = append(topicsResponse, castEntityTopicToTopicResponse(topic))
+	}
+	return topicsResponse, nil
+}
+
+func (s *TopicService) UpdateWhenDeteleCategory(oldCategoryID uint, newCategoryID uint) error {
+	return s.repo.UpdateWhenDeteleCategory(oldCategoryID, newCategoryID)
+}
+
+func (s *TopicService) Update(topic entities.Topic) error {
+	topic.Name = strings.TrimSpace(topic.Name)
+	err := validateTopic(topic)
+	if err != nil {
+		return fmt.Errorf("validate error: %s", err.Error())
+	}
+	return s.repo.Update(topic)
+}
+
+func (s *TopicService) Delete(topic entities.Topic) error {
+	topic.Name = strings.TrimSpace(topic.Name)
+	err := validateTopic(topic)
+	if err != nil {
+		return fmt.Errorf("validate error: %s", err.Error())
+	}
+
+	err = s.articlesSourcesServices.UpdateTopicAllSource(topic.ID, ORPHANS_TOPIC_ID)
+	if err != nil {
+		return err
+	}
+	return s.repo.Delete(topic)
+}
+
+func (s *TopicService) GetPagination(page int, pageSize int) ([]services.TopicResponse, error) {
+	topicsResponse := make([]services.TopicResponse, 0)
+	topics, err := s.repo.GetPagination(page, pageSize)
+	if err != nil {
+		return topicsResponse, err
+	}
+	for _, topic := range topics {
+		topicsResponse = append(topicsResponse, castEntityTopicToTopicResponse(topic))
+	}
+	return topicsResponse, nil
+}
+
+func (s *TopicService) Count() (int, error) {
+	return s.repo.Count()
+}

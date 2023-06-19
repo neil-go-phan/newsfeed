@@ -66,7 +66,7 @@ func (s *CronjobService) cronjobCrawlerFunction(crawler entities.Crawler, cronjo
 
 func (s *CronjobService) createCronjobCrawlerDB(crawler entities.Crawler, cronjobName string) (*entities.Cronjob, error) {
 	cronjobDB := &entities.Cronjob{
-		StartAt:     time.Now(),
+		StartedAt:     time.Now(),
 		CrawlerID:   crawler.ID,
 		Crawler:     crawler,
 		Name:        cronjobName,
@@ -81,7 +81,7 @@ func (s *CronjobService) createCronjobCrawlerDB(crawler entities.Crawler, cronjo
 }
 
 func (s *CronjobService) updateResult(cronjob *entities.Cronjob) error {
-	cronjob.EndAt = time.Now()
+	cronjob.EndedAt = time.Now()
 	err := s.repo.UpdateResult(cronjob)
 	if err != nil {
 		return err

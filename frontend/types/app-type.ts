@@ -67,3 +67,11 @@ type CreateCrawlerPayload = {
   articles_source: ArticlesSource;
   crawler: Crawler;
 }
+
+type Category = {
+  name: string;
+  id: number;
+}
+
+type Categories = Array<Category>
+

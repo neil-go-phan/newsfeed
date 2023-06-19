@@ -4,6 +4,7 @@ import { _ROUTES } from '@/helpers/constants';
 import AddCrawler from './crawler/addCrawler';
 import CrawlerComponent from './crawler';
 import AddCustomCrawler from './crawler/addCrawler/addCustomCrawler';
+import AdminCategories from './category';
 
 function AdminComponent() {
   const router = useRouter();
@@ -21,6 +22,8 @@ function AdminComponent() {
         return <AddCrawler />;
       case _ROUTES.ADD_CUSTOM_CRAWLER: 
         return <AddCustomCrawler/>
+      case _ROUTES.ADMIN_CATEGORIES:
+        return <AdminCategories />
       default:
         return <CrawlerComponent />
     }

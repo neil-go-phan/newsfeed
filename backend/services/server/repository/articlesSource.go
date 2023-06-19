@@ -9,7 +9,10 @@ import (
 
 type ArticlesSourcesRepository interface {
 	CreateIfNotExist(articlesSource entities.ArticlesSource) (entities.ArticlesSource, error)
-}	
+	GetWithTopic(topicID uint) ([]entities.ArticlesSource, error)
+	UpdateTopicOneSource(articlesSource entities.ArticlesSource, newTopicId uint) error
+	UpdateTopicAllSource(oldTopicId uint, newTopicId uint) error
+}
 
 type ArticlesSourcesRepo struct {
 	DB *gorm.DB
@@ -21,7 +24,7 @@ func NewArticlesSourcesRepo(db *gorm.DB) *ArticlesSourcesRepo {
 	}
 }
 
-func (repo *ArticlesSourcesRepo) CreateIfNotExist(articlesSource entities.ArticlesSource) (	entities.ArticlesSource, error) {
+func (repo *ArticlesSourcesRepo) CreateIfNotExist(articlesSource entities.ArticlesSource) (entities.ArticlesSource, error) {
 	result := repo.DB.Where(entities.ArticlesSource{Link: articlesSource.Link}).FirstOrCreate(&articlesSource)
 	if result.Error != nil {
 		return articlesSource, result.Error
@@ -31,6 +34,33 @@ func (repo *ArticlesSourcesRepo) CreateIfNotExist(articlesSource entities.Articl
 	}
 
 	return articlesSource, nil
+}
+
+func (repo *ArticlesSourcesRepo) GetWithTopic(topicID uint) ([]entities.ArticlesSource, error) {
+	articlesSources := make([]entities.ArticlesSource, 0)
+	err := repo.DB.Where("topic_id = ?", topicID).Find(&articlesSources).Error
+	if err != nil {
+		return articlesSources, err
+	}
+	return articlesSources, nil
+}
+
+func (repo *ArticlesSourcesRepo) UpdateTopicOneSource(articlesSource entities.ArticlesSource, newTopicId uint) error {
+	err := repo.DB.Model(&articlesSource).Update("topic_id", newTopicId).Error
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (repo *ArticlesSourcesRepo) UpdateTopicAllSource(oldTopicId uint, newTopicId uint) error {
+	err := repo.DB.Model(&entities.ArticlesSource{}).
+		Where("topic_id = ?", oldTopicId).
+		Update("topic_id", newTopicId).Error
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
 // func (repo *ArticlesSourcesRepo) Upsert(articlesSource entities.ArticlesSource) (error) {

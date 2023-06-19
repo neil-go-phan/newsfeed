@@ -15,9 +15,11 @@ import (
 	"server/routes"
 	"server/services/article"
 	"server/services/articlesSource"
+	"server/services/category"
 	"server/services/crawler"
 	"server/services/cronjob"
 	"server/services/role"
+	"server/services/topic"
 	"server/services/user"
 )
 
@@ -45,4 +47,26 @@ func InitizeCrawler(db *gorm.DB, grpcClient serverproto.CrawlerServiceClient, cr
 	crawlerHandler := handlers.NewCrawlerHandler(crawlerService)
 	crawlerRoutes := routes.NewCrawlerRoutes(crawlerHandler)
 	return crawlerRoutes
+}
+
+func InitizeTopic(db *gorm.DB) *routes.TopicRoutes {
+	topicRepo := repository.NewTopic(db)
+	articlesSourcesRepo := repository.NewArticlesSourcesRepo(db)
+	articlesSourceService := articlessourceservices.NewArticlesSourceService(articlesSourcesRepo)
+	topicService := topicservices.NewTopicService(topicRepo, articlesSourceService)
+	topicHandler := handlers.NewTopicHandler(topicService)
+	topicRoutes := routes.NewTopicRoutes(topicHandler)
+	return topicRoutes
+}
+
+func InitizeCategory(db *gorm.DB) *routes.CategoryRoutes {
+	categoryRepo := repository.NewCategory(db)
+	topicRepo := repository.NewTopic(db)
+	articlesSourcesRepo := repository.NewArticlesSourcesRepo(db)
+	articlesSourceService := articlessourceservices.NewArticlesSourceService(articlesSourcesRepo)
+	topicService := topicservices.NewTopicService(topicRepo, articlesSourceService)
+	categoryService := categoryservices.NewCategoryService(categoryRepo, topicService)
+	categoryHandler := handlers.NewCategoryHandler(categoryService)
+	categoryRoutes := routes.NewCategoryRoutes(categoryHandler)
+	return categoryRoutes
 }

@@ -49,7 +49,7 @@ func (repo *CronjobRepo) Get(lastTrack time.Time, now time.Time) (*[]entities.Cr
 func (repo *CronjobRepo) UpdateResult(cronjob *entities.Cronjob) error {
 	err := repo.DB.Model(&entities.Cronjob{}).Where("id = ?", cronjob.ID).
 	Updates(entities.Cronjob{
-		EndAt: cronjob.EndAt,
+		EndedAt: cronjob.EndedAt,
 		NewArticlesCount: cronjob.NewArticlesCount,
 	}).Error
 	if err != nil {
@@ -60,7 +60,6 @@ func (repo *CronjobRepo) UpdateResult(cronjob *entities.Cronjob) error {
 
 func (repo *CronjobRepo) GetRuning() (*[]entities.Cronjob, error) {
 	cronjobs := make([]entities.Cronjob, 0)
-
 	err := repo.DB.
 		Where("end_at IS NULL").
 		Find(&cronjobs).Error

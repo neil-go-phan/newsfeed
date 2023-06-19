@@ -10,7 +10,6 @@ CREATE TABLE crawlers (
   article_title text,
   article_description text,
   article_link text,
-  article_published text,
   article_authors text,
   schedule text DEFAULT '@daily' NOT NULL, 
   articles_source_id SERIAL
@@ -55,7 +54,6 @@ ALTER TABLE
   articles
 ADD
   CONSTRAINT fk_articles_articlesource_id FOREIGN KEY (articles_source_id) REFERENCES articles_sources(id);
-
 
 
 CREATE UNIQUE INDEX idx_crawlers_id ON public.crawlers USING btree (id);

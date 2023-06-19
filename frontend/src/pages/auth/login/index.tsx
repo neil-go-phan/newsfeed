@@ -55,7 +55,8 @@ const Login: NextPage = () => {
         username,
         password,
       });
-      setCookie('token', res.data.token);
+      setCookie('access_token', res.data.access_token);
+      setCookie('refresh_token', res.data.refresh_token);
       setErrorMessage({
         trigger: false,
         message: res.data.message,

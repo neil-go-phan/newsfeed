@@ -11,7 +11,7 @@ const FeedsPageContent: React.FC<Props> = (props: Props) => {
     <div
       className={
         props.isOpenSidebar
-          ? "feeds__content--pageContent"
+          ? 'feeds__content--pageContent'
           : 'feeds__content--pageContent pageContentWhenSidebarClose'
       }
       style={{ height: props.contentDivHeight, width: props.pageContentWidth }}

@@ -1,6 +1,9 @@
 package services
 
-import "time"
+import (
+	"server/entities"
+	"time"
+)
 
 type LoginUserInput struct {
 	Username string `json:"username" validate:"required"`
@@ -100,4 +103,20 @@ type ChartDay struct {
 	Hour        int            `json:"hour"`
 	AmountOfJob int            `json:"amount_of_jobs"`
 	Cronjobs    map[string]int // map[cronjob_name]runnng_times
+}
+
+type UpdateNameCategoryPayload struct {
+	Category entities.Category `json:"category"`
+	NewName  string            `json:"new_name"`
+}
+
+type CategoryResponse struct {
+	Name string `json:"name"`
+	ID   uint   `json:"id"`
+}
+
+type TopicResponse struct {
+	Name       string `json:"name"`
+	ID         uint   `json:"id"`
+	CategoryID uint   `json:"category_id"`
 }

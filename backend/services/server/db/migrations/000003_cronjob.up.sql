@@ -4,8 +4,8 @@ CREATE TABLE cronjobs (
   updated_at timestamp with time zone,
   deleted_at timestamp with time zone,
   name text,
-  start_at timestamp with time zone,
-  end_at timestamp with time zone,
+  started_at timestamp with time zone,
+  ended_at timestamp with time zone,
   new_articles_count integer,
   crawler_id SERIAL
 );

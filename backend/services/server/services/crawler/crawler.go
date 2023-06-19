@@ -24,7 +24,7 @@ type CrawlerService struct {
 	grpcClient             pb.CrawlerServiceClient
 }
 
-const DEFAULT_SCHEDULE =  "@every 0h1m"
+const DEFAULT_SCHEDULE =  "@every 0h10m"
 
 func NewCrawlerService(repo repository.CrawlerRepository, articleService services.ArticleServices, articlesSourceServices services.ArticlesSourceServices, cronjobService services.CronjobServices, grpcClient pb.CrawlerServiceClient) *CrawlerService {
 	crawlerService := &CrawlerService{
@@ -68,7 +68,7 @@ func (s *CrawlerService) TestCustomCrawler(crawler entities.Crawler) (*services.
 }
 
 func (s *CrawlerService) CreateCrawlerWithCorrespondingArticlesSource(payload services.CreateCrawlerPayload) error {
-	articlesSource, crawler := exportPayload(payload)
+	articlesSource, crawler := extractPayload(payload)
 	err := validateCreateCrawlerPayload(articlesSource, crawler)
 	if err != nil {
 		return fmt.Errorf("validate error: %s", err.Error())

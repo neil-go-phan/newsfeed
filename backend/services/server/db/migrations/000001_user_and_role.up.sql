@@ -53,9 +53,8 @@ ADD
 CREATE UNIQUE INDEX idx_roles_name ON public.roles USING btree (name);
 
 CREATE UNIQUE INDEX idx_users_username ON public.users USING btree (username);
+
 CREATE UNIQUE INDEX idx_users_email ON public.users USING btree (email);
-
-
 
 INSERT INTO
   roles(created_at, name, description)
@@ -65,9 +64,27 @@ values
 INSERT INTO
   roles(created_at, name, description)
 values
-  (current_timestamp, 'superadmin', 'can do anything');
+  (
+    current_timestamp,
+    'superadmin',
+    'can do anything'
+  );
 
--- INSERT INTO
---   users(created_at, username, password, role_name, salt)
--- values
---   (current_timestamp, 'superadmin', 'customer role', 'superadmin', '');
+INSERT INTO
+  users(
+    created_at,
+    username,
+    password,
+    email,
+    role_name,
+    salt
+  )
+values
+  (
+    current_timestamp,
+    'superadmin',
+    '$argon2id$v=19$m=65536,t=3,p=2$olRPAZKGAI0$T49QphrVd7PJeF1ghQzL/Ba2aWofM8Sxp5QbN/MHU30',
+    'superadmin@gmail.com',
+    'superadmin',
+    'olRPAZKGAI0'
+  );
