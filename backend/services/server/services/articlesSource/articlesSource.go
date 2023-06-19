@@ -17,5 +17,13 @@ func NewArticlesSourceService(repo repository.ArticlesSourcesRepository) *Articl
 }
 
 func (s *ArticlesSourceService) CreateIfNotExist(articlesSource entities.ArticlesSource) (entities.ArticlesSource, error) {
-	return s.repo.CreateIfNotExist(articlesSource) 
+	return s.repo.CreateIfNotExist(articlesSource)
+}
+
+func (s *ArticlesSourceService) UpdateTopicOneSource(articlesSource entities.ArticlesSource, newTopicId uint) error {
+	return s.repo.UpdateTopicOneSource(articlesSource, newTopicId)
+}
+
+func (s *ArticlesSourceService) UpdateTopicAllSource(oldTopicId uint, newTopicId uint) error {
+	return s.repo.UpdateTopicAllSource(oldTopicId, newTopicId)
 }

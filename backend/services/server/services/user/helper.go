@@ -26,17 +26,6 @@ var ARGON2_TIME uint32 = 3
 var ARGON2_THREADS uint8 = 2
 var ARGON2_KEYLENGTH uint32 = 32
 
-// func NewEntitiesUser(userInput *services.UserFromFrontend) *entities.User {
-// 	user := &entities.User{
-// 		Email: userInput.Email,
-// 		Username:  userInput.Username,
-// 		Password:  userInput.Password,
-// 		Salt:      userInput.Salt,
-
-// 	}
-// 	return user
-// }
-
 func generateRandomSalt(saltSize uint8) ([]byte, error) {
 	var salt = make([]byte, saltSize)
 

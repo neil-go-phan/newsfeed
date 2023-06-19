@@ -15,6 +15,8 @@ import (
 	"server/services/cronjob"
 	"server/services/role"
 	"server/services/user"
+	"server/services/category"
+	"server/services/topic"
 
 	"github.com/google/wire"
 	"github.com/robfig/cron/v3"
@@ -64,6 +66,47 @@ func InitCrawler(db *gorm.DB, grpcClient pb.CrawlerServiceClient, cronjob *cron.
 		routes.NewCrawlerRoutes,
 	)
 	return &routes.CrawlerRoutes{}
+}
+
+func InitTopic(db *gorm.DB) *routes.TopicRoutes {
+	wire.Build(
+		repository.NewArticlesSourcesRepo,
+		wire.Bind(new(repository.ArticlesSourcesRepository), new(*repository.ArticlesSourcesRepo)),
+		articlessourceservices.NewArticlesSourceService,
+		wire.Bind(new(services.ArticlesSourceServices), new(*articlessourceservices.ArticlesSourceService)),
+
+		repository.NewTopic,
+		wire.Bind(new(repository.TopicRepository), new(*repository.TopicRepo)),
+		topicservices.NewTopicService,
+		wire.Bind(new(services.TopicServices), new(*topicservices.TopicService)),
+		handlers.NewTopicHandler,
+		wire.Bind(new(handlers.TopicHandlerInterface), new(*handlers.TopicHandler)),
+		routes.NewTopicRoutes,
+	)
+	return &routes.TopicRoutes{}
+}
+
+func InitCategory(db *gorm.DB) *routes.CategoryRoutes {
+	wire.Build(
+		repository.NewArticlesSourcesRepo,
+		wire.Bind(new(repository.ArticlesSourcesRepository), new(*repository.ArticlesSourcesRepo)),
+		articlessourceservices.NewArticlesSourceService,
+		wire.Bind(new(services.ArticlesSourceServices), new(*articlessourceservices.ArticlesSourceService)),
+
+		repository.NewTopic,
+		wire.Bind(new(repository.TopicRepository), new(*repository.TopicRepo)),
+		topicservices.NewTopicService,
+		wire.Bind(new(services.TopicServices), new(*topicservices.TopicService)),
+
+		repository.NewCategory,
+		wire.Bind(new(repository.CategoryRepository), new(*repository.CategoryRepo)),
+		categoryservices.NewCategoryService,
+		wire.Bind(new(services.CategoryServices), new(*categoryservices.CategoryService)),
+		handlers.NewCategoryHandler,
+		wire.Bind(new(handlers.CategoryHandlerInterface), new(*handlers.CategoryHandler)),
+		routes.NewCategoryRoutes,
+	)
+	return &routes.CategoryRoutes{}
 }
 
 // func InitCronjob(db *gorm.DB, grpcClient pb.CrawlerServiceClient) *routes.CrawlerRoutes {

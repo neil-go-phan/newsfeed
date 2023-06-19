@@ -9,7 +9,7 @@ import (
 
 type CrawlerRepository interface {
 	Get(id uint) (*entities.Crawler, error)
-	CreateIfNotExist(crawler entities.Crawler) (entities.Crawler,error)
+	CreateIfNotExist(crawler entities.Crawler) (entities.Crawler, error)
 	List() ([]entities.Crawler, error)
 }
 

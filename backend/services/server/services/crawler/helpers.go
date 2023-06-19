@@ -136,7 +136,7 @@ func getTestCustomCrawlerResult(grpcClient pb.CrawlerServiceClient, crawler enti
 	return result, nil
 }
 
-func exportPayload(payload services.CreateCrawlerPayload) (entities.ArticlesSource, entities.Crawler) {
+func extractPayload(payload services.CreateCrawlerPayload) (entities.ArticlesSource, entities.Crawler) {
 	articlesSource := entities.ArticlesSource{
 		Title: payload.ArticlesSource.Title,
 		Description: payload.ArticlesSource.Description,

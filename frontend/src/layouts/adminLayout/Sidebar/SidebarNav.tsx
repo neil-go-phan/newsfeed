@@ -6,8 +6,8 @@ import {
 import {
   faGauge,
   faListCheck,
+  faShapes,
   faSpider,
-  faTag,
 } from '@fortawesome/free-solid-svg-icons';
 import React, { PropsWithChildren } from 'react';
 import { Nav } from 'react-bootstrap';
@@ -43,6 +43,9 @@ export default function SidebarNav() {
     <ul className="list-unstyled">
       <SidebarNavItem icon={faGauge} href={_ROUTES.ADMIN_PAGE}>
         Dashboard
+      </SidebarNavItem>
+      <SidebarNavItem icon={faShapes} href={_ROUTES.ADMIN_CATEGORIES}>
+        Categories
       </SidebarNavItem>
       <SidebarNavItem icon={faSpider} href={_ROUTES.ADMIN_CRAWLER}>
         Crawler
