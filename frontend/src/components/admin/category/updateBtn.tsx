@@ -6,6 +6,7 @@ import UpdateCategoryModal from './updateCategoryModal';
 type Props = {
   id: number;
   name: string;
+  illustration: string;
   isDisabled: boolean;
   handleUpdateCategory: (id: number, oldName: string, newName: string) => void;
 };
@@ -16,7 +17,7 @@ const UpdateBtn: React.FC<Props> = (props: Props) => {
   const handleIsInputNameModalClose = () => {
     setIsInputNameModalOpen(false);
   };
-  const handleUpdateCategory = (newName: string) => {
+  const handleUpdateCategory = (newName: string, newIllustration:string) => {
     props.handleUpdateCategory(props.id, props.name, newName);
     handleIsInputNameModalClose()
   };
@@ -36,7 +37,8 @@ const UpdateBtn: React.FC<Props> = (props: Props) => {
         onClose={handleIsInputNameModalClose}
       >
         <UpdateCategoryModal
-          name={props.name}
+          oldName={props.name}
+          oldIllustration={props.illustration}
           handleUpdateCategory={handleUpdateCategory}
         />
       </Popup>

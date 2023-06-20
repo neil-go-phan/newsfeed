@@ -52,7 +52,7 @@ type CronjobServices interface {
 }
 
 type CategoryServices interface {
-	List() ([]CategoryResponse, error)
+	ListName() ([]CategoryResponse, error)
 	GetPagination(page int, pageSize int) ([]CategoryResponse, error)
 	Count() (int, error)
 

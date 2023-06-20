@@ -5,6 +5,7 @@ import AddCrawler from './crawler/addCrawler';
 import CrawlerComponent from './crawler';
 import AddCustomCrawler from './crawler/addCrawler/addCustomCrawler';
 import AdminCategories from './category';
+import AdminTopics from './topic';
 
 function AdminComponent() {
   const router = useRouter();
@@ -20,12 +21,14 @@ function AdminComponent() {
         return <CrawlerComponent />;
       case _ROUTES.ADD_CRAWLER:
         return <AddCrawler />;
-      case _ROUTES.ADD_CUSTOM_CRAWLER: 
-        return <AddCustomCrawler/>
+      case _ROUTES.ADD_CUSTOM_CRAWLER:
+        return <AddCustomCrawler />;
       case _ROUTES.ADMIN_CATEGORIES:
-        return <AdminCategories />
+        return <AdminCategories />;
+      case _ROUTES.ADMIN_TOPICS:
+        return <AdminTopics />;
       default:
-        return <CrawlerComponent />
+        return <CrawlerComponent />;
     }
   };
 

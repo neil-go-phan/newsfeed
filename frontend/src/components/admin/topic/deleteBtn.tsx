@@ -3,20 +3,21 @@ import { Button } from 'react-bootstrap';
 
 type Props = {
   id: number;
-  name: string;
+  topicName: string;
+  category_id: number;
   isDisabled: boolean;
-  handleDeleteCategory: (id: number, name: string) => void;
+  handleDeleteTopic: (id: number, name: string, category_id: number) => void;
 };
 
 const DeleteBtn: React.FC<Props> = (props: Props) => {
-  const handlerDeteleCategory = () => {
-    props.handleDeleteCategory(props.id, props.name);
+  const handleDeleteTopic = () => {
+    props.handleDeleteTopic(props.id, props.topicName, props.category_id);
   };
 
   return (
     <Button
       variant="danger"
-      onClick={handlerDeteleCategory}
+      onClick={handleDeleteTopic}
       disabled={props.isDisabled}
       className='mx-3'
     >

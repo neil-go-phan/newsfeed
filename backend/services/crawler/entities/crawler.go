@@ -11,7 +11,6 @@ type Crawler struct {
 	ArticleTitle       string `json:"article_title"`
 	ArticleDescription string `json:"article_description"`
 	ArticleLink        string `json:"article_link"`
-	ArticlePublished   string `json:"article_published"`
 	ArticleAuthors     string `json:"article_authors"`
 	Schedule           string `json:"schedule"`
 	ArticlesSourceID   uint   `json:"articles_source_id" gorm:"foreignKey:ArticlesSourceID"`

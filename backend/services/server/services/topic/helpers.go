@@ -1,6 +1,7 @@
 package topicservices
 
 import (
+	"fmt"
 	"server/entities"
 	"server/services"
 
@@ -8,6 +9,9 @@ import (
 )
 
 func validateTopic(topic entities.Topic) (error) {
+	if topic.Name == OTHERS_TOPIC_NAME || topic.ID == OTHERS_TOPIC_ID {
+		return fmt.Errorf("can not change 'Others' topics")
+	}
 	validate := validator.New()
 	err := validate.Struct(topic)
 	if err != nil {

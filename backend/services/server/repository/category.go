@@ -10,13 +10,13 @@ import (
 
 type CategoryRepository interface {
 	Get(name string) (entities.Category, error)
-	List() ([]entities.Category, error)
+	ListName() ([]entities.Category, error)
 	GetPagination(page int, pageSize int) ([]entities.Category, error)
 	Count() (int, error)
 
 	CreateIfNotExist(category entities.Category) error
 	Delete(category entities.Category) error
-	UpdateName(category entities.Category, newName string) error
+	Update(category entities.Category, newName string) error
 }
 
 type CategoryRepo struct {
@@ -50,9 +50,11 @@ func (repo *CategoryRepo) Get(name string) (entities.Category, error) {
 	return *category, nil
 }
 
-func (repo *CategoryRepo) List() ([]entities.Category, error) {
+func (repo *CategoryRepo) ListName() ([]entities.Category, error) {
 	categories := make([]entities.Category, 0)
-	err := repo.DB.Find(&categories).Error
+	err := repo.DB.
+		Select("id", "name").
+		Find(&categories).Error
 	if err != nil {
 		return categories, err
 	}
@@ -70,9 +72,9 @@ func (repo *CategoryRepo) Delete(category entities.Category) error {
 	return nil
 }
 
-func (repo *CategoryRepo) UpdateName(category entities.Category, newName string) error {
+func (repo *CategoryRepo) Update(category entities.Category, newName string) error {
 	err := repo.DB.Model(&category).
-		Update("name", newName).Error
+		Updates(entities.Category{Name: category.Name, Illustration: category.Illustration}).Error
 	if err != nil {
 		return err
 	}

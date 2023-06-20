@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import * as yup from 'yup';
 import Image from 'next/image';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -7,15 +7,16 @@ import { Button, Form, InputGroup } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faShapes } from '@fortawesome/free-solid-svg-icons';
 
-type UpdateCategoryFormProperty = {
+type CreateCategoryFormProperty = {
   name: string;
   imgSize: number;
 };
 
 type Props = {
-  oldName: string;
-  oldIllustration:string;
-  handleUpdateCategory: (categoryName: string, categoryIllustration: string) => void;
+  handleCreateCategory: (
+    categoryName: string,
+    categoryIllustration: string
+  ) => void;
 };
 
 const IMAGE_SIZE_PIXEL = 200;
@@ -23,7 +24,7 @@ const IMAGE_SIZE_PIXEL = 200;
 const IMAGE_FILE_SIZE_BYTES = 1000000;
 const DEFAULT_IMG_SIZE = 0;
 
-const UpdateCategoryModal: React.FC<Props> = (props: Props) => {
+const CreateCategoryModal: React.FC<Props> = (props: Props) => {
   const [image, setImage] = useState<string>();
   const schema = yup.object().shape({
     name: yup
@@ -41,21 +42,20 @@ const UpdateCategoryModal: React.FC<Props> = (props: Props) => {
     handleSubmit,
     setValue,
     formState: { errors },
-  } = useForm<UpdateCategoryFormProperty>({
+  } = useForm<CreateCategoryFormProperty>({
     resolver: yupResolver(schema),
     defaultValues: useMemo(() => {
       return {
-        name: props.oldName,
         imgSize: DEFAULT_IMG_SIZE,
       };
     }, [props]),
   });
-  const onSubmit: SubmitHandler<UpdateCategoryFormProperty> = async (data) => {
+  const onSubmit: SubmitHandler<CreateCategoryFormProperty> = async (data) => {
     let base64Img: string = '';
     if (image) {
       base64Img = image;
     }
-    props.handleUpdateCategory(data.name, base64Img);
+    props.handleCreateCategory(data.name, base64Img);
   };
 
   const photoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -73,70 +73,65 @@ const UpdateCategoryModal: React.FC<Props> = (props: Props) => {
     }
   };
 
-  useEffect(() => {
-    setImage(props.oldIllustration)
-  }, [])
-  
-
   return (
     <div className="adminCategories__modal">
       <form onSubmit={handleSubmit(onSubmit)}>
-        <h2 className="adminCategories__modal--title">Update category</h2>
+        <h2 className="adminCategories__modal--title">Create category</h2>
         <div className="adminCategories__modal--line" />
         <label> Category </label>
         <div className="field">
-        <InputGroup className="mb-3">
-          <InputGroup.Text>
-            <FontAwesomeIcon icon={faShapes} fixedWidth />
-          </InputGroup.Text>
-          <Form.Control
-            {...register('name')}
-            placeholder="Type category name"
-            type="text"
-            required
-          />
-        </InputGroup>
+          <InputGroup className="mb-3">
+            <InputGroup.Text>
+              <FontAwesomeIcon icon={faShapes} fixedWidth />
+            </InputGroup.Text>
+            <Form.Control
+              {...register('name')}
+              placeholder="Type category name"
+              type="text"
+              required
+            />
+          </InputGroup>
 
-        {errors.name && <p className="errorMessage">{errors.name.message}</p>}
+          {errors.name && <p className="errorMessage">{errors.name.message}</p>}
         </div>
         <div className="field">
-            <label> Image </label>
-            <div className="illustration d-flex">
-              <div className="col-6">
-                {image ? (
-                  <Image
-                    alt="category illustration image"
-                    src={image}
-                    width={IMAGE_SIZE_PIXEL}
-                    height="0"
-                    style={{ height: 'auto' }}
-                  />
-                ) : (
-                  <div>Not found category illustration image, please add one</div>
-                )}
-              </div>
-              <div className="col-6">
-                <input
-                  type="file"
-                  name="category-illustration"
-                  id="file"
-                  accept=".jpef, .png, .jpg, .jpeg"
-                  onChange={(event) => photoUpload(event)}
+          <label> Image </label>
+          <div className="illustration">
+            <div className="">
+              {image ? (
+                <Image
+                  alt="category illustration image"
                   src={image}
+                  width={IMAGE_SIZE_PIXEL}
+                  height="0"
+                  style={{ height: 'auto' }}
                 />
-              </div>
+              ) : (
+                <div>Not found category illustration image, please add one</div>
+              )}
             </div>
-            {errors.imgSize && (
-              <p className="errorMessage">{errors.imgSize.message}</p>
-            )}
+            <div className="mt-3">
+              <input
+                type="file"
+                name="category-illustration"
+                id="file"
+                accept=".jpef, .png, .jpg, .jpeg"
+                onChange={(event) => photoUpload(event)}
+                src={image}
+              />
+            </div>
           </div>
+          {errors.imgSize && (
+            <p className="errorMessage">{errors.imgSize.message}</p>
+          )}
+        </div>
 
         <Button className="w-100 px-4" variant="success" type="submit">
-          Update
+          Create
         </Button>
       </form>
     </div>
   );
 };
 
-export default UpdateCategoryModal;
+export default CreateCategoryModal;

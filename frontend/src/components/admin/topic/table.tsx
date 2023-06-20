@@ -3,43 +3,44 @@ import { Table } from 'react-bootstrap';
 import { Column, useTable } from 'react-table';
 import { ThreeDots } from 'react-loader-spinner';
 import Image from 'next/image';
-import AdminCategoriesAction from './action';
+import AdminTopicAction from './action';
 import Popup from 'reactjs-popup';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCircleQuestion } from '@fortawesome/free-solid-svg-icons';
 
-type CategoryRow = {
+type TopicRow = {
   index: number;
   name: string;
   id: number;
-  illustration: string;
+  category: Category;
 };
 
 type Props = {
+  topics: Topics;
   categories: Categories;
   currentPage: number;
-  handleUpdateCategory: (id: number, oldName: string, newName: string) => void;
-  handleDeleteCategory: (id: number, name: string) => void;
+  handleUpdateTopic: (id: number, newName: string, newCategoryID: number) => void;
+  handleDeleteTopic: (id: number, name: string, category_id: number) => void;
 };
 
 const OTHERS_CATEGORY_NAME = 'Others';
-const IMAGE_SIZE_PIXEL = 100;
+const OTHERS_TOPICS_NAME = 'Others';
 
-const CategoriseTable: React.FC<Props> = (props: Props) => {
-  const columns: Column<CategoryRow>[] = React.useMemo(
+const TopicsTable: React.FC<Props> = (props: Props) => {
+  const columns: Column<TopicRow>[] = React.useMemo(
     () => [
       {
         header: 'STT',
         accessor: 'index',
       },
       {
-        header: 'Category',
+        header: 'Topic',
         accessor: 'name',
         Cell: ({ row }) => (
           <>
             <p>
               {row.values.name}
-              {checkIsOrphanCategory(row.values.name) ? (
+              {checkIsOrphanTopic(row.values.name) ? (
                 <Popup
                   trigger={() => <FontAwesomeIcon className='mx-2' icon={faCircleQuestion} />}
                   position="right center"
@@ -47,10 +48,13 @@ const CategoriseTable: React.FC<Props> = (props: Props) => {
                   on={['hover', 'focus']}
                 >
                   <div>
-                    <p>This category is not display on user interface.</p>
                     <p>
-                      If you detele a category all topics belong to that deleted
-                      category will automated become this category child.
+                      This topic is not display on user interface. But article
+                      sources belong to this topic can be search
+                    </p>
+                    <p>
+                      If you detele a topic all article sources belong to that
+                      deleted topic will automated become this topic child.
                     </p>
                   </div>
                 </Popup>
@@ -62,29 +66,24 @@ const CategoriseTable: React.FC<Props> = (props: Props) => {
         ),
       },
       {
-        header: 'Illustration',
-        accessor: 'illustration',
+        header: 'Category',
+        accessor: 'category',
         Cell: ({ row }) => (
-          <Image
-            alt="category illustration image"
-            src={row.values.illustration}
-            width={IMAGE_SIZE_PIXEL}
-            height="0"
-            style={{ height: 'auto' }}
-          />
+          <p>{row.values.category.name}</p>
         ),
       },
       {
         header: 'Action',
         accessor: 'id',
         Cell: ({ row }) => (
-          <AdminCategoriesAction
-            isDisabled={checkIsOrphanCategory(row.values.name)}
-            name={row.values.name}
+          <AdminTopicAction
+            isDisabled={checkIsOrphanTopic(row.values.name)}
+            topicName={row.values.name}
             id={row.values.id}
-            illustration={row.values.illustration}
-            handleDeleteCategory={props.handleDeleteCategory}
-            handleUpdateCategory={props.handleUpdateCategory}
+            category={row.values.category}
+            categories={props.categories}
+            handleDeleteTopic={props.handleDeleteTopic}
+            handleUpdateTopic={props.handleUpdateTopic}
           />
         ),
       },
@@ -99,27 +98,44 @@ const CategoriseTable: React.FC<Props> = (props: Props) => {
     return false;
   };
 
-  const useCreateTableData = (categories: Categories | undefined) => {
-    return React.useMemo(() => {
-      if (!categories) {
-        return [];
-      }
-      return categories.map((category, index) => ({
-        index: index + 1 + 10 * (props.currentPage - 1),
-        name: category.name,
-        id: category.id,
-        illustration: category.illustration,
-      }));
-    }, [categories]);
+  const checkIsOrphanTopic = (topicName: string): boolean => {
+    if (topicName === OTHERS_TOPICS_NAME) {
+      return true;
+    }
+    return false;
   };
 
-  const data = useCreateTableData(props.categories);
+  const findCategoryByID = (id: number): Category => {
+    const category = props.categories.find((category) => category.id === id);
+    if (category) {
+      return category;
+    }
+    const notFoundCategory: Category = {
+      id: 0,
+      illustration: '',
+      name: 'not found',
+    };
+    return notFoundCategory;
+  };
+
+  const useCreateTableData = (topics: Topics) => {
+    return React.useMemo(() => {
+      return topics.map((topic, index) => ({
+        index: index + 1 + 10 * (props.currentPage - 1),
+        name: topic.name,
+        id: topic.id,
+        category: findCategoryByID(topic.category_id),
+      }));
+    }, [topics]);
+  };
+
+  const data = useCreateTableData(props.topics);
   const { getTableProps, getTableBodyProps, headerGroups, prepareRow, rows } =
     useTable({
       columns,
       data,
     });
-  if (props.categories.length === 0) {
+  if (props.topics.length === 0) {
     return (
       <div className="threeDotLoading">
         <ThreeDots
@@ -135,18 +151,18 @@ const CategoriseTable: React.FC<Props> = (props: Props) => {
   }
   return (
     <>
-      <div className="adminCategories__list--table">
+      <div className="adminTopics__list--table">
         <Table bordered hover {...getTableProps()}>
           <thead>
             {headerGroups.map((headerGroup, index) => (
               <tr
                 {...headerGroup.getHeaderGroupProps()}
-                key={`categories-admin-collum-${index}`}
+                key={`topics-admin-collum-${index}`}
               >
                 {headerGroup.headers.map((column) => (
                   <th
                     {...column.getHeaderProps()}
-                    key={`categories-admin-collum-${column.render('header')}}`}
+                    key={`topics-admin-collum-${column.render('header')}}`}
                   >
                     {column.render('header')}
                   </th>
@@ -160,13 +176,13 @@ const CategoriseTable: React.FC<Props> = (props: Props) => {
               return (
                 <tr
                   {...row.getRowProps()}
-                  key={`categories-admin-tr-${i}-${row.values.name}`}
+                  key={`topics-admin-tr-${i}-${row.values.name}`}
                 >
                   {row.cells.map((cell, i) => {
                     return (
                       <td
                         {...cell.getCellProps()}
-                        key={`categories-admin-td-${i}-${row.values.name}`}
+                        key={`topics-admin-td-${i}-${row.values.name}`}
                       >
                         {cell.render('Cell')}
                       </td>
@@ -182,4 +198,4 @@ const CategoriseTable: React.FC<Props> = (props: Props) => {
   );
 };
 
-export default CategoriseTable;
+export default TopicsTable;

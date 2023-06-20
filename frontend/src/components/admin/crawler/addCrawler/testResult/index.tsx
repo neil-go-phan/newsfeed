@@ -6,13 +6,12 @@ import ArticlesSource from './articlesSource';
 import ArticleCard from '@/common/articleCard ';
 import Grid from '@mui/material/Grid';
 import { CRAWLER_FEED_TYPE } from '..';
-import { CRAWLER_CUSTOM_TYPE } from '../addCustomCrawler';
 
 type Props = {
   url: string;
   testType: string;
   crawler: Crawler | undefined;
-  handleSubmitArticleSource: (articlesSource: ArticlesSource) => void;
+  handleSubmitArticleSource: (articlesSource: ArticlesSource, topicName: string) => void;
 };
 
 const ERROR_MESSAGE_WHEN_TEST_FAIL = 'Test fail';
@@ -67,8 +66,8 @@ const TestResult: React.FC<Props> = (props: Props) => {
     }
   };
 
-  const handleSubmitArticleSource = (articlesSource: ArticlesSource) => {
-    props.handleSubmitArticleSource(articlesSource);
+  const handleSubmitArticleSource = (articlesSource: ArticlesSource, topicName: string) => {
+    props.handleSubmitArticleSource(articlesSource, topicName);
   };
 
   useEffect(() => {

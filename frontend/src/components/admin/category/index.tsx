@@ -1,14 +1,14 @@
 import axiosProtectedAPI from '@/helpers/axiosProtectedAPI';
 import React, { useEffect, useState } from 'react';
-import { Button, Form, InputGroup } from 'react-bootstrap';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPlus } from '@fortawesome/free-solid-svg-icons';
+import { Button } from 'react-bootstrap';
 import { useRouter } from 'next/router';
 import { alertError, alertSuccess } from '@/helpers/alert';
 import CategoriseTable from './table';
 import { ThreeDots } from 'react-loader-spinner';
 import AdminCategoryPagination from './pagination';
 import { toastifyError } from '@/helpers/toastify';
+import Popup from 'reactjs-popup';
+import CreateCategoryModal from './createCategoryModal';
 
 export const PAGE_SIZE = 10;
 const CREATE_CATEGORY_SUCCESS_MESSAGE = 'create category success';
@@ -21,26 +21,26 @@ const GET_PAGE_CATEGORIES_FAIL_MESSAGE = 'get page category fail';
 
 export default function AdminCategories() {
   const [categories, setCategories] = useState<Categories>();
-  const [newCategoryName, setNewCategoryName] = useState<string>('');
-  const [errorMessage, setErrorMessage] = useState<string>('');
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [total, setTotal] = useState<number>(0);
+  const [isCreateCategoryModalOpen, setIsCreateCategoryModalOpen] =
+    useState<boolean>(false);
   const router = useRouter();
 
-  const handleCreateCategory = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    const trim = newCategoryName.trim()
-    if (trim !== '') {
-      requestCreateCategory(newCategoryName.trim());
-    }
-    else {
-      setNewCategoryName('')
-      setErrorMessage('Please input category')
-    }
+  const handleCreateCategory = (
+    categoryName: string,
+    categoryIllustration: string
+  ) => {
+    requestCreateCategory(categoryName.trim(), categoryIllustration);
+    handleIsCreateCategoryModalClose();
   };
 
   const handleDeleteCategory = (id: number, name: string) => {
     requestDeleteCategory(id, name);
+  };
+
+  const handleIsCreateCategoryModalClose = () => {
+    setIsCreateCategoryModalOpen(false);
   };
 
   const handleUpdateCategory = (
@@ -63,52 +63,64 @@ export default function AdminCategories() {
         id: id,
       });
       if (!data.success) {
-        throw 'delete fail';
+        if (data.message) {
+          throw data.message
+        }
+        throw DELETE_CATEGORY_FAIL_MESSAGE;
       }
       alertSuccess(DELETE_CATEGORY_SUCCESS_MESSAGE);
       requestPageCategories(currentPage, PAGE_SIZE);
       requestCountCategories();
     } catch (error: any) {
-      alertError(DELETE_CATEGORY_FAIL_MESSAGE);
+      alertError(error);
     }
   };
 
-  const requestUpdateCategory = async (id: number, name: string, newName: string) => {
+  const requestUpdateCategory = async (
+    id: number,
+    name: string,
+    newName: string
+  ) => {
     try {
       const { data } = await axiosProtectedAPI.post('category/update-name', {
         new_name: newName,
         category: {
           name: name,
-          id: id
-        }
+          id: id,
+        },
       });
       if (!data.success) {
-        throw 'create fail';
+        if (data.message) {
+          throw data.message
+        }
+        throw UPDATE_CATEGORY_FAIL_MESSAGE;
       }
       alertSuccess(UPDATE_CATEGORY_SUCCESS_MESSAGE);
       requestPageCategories(currentPage, PAGE_SIZE);
       requestCountCategories();
-      pageChangeHandler(1)
+      pageChangeHandler(1);
     } catch (error: any) {
-      alertError(UPDATE_CATEGORY_FAIL_MESSAGE);
+      alertError(error);
     }
   };
 
-  const requestCreateCategory = async (name: string) => {
+  const requestCreateCategory = async (name: string, illustration: string) => {
     try {
       const { data } = await axiosProtectedAPI.post('category/create', {
         name: name,
+        illustration: illustration,
       });
       if (!data.success) {
-        throw 'create fail';
+        if (data.message) {
+          throw data.message
+        }
+        throw CREATE_CATEGORY_FAIL_MESSAGE;
       }
       alertSuccess(CREATE_CATEGORY_SUCCESS_MESSAGE);
-      setNewCategoryName('');
-      setErrorMessage('')
       requestPageCategories(currentPage, PAGE_SIZE);
       requestCountCategories();
     } catch (error: any) {
-      alertError(CREATE_CATEGORY_FAIL_MESSAGE);
+      alertError(error);
     }
   };
 
@@ -158,23 +170,21 @@ export default function AdminCategories() {
         <div className="adminCategories__list--search d-sm-flex">
           <div className="col-sm-1"></div>
           <div className="addBtn col-sm-5">
-            <form onSubmit={handleCreateCategory}>
-              <InputGroup className="mb-3">
-                <InputGroup.Text>
-                  <FontAwesomeIcon icon={faPlus} fixedWidth />
-                </InputGroup.Text>
-                <Form.Control
-                  placeholder="Input new category"
-                  type="text"
-                  value={newCategoryName}
-                  onChange={(e) => setNewCategoryName(e.target.value)}
-                />
-                <Button type="submit" variant="success">
-                  Add
-                </Button>
-              </InputGroup>
-              {errorMessage && <p className="errorMessage">{errorMessage}</p>}
-            </form>
+            <Button
+              variant="primary mb-2"
+              onClick={() => setIsCreateCategoryModalOpen(true)}
+            >
+              Create new category
+            </Button>
+            <Popup
+              modal
+              open={isCreateCategoryModalOpen}
+              onClose={handleIsCreateCategoryModalClose}
+            >
+              <CreateCategoryModal
+                handleCreateCategory={handleCreateCategory}
+              />
+            </Popup>
           </div>
         </div>
         {categories ? (

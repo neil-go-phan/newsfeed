@@ -143,6 +143,7 @@ func extractPayload(payload services.CreateCrawlerPayload) (entities.ArticlesSou
 		Link: payload.ArticlesSource.Link,
 		FeedLink: payload.ArticlesSource.FeedLink,
 		Image: payload.ArticlesSource.Image,
+		TopicID: payload.ArticlesSource.TopicID,
 	}
 	crawler := entities.Crawler{
 		SourceLink: payload.Crawler.SourceLink,
@@ -152,7 +153,6 @@ func extractPayload(payload services.CreateCrawlerPayload) (entities.ArticlesSou
 		ArticleTitle: payload.Crawler.ArticleTitle,
 		ArticleDescription: payload.Crawler.ArticleDescription,
 		ArticleLink: payload.Crawler.ArticleLink,
-		ArticlePublished: payload.Crawler.ArticlePublished,
 		ArticleAuthors: payload.Crawler.ArticleAuthors,
 	}
 	return articlesSource, crawler
