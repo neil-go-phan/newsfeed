@@ -9,6 +9,7 @@ import { alertSuccess } from '@/helpers/alert';
 type Props = {
   crawler: Crawler | undefined;
   articlesSources: ArticlesSource | undefined;
+  topicName: string;
   handleIsConfirmModalClose: () => void;
 };
 
@@ -86,8 +87,12 @@ const ConfirmModal: React.FC<Props> = (props: Props) => {
               <td>{props.articlesSources?.link}</td>
             </tr>
             <tr>
-              <td>feed_link</td>
+              <td>feed link</td>
               <td>{props.articlesSources?.feed_link}</td>
+            </tr>
+            <tr>
+              <td>topic</td>
+              <td>{props.topicName}</td>
             </tr>
             <tr>
               <td>image</td>

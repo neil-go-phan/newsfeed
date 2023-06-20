@@ -11,6 +11,7 @@ export const _ROUTES = {
   ADMIN_CRAWLER: '/admin/crawler',
   ADMIN_ARTICLES: '/admin/articles',
   ADMIN_CATEGORIES: '/admin/categories',
+  ADMIN_TOPICS: '/admin/topics',
   ADD_CRAWLER :'/admin/crawler/add',
   ADD_CUSTOM_CRAWLER :'/admin/crawler/add/custom',
   ADMIN_CRONJOB: '/admin/cronjob'

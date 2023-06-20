@@ -4,6 +4,7 @@ import {
   IconDefinition,
 } from '@fortawesome/free-regular-svg-icons';
 import {
+  faFolder,
   faGauge,
   faListCheck,
   faShapes,
@@ -46,6 +47,9 @@ export default function SidebarNav() {
       </SidebarNavItem>
       <SidebarNavItem icon={faShapes} href={_ROUTES.ADMIN_CATEGORIES}>
         Categories
+      </SidebarNavItem>
+      <SidebarNavItem icon={faFolder} href={_ROUTES.ADMIN_TOPICS}>
+        Topics
       </SidebarNavItem>
       <SidebarNavItem icon={faSpider} href={_ROUTES.ADMIN_CRAWLER}>
         Crawler

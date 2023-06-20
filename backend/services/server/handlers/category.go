@@ -5,7 +5,6 @@ import (
 	"server/entities"
 	"server/services"
 	"strconv"
-	"strings"
 
 	"github.com/gin-gonic/gin"
 	log "github.com/sirupsen/logrus"
@@ -16,7 +15,7 @@ type CategoryHandler struct {
 }
 
 type CategoryHandlerInterface interface {
-	List(c *gin.Context)
+	ListName(c *gin.Context)
 	GetPagination(c *gin.Context)
 	Count(c *gin.Context)
 
@@ -43,18 +42,14 @@ func (h *CategoryHandler) Create(c *gin.Context) {
 	err = h.service.CreateIfNotExist(category)
 	if err != nil {
 		log.Error("error occrus:", err)
-		if strings.Contains(err.Error(), "validate") {
-			c.JSON(http.StatusBadRequest, gin.H{"success": false, "message": "input invalid"})
-			return
-		}
 		c.JSON(http.StatusBadRequest, gin.H{"success": false, "message": err.Error()})
 		return
 	}
 	c.JSON(http.StatusOK, gin.H{"success": true, "message": "create success"})
 }
 
-func (h *CategoryHandler) List(c *gin.Context) {
-	categories, err := h.service.List()
+func (h *CategoryHandler) ListName(c *gin.Context) {
+	categories, err := h.service.ListName()
 	if err != nil {
 		log.Error("error occrus:", err)
 		c.JSON(http.StatusInternalServerError, gin.H{"success": false, "message": "internal server error"})
@@ -75,10 +70,6 @@ func (h *CategoryHandler) Delete(c *gin.Context) {
 	err = h.service.Delete(category)
 	if err != nil {
 		log.Error("error occrus:", err)
-		if strings.Contains(err.Error(), "validate") {
-			c.JSON(http.StatusBadRequest, gin.H{"success": false, "message": "input invalid"})
-			return
-		}
 		c.JSON(http.StatusBadRequest, gin.H{"success": false, "message": err.Error()})
 		return
 	}
@@ -97,10 +88,6 @@ func (h *CategoryHandler) UpdateName(c *gin.Context) {
 	err = h.service.UpdateName(payload)
 	if err != nil {
 		log.Error("error occrus:", err)
-		if strings.Contains(err.Error(), "validate") {
-			c.JSON(http.StatusBadRequest, gin.H{"success": false, "message": "input invalid"})
-			return
-		}
 		c.JSON(http.StatusBadRequest, gin.H{"success": false, "message": err.Error()})
 		return
 	}

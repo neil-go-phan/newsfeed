@@ -8,7 +8,8 @@ import (
 	"strings"
 )
 
-const ORPHANS_CATEGORY_ID = 1
+const OTHERS_CATEGORY_ID = 1
+const OTHERS_CATEGORY_NAME = "Others"
 const ERROR_RAISE_WHEN_DELETE_A_CATEGORY_THEN_CREATE_IT_AGAIN = `duplicate key value violates unique constraint "categories_name_key"`
 
 type CategoryService struct {
@@ -26,9 +27,9 @@ func NewCategoryService(repo repository.CategoryRepository, topicServices servic
 
 func (s *CategoryService) CreateIfNotExist(category entities.Category) error {
 	category.Name = strings.TrimSpace(category.Name)
-	err := validateCategory(category)
+	err := validateCategoryName(category)
 	if err != nil {
-		return fmt.Errorf("validate error: %s", err.Error())
+		return err
 	}
 
 	err = s.repo.CreateIfNotExist(category)
@@ -38,9 +39,9 @@ func (s *CategoryService) CreateIfNotExist(category entities.Category) error {
 	return nil
 }
 
-func (s *CategoryService) List() ([]services.CategoryResponse, error) {
+func (s *CategoryService) ListName() ([]services.CategoryResponse, error) {
 	categoriesResponse := make([]services.CategoryResponse, 0)
-	categories, err := s.repo.List()
+	categories, err := s.repo.ListName()
 	if err != nil {
 		return categoriesResponse, err
 	}
@@ -52,27 +53,27 @@ func (s *CategoryService) List() ([]services.CategoryResponse, error) {
 
 func (s *CategoryService) UpdateName(payload services.UpdateNameCategoryPayload) error {
 	category, newName := extractUpdateNamePayload(payload)
-	err := validateCategory(category)
+	err := validateCategoryName(category)
 	if err != nil {
-		return fmt.Errorf("validate error: %s", err.Error())
+		return err
 	}
 	checkCategory, err := s.repo.Get(newName)
 	if checkCategory.Name == newName && err == nil {
 		return fmt.Errorf("category %s already exist", newName)
 	}
-	return s.repo.UpdateName(category, newName)
+	return s.repo.Update(category, newName)
 }
 
 func (s *CategoryService) Delete(category entities.Category) error {
 	category.Name = strings.TrimSpace(category.Name)
-	err := validateCategory(category)
+	err := validateCategoryName(category)
 	if err != nil {
-		return fmt.Errorf("validate error: %s", err.Error())
+		return err
 	}
 	if category.ID == 0 {
-		return fmt.Errorf("validate error: not found category id")
+		return fmt.Errorf("not found category id")
 	}
-	err = s.topicServices.UpdateWhenDeteleCategory(category.ID, ORPHANS_CATEGORY_ID)
+	err = s.topicServices.UpdateWhenDeteleCategory(category.ID, OTHERS_CATEGORY_ID)
 	if err != nil {
 		return err
 	}

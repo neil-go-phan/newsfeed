@@ -5,7 +5,6 @@ import (
 	"server/entities"
 	"server/services"
 	"strconv"
-	"strings"
 
 	"github.com/gin-gonic/gin"
 	log "github.com/sirupsen/logrus"
@@ -43,10 +42,6 @@ func  (h *TopicHandler) Create(c *gin.Context) {
 	err = h.service.CreateIfNotExist(topic)
 	if err != nil {
 		log.Error("error occrus:", err)
-		if strings.Contains(err.Error(), "validate") {
-			c.JSON(http.StatusBadRequest, gin.H{"success": false, "message": "input invalid"})
-			return
-		}
 		c.JSON(http.StatusBadRequest, gin.H{"success": false, "message": err.Error()})
 		return
 	}
@@ -75,10 +70,6 @@ func  (h *TopicHandler) Delete(c *gin.Context) {
 	err = h.service.Delete(topic)
 	if err != nil {
 		log.Error("error occrus:", err)
-		if strings.Contains(err.Error(), "validate") {
-			c.JSON(http.StatusBadRequest, gin.H{"success": false, "message": "input invalid"})
-			return
-		}
 		c.JSON(http.StatusBadRequest, gin.H{"success": false, "message": err.Error()})
 		return
 	}
@@ -97,10 +88,6 @@ func  (h *TopicHandler) Update(c *gin.Context) {
 	err = h.service.Update(topic)
 	if err != nil {
 		log.Error("error occrus:", err)
-		if strings.Contains(err.Error(), "validate") {
-			c.JSON(http.StatusBadRequest, gin.H{"success": false, "message": "input invalid"})
-			return
-		}
 		c.JSON(http.StatusBadRequest, gin.H{"success": false, "message": err.Error()})
 		return
 	}

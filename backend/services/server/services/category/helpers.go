@@ -1,6 +1,7 @@
 package categoryservices
 
 import (
+	"fmt"
 	"server/entities"
 	"server/services"
 	"strings"
@@ -8,7 +9,10 @@ import (
 	"github.com/go-playground/validator"
 )
 
-func validateCategory(category entities.Category) (error) {
+func validateCategoryName(category entities.Category) error {
+	if category.Name == OTHERS_CATEGORY_NAME || category.ID == OTHERS_CATEGORY_ID {
+		return fmt.Errorf("can not change 'Others' category")
+	}
 	validate := validator.New()
 	err := validate.Struct(category)
 	if err != nil {
@@ -20,16 +24,18 @@ func validateCategory(category entities.Category) (error) {
 
 func extractUpdateNamePayload(payload services.UpdateNameCategoryPayload) (entities.Category, string) {
 	category := entities.Category{
-		Name: strings.TrimSpace(payload.Category.Name),
+		Name:      strings.TrimSpace(payload.Category.Name),
+		Illustration: payload.Category.Illustration,
 	}
 	newName := payload.NewName
 	category.ID = payload.Category.ID
 	return category, newName
 }
 
-func castEntityCategoryToCategoryResponse(entityCategory entities.Category) (services.CategoryResponse) {
+func castEntityCategoryToCategoryResponse(entityCategory entities.Category) services.CategoryResponse {
 	return services.CategoryResponse{
-		Name: entityCategory.Name,
-		ID: entityCategory.ID,
+		ID:           entityCategory.ID,
+		Name:         entityCategory.Name,
+		Illustration: entityCategory.Illustration,
 	}
 }

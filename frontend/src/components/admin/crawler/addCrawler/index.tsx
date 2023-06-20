@@ -12,11 +12,14 @@ function AddCrawler() {
   const [articlesSource, setArticlesSource] = useState<ArticlesSource>();
   const [crawler, setCrawler] = useState<Crawler>();
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
+  const [topicName, setTopicName] = useState<string>('');
 
   const createFeedCrawlerFromArticleSource = (
-    articlesSource: ArticlesSource
+    articlesSource: ArticlesSource,
+    topicName: string
   ) => {
     setArticlesSource(articlesSource);
+    setTopicName(topicName)
     const crawler: Crawler = {
       source_link: articlesSource.link,
       feed_link: articlesSource.feed_link,
@@ -61,6 +64,7 @@ function AddCrawler() {
         onClose={handleIsConfirmModalClose}
       >
         <ConfirmModal
+          topicName={topicName}
           articlesSources={articlesSource}
           crawler={crawler}
           handleIsConfirmModalClose={handleIsConfirmModalClose}

@@ -61,6 +61,7 @@ type ArticlesSourceFromFrontend struct {
 	Link        string `json:"link"`
 	FeedLink    string `json:"feed_link"`
 	Image       string `json:"image"` // base64 image
+	TopicID     uint   `json:"topic_id"`
 }
 
 type CrawlerFromFrontend struct {
@@ -71,7 +72,6 @@ type CrawlerFromFrontend struct {
 	ArticleTitle       string `json:"article_title"`
 	ArticleDescription string `json:"article_description"`
 	ArticleLink        string `json:"article_link"`
-	ArticlePublished   string `json:"article_published"`
 	ArticleAuthors     string `json:"article_authors"`
 	// Schedule           string `json:"schedule"`
 }
@@ -111,12 +111,13 @@ type UpdateNameCategoryPayload struct {
 }
 
 type CategoryResponse struct {
-	Name string `json:"name"`
-	ID   uint   `json:"id"`
+	ID           uint   `json:"id"`
+	Name         string `json:"name"`
+	Illustration string `json:"illustration"`
 }
 
 type TopicResponse struct {
-	Name       string `json:"name"`
 	ID         uint   `json:"id"`
+	Name       string `json:"name"`
 	CategoryID uint   `json:"category_id"`
 }

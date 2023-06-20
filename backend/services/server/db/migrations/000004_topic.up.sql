@@ -3,7 +3,8 @@ CREATE TABLE categories (
   created_at timestamp with time zone,
   updated_at timestamp with time zone,
   deleted_at timestamp with time zone,
-  name text UNIQUE
+  name text UNIQUE,
+  illustration text
 );
 
 CREATE TABLE topics (
@@ -18,7 +19,7 @@ CREATE TABLE topics (
 ALTER TABLE
   topics
 ADD
-  CONSTRAINT fk_topics_catogory_id FOREIGN KEY (category_id) REFERENCES topics(id);
+  CONSTRAINT fk_topics_catogory_id FOREIGN KEY (category_id) REFERENCES categories(id);
 
 ALTER TABLE articles_sources 
 ADD COLUMN topic_id SERIAL;
@@ -33,9 +34,9 @@ CREATE UNIQUE INDEX idx_articlessource_topic_id ON public.articles_sources USING
 INSERT INTO
   categories(created_at, name)
 values
-  (current_timestamp, 'Orphans');
+  (current_timestamp, 'Others');
 
 INSERT INTO
   topics(created_at, name, category_id)
 values
-  (current_timestamp, 'Orphans', 1);
+  (current_timestamp, 'Others', 1);

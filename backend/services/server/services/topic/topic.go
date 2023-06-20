@@ -1,14 +1,14 @@
 package topicservices
 
 import (
-	"fmt"
 	"server/entities"
 	"server/repository"
 	"server/services"
 	"strings"
 )
 
-const ORPHANS_TOPIC_ID = 1
+const OTHERS_TOPIC_ID = 1
+const OTHERS_TOPIC_NAME = "Others"
 
 type TopicService struct {
 	repo                    repository.TopicRepository
@@ -27,7 +27,7 @@ func (s *TopicService) CreateIfNotExist(topic entities.Topic) error {
 	topic.Name = strings.TrimSpace(topic.Name)
 	err := validateTopic(topic)
 	if err != nil {
-		return fmt.Errorf("validate error: %s", err.Error())
+		return err
 	}
 	return s.repo.CreateIfNotExist(topic)
 }
@@ -52,7 +52,7 @@ func (s *TopicService) Update(topic entities.Topic) error {
 	topic.Name = strings.TrimSpace(topic.Name)
 	err := validateTopic(topic)
 	if err != nil {
-		return fmt.Errorf("validate error: %s", err.Error())
+		return err
 	}
 	return s.repo.Update(topic)
 }
@@ -61,10 +61,10 @@ func (s *TopicService) Delete(topic entities.Topic) error {
 	topic.Name = strings.TrimSpace(topic.Name)
 	err := validateTopic(topic)
 	if err != nil {
-		return fmt.Errorf("validate error: %s", err.Error())
+		return err
 	}
 
-	err = s.articlesSourcesServices.UpdateTopicAllSource(topic.ID, ORPHANS_TOPIC_ID)
+	err = s.articlesSourcesServices.UpdateTopicAllSource(topic.ID, OTHERS_TOPIC_ID)
 	if err != nil {
 		return err
 	}

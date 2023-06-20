@@ -40,14 +40,7 @@ type ArticlesSource = {
   link: string;
   feed_link: string;
   image: string;
-}
-
-type ArticlesSourceYupValidateProp = {
-  title: string;
-  description: string;
-  link: string;
-  feed_link: string;
-  imgSize: number;
+  topic_id: number;
 }
 
 type Crawler = {
@@ -69,9 +62,17 @@ type CreateCrawlerPayload = {
 }
 
 type Category = {
-  name: string;
   id: number;
+  name: string;
+  illustration: string;
 }
 
 type Categories = Array<Category>
 
+type Topic = {
+  id: number;
+  name: string;
+  category_id: number;
+}
+
+type Topics = Array<Topic>

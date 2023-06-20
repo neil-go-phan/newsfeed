@@ -5,12 +5,13 @@ import UpdateBtn from './updateBtn';
 type Props = {
   id: number;
   name: string;
+  illustration: string;
   isDisabled: boolean;
   handleDeleteCategory: (id: number, name: string) => void;
   handleUpdateCategory: (id: number, oldName: string, newName: string) => void;
 };
 
-const AdminCategoriesAction: React.FC<Props> = (props: Props) => {
+const AdminTopicsAction: React.FC<Props> = (props: Props) => {
   return (
     <div className="action">
       <div className="d-flex">
@@ -23,6 +24,7 @@ const AdminCategoriesAction: React.FC<Props> = (props: Props) => {
         <UpdateBtn
           id={props.id}
           name={props.name}
+          illustration={props.illustration}
           isDisabled={props.isDisabled}
           handleUpdateCategory={props.handleUpdateCategory}
         />
@@ -31,4 +33,4 @@ const AdminCategoriesAction: React.FC<Props> = (props: Props) => {
   );
 };
 
-export default AdminCategoriesAction;
+export default AdminTopicsAction;

@@ -15,10 +15,9 @@ message Crawler {
   string article_title = 5;
   string article_description = 6;
   string article_link = 7;
-  string article_published = 8;
-  string article_authors = 9;
-  string schedule = 10;
-  int32 articles_source_id = 11;
+  string article_authors = 8;
+  string schedule = 9;
+  int32 articles_source_id = 10;
 }
 
 message TestResult {
