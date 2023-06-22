@@ -51,6 +51,20 @@ func (s *CategoryService) ListName() ([]services.CategoryResponse, error) {
 	return categoriesResponse, nil
 }
 
+func (s *CategoryService) ListAll() ([]services.CategoryResponse, error) {
+	categoriesResponse := make([]services.CategoryResponse, 0)
+	categories, err := s.repo.ListAll()
+	if err != nil {
+		return categoriesResponse, err
+	}
+	for _, category := range categories {
+		if !isOthersCategory(category) {
+			categoriesResponse = append(categoriesResponse, castEntityCategoryToCategoryResponse(category))
+		}
+	}
+	return categoriesResponse, nil
+}
+
 func (s *CategoryService) UpdateName(payload services.UpdateNameCategoryPayload) error {
 	category, newName := extractUpdateNamePayload(payload)
 	err := validateCategoryName(category)

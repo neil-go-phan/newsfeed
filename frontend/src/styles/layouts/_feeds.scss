@@ -22,7 +22,7 @@
           font-size: 20px;
         }
       }
-      .searchBar {
+      .searchBarHeader {
         input {
           font-size: 14px;
           height: 38px;
@@ -53,6 +53,9 @@
           color: #1a2433;
         }
       }
+    }
+    .userNav {
+      cursor: pointer;
     }
     &--readingPart {
       flex-grow: 1;
@@ -89,8 +92,6 @@
           &:hover {
             color: #236edf;
             border: 1px solid #236edf;
-            // color: #1a2433;
-            // border: 1px solid #1a2433;
           }
         }
         .active {
@@ -132,6 +133,14 @@
         }
       }
     }
+    &--searchView {
+      flex-grow: 1;
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      padding-left: 10px;
+      padding-right: 20px;
+    }
   }
   &__content {
     position: relative;
@@ -159,7 +168,7 @@
       position: absolute;
       top: 0px;
       left: 270px;
-      padding: 20px;
+      padding: 0 20px;
     }
     .pageContentWhenSidebarClose {
       left: 0;

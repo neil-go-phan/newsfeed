@@ -24,18 +24,22 @@ type RoleServices interface {
 }
 
 type ArticleServices interface {
+	GetPaginationByArticlesSourceID(articlesSourceID uint, page int, pageSize int) ([]ArticleResponse, error)
+
 	CreateIfNotExist(article *entities.Article) error
 }
 
 type ArticlesSourceServices interface {
+	GetByTopicID(topicID uint) ([]ArticlesSourceResponseRender, error)
+
 	CreateIfNotExist(articlesSource entities.ArticlesSource) (entities.ArticlesSource, error)
 	UpdateTopicOneSource(articlesSource entities.ArticlesSource, newTopicId uint) error
 	UpdateTopicAllSource(oldTopicId uint, newTopicId uint) error
 }
 
 type CrawlerServices interface {
-	TestRSSCrawler(crawler entities.Crawler) (*ArticlesSourceResponse, []*ArticleResponse, error)
-	TestCustomCrawler(crawler entities.Crawler) (*ArticlesSourceResponse, []*ArticleResponse, error)
+	TestRSSCrawler(crawler entities.Crawler) (*ArticlesSourceResponseCrawl, []*ArticleResponse, error)
+	TestCustomCrawler(crawler entities.Crawler) (*ArticlesSourceResponseCrawl, []*ArticleResponse, error)
 
 	CreateCrawlerWithCorrespondingArticlesSource(payload CreateCrawlerPayload) error
 	GetHtmlPage(url *url.URL) error
@@ -53,6 +57,7 @@ type CronjobServices interface {
 
 type CategoryServices interface {
 	ListName() ([]CategoryResponse, error)
+	ListAll() ([]CategoryResponse, error)
 	GetPagination(page int, pageSize int) ([]CategoryResponse, error)
 	Count() (int, error)
 
@@ -64,6 +69,7 @@ type CategoryServices interface {
 type TopicServices interface {
 	List() ([]TopicResponse, error)
 	GetPagination(page int, pageSize int) ([]TopicResponse, error)
+	GetByCategory(categoryID uint)  ([]TopicResponse, error) 
 	Count() (int, error)
 
 	CreateIfNotExist(topic entities.Topic) error

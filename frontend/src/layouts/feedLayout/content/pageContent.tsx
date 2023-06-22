@@ -4,6 +4,7 @@ type Props = {
   isOpenSidebar: boolean;
   contentDivHeight: number;
   pageContentWidth: number;
+  children: React.ReactNode;
 };
 
 const FeedsPageContent: React.FC<Props> = (props: Props) => {
@@ -16,7 +17,7 @@ const FeedsPageContent: React.FC<Props> = (props: Props) => {
       }
       style={{ height: props.contentDivHeight, width: props.pageContentWidth }}
     >
-      FeedsContent
+      {props.children}
     </div>
   );
 };

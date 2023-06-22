@@ -1,0 +1,67 @@
+// &__line {
+//   margin: 25px 0;
+//   border-bottom: 1px solid #828d9d;
+// }
+
+.articlesSourcesSearchResult {
+  padding: 20px 0;
+  &__item {
+    border-top: 1px solid #ebeff2;
+    padding: 20px 0;
+    .title {
+      margin-top: 10px;
+      a {
+        color: #000;
+        text-decoration: none;
+        font-size: 17px;
+        font-weight: bold;
+        line-height: 1.2;
+        word-break: break-word;
+      }
+    }
+    .colorGray {
+      color: #828d9d;
+    }
+    .description {
+      p {
+        margin-top: 16px;
+        font-size: 13px;
+        line-height: 17px;
+        text-overflow: ellipsis;
+        line-clamp: 3;
+        -webkit-line-clamp: 3;
+        -webkit-box-orient: vertical;
+        display: -webkit-box;
+        overflow: hidden;
+      }
+    }
+    .stats {
+      margin-bottom: 10px;
+      p {
+        margin: 0;
+        font-size: 12px;
+      }
+    }
+    .followBtn {
+      button {
+        font-size: 14px;
+        line-height: 15px;
+        height: 32px;
+        padding: 8px 12px;
+        cursor: pointer;
+        margin: 0;
+        box-shadow: none;
+        border-radius: 3px;
+        font-weight: 500;
+        white-space: nowrap;
+      }
+    }
+    .articles {
+      display: flex;
+      
+      .article {
+        margin-right: 10px;
+      }
+    }
+  }
+}

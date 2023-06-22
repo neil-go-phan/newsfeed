@@ -86,3 +86,15 @@ func (s *TopicService) GetPagination(page int, pageSize int) ([]services.TopicRe
 func (s *TopicService) Count() (int, error) {
 	return s.repo.Count()
 }
+
+func (s *TopicService) GetByCategory(categoryID uint)  ([]services.TopicResponse, error) {
+	topicsResponse := make([]services.TopicResponse, 0)
+	topics, err := s.repo.GetByCategory(categoryID)
+	if err != nil {
+		return topicsResponse, err
+	}
+	for _, topic := range topics {
+		topicsResponse = append(topicsResponse, castEntityTopicToTopicResponse(topic))
+	}
+	return topicsResponse, nil
+}

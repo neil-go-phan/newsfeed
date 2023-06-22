@@ -7,7 +7,6 @@ import IconButton from '@mui/material/IconButton';
 import StarBorderIcon from '@mui/icons-material/StarBorder';
 import RadioButtonUncheckedIcon from '@mui/icons-material/RadioButtonUnchecked';
 import { CARD_MAX_WIDTH } from '.';
-import { alertError } from '@/helpers/alert';
 
 type Props = {
   articleTitle: string;

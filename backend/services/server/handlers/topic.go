@@ -17,6 +17,7 @@ type TopicHandler struct {
 type TopicHandlerInterface interface {
 	List(c *gin.Context)
 	GetPagination(c *gin.Context)
+	GetByCategory(c *gin.Context)
 	Count(c *gin.Context)
 
 	Create(c *gin.Context)
@@ -98,7 +99,7 @@ func (h *TopicHandler) GetPagination(c *gin.Context) {
 	page, err := strconv.Atoi(c.Query("page"))
 	if err != nil {
 		log.Error("error occrus:", err)
-		c.JSON(http.StatusBadRequest, gin.H{"success": false, "message": "input invalid"})
+		c.JSON(http.StatusBadRequest, gin.H{"success": false, "message": "bad request"})
 		return
 	}
 
@@ -126,4 +127,21 @@ func (h *TopicHandler) Count(c *gin.Context) {
 		return
 	}
 	c.JSON(http.StatusOK, gin.H{"success": true, "total": total})
+}
+
+func  (h *TopicHandler) GetByCategory(c *gin.Context) {
+	categoryID, err := strconv.Atoi(c.Query("category_id"))
+	if err != nil {
+		log.Error("error occrus:", err)
+		c.JSON(http.StatusBadRequest, gin.H{"success": false, "message": "bad request"})
+		return
+	}
+
+	topics, err := h.service.GetByCategory(uint(categoryID))
+	if err != nil {
+		log.Error("error occrus:", err)
+		c.JSON(http.StatusInternalServerError, gin.H{"success": false, "message": "internal server error"})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"success": true, "topics": topics})
 }

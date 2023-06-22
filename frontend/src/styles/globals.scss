@@ -19,16 +19,20 @@
 @import "./variables/colors";
 
 // commom
+@import "./common/scrollbar";
 @import "./common/errorMessage";
 @import "./common/backToTopBtn";
 @import "./common/bootstrapBtn";
 @import "./common/loading";
 @import "./common/articleCard";
+@import "./common/searchBar";
+@import "./common/articlesSourcesSearchResult";
 
 // layout 
 @import "./layouts/auth";
 @import "./layouts/home";
 @import "./layouts/adminSidebar";
+@import "./layouts/feeds";
 
 // pages
 @import "./pages/auth";
@@ -40,4 +44,5 @@
 @import "./components/footer";
 @import "./components/admin";
 @import "./components/addCrawler";
-@import "./components/feeds";
+@import "./components/feedsComponents";
+

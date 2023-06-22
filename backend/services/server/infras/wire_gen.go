@@ -70,3 +70,19 @@ func InitizeCategory(db *gorm.DB) *routes.CategoryRoutes {
 	categoryRoutes := routes.NewCategoryRoutes(categoryHandler)
 	return categoryRoutes
 }
+
+func InitizeArticlesSources(db *gorm.DB) *routes.ArticlesSourceRoutes {
+	articlesSourcesRepo := repository.NewArticlesSourcesRepo(db)
+	articlesSourceService := articlessourceservices.NewArticlesSourceService(articlesSourcesRepo)
+	articlesSourceHandler := handlers.NewArticlesSourceHandler(articlesSourceService)
+	articlesSourceRoutes := routes.NewArticlesSourceRoutes(articlesSourceHandler)
+	return articlesSourceRoutes
+}
+
+func InitizeArticles(db *gorm.DB) *routes.ArticleRoutes {
+	articleRepo := repository.NewArticleRepo(db)
+	articleService := articleservices.NewArticleService(articleRepo)
+	articleHandler := handlers.NewArticlesHandler(articleService)
+	articleRoutes := routes.NewArticleRoutes(articleHandler)
+	return articleRoutes
+}

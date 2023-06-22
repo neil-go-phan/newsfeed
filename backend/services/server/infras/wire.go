@@ -109,6 +109,32 @@ func InitCategory(db *gorm.DB) *routes.CategoryRoutes {
 	return &routes.CategoryRoutes{}
 }
 
+func InitArticlesSources(db *gorm.DB) *routes.ArticlesSourceRoutes {
+	wire.Build(
+		repository.NewArticlesSourcesRepo,
+		wire.Bind(new(repository.ArticlesSourcesRepository), new(*repository.ArticlesSourcesRepo)),
+		articlessourceservices.NewArticlesSourceService,
+		wire.Bind(new(services.ArticlesSourceServices), new(*articlessourceservices.ArticlesSourceService)),
+		handlers.NewArticlesSourceHandler,
+		wire.Bind(new(handlers.ArticlesSourceHandlerInterface), new(*handlers.ArticlesSourceHandler)),
+		routes.NewArticlesSourceRoutes,
+	)
+	return &routes.ArticlesSourceRoutes{}
+}
+
+func InitArticles(db *gorm.DB) *routes.ArticleRoutes {
+	wire.Build(
+		repository.NewArticleRepo,
+		wire.Bind(new(repository.ArticleRepository), new(*repository.ArticleRepo)),
+		articleservices.NewArticleService,
+		wire.Bind(new(services.ArticleServices), new(*articleservices.ArticleService)),
+		handlers.NewArticlesHandler,
+		wire.Bind(new(handlers.ArticleHandlerInterface), new(*handlers.ArticleHandler)),
+		routes.NewArticleRoutes,
+	)
+	return &routes.ArticleRoutes{}
+}
+
 // func InitCronjob(db *gorm.DB, grpcClient pb.CrawlerServiceClient) *routes.CrawlerRoutes {
 // 	wire.Build(
 // 		repository.NewArticleRepo,

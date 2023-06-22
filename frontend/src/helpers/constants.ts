@@ -1,5 +1,4 @@
 export const _ROUTES = {
-  USER_HOME: '/feeds',
   LADING_PAGE: '/',
   FEATURE_PAGE: '/feature',
   PRICING_PAGE: '/pricing',
@@ -14,7 +13,13 @@ export const _ROUTES = {
   ADMIN_TOPICS: '/admin/topics',
   ADD_CRAWLER :'/admin/crawler/add',
   ADD_CUSTOM_CRAWLER :'/admin/crawler/add/custom',
-  ADMIN_CRONJOB: '/admin/cronjob'
+  ADMIN_CRONJOB: '/admin/cronjob',
+  FEEDS: '/feeds',
+  FEEDS_SEARCH: '/feeds/search',
+  FEEDS_SEARCH_WEBS: '/feeds/search/webs',
+  FEEDS_SEARCH_WEBS_CATEGORY: '/feeds/search/webs/category',
+  FEEDS_SEARCH_ARTICLES: '/feeds/search/articles'
+
 }
 
 export const _REGEX = {

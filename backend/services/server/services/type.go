@@ -39,7 +39,7 @@ type GoogleUserResult struct {
 	Locale         string
 }
 
-type ArticlesSourceResponse struct {
+type ArticlesSourceResponseCrawl struct {
 	Title       string `json:"title"`
 	Description string `json:"description"`
 	Link        string `json:"link"`
@@ -48,6 +48,7 @@ type ArticlesSourceResponse struct {
 }
 
 type ArticleResponse struct {
+	ID          uint    `json:"id"`
 	Title       string    `json:"title"`
 	Description string    `json:"description"`
 	Link        string    `json:"link"`
@@ -120,4 +121,13 @@ type TopicResponse struct {
 	ID         uint   `json:"id"`
 	Name       string `json:"name"`
 	CategoryID uint   `json:"category_id"`
+}
+
+type ArticlesSourceResponseRender struct {
+	ID          uint   `json:"id"`
+	Title       string `json:"title"`
+	Description string `json:"description"`
+	Link        string `json:"link"`
+	Image       string `json:"image"` // base64 image
+	TopicID     uint   `json:"topic_id"`
 }
