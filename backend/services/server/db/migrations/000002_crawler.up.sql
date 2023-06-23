@@ -24,6 +24,7 @@ CREATE TABLE articles_sources (
   feed_link text UNIQUE,
   title text,
   description text,
+  followed integer DEFAULT 0,
   image text
 );
 

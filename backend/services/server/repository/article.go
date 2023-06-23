@@ -2,15 +2,18 @@
 package repository
 
 import (
+	"fmt"
 	"server/entities"
 	"server/helpers"
+	"strings"
 
 	"gorm.io/gorm"
 )
 
 type ArticleRepository interface {
+	SearchArticlesAcrossSources(keyword string, page int, pageSize int) ([]entities.Article, int64, error)
 	GetPaginationByArticlesSourceID(articlesSourceID uint, page int, pageSize int) ([]entities.Article, error)
-	
+
 	CreateIfNotExist(article *entities.Article) error
 }
 
@@ -40,4 +43,21 @@ func (repo *ArticleRepo) GetPaginationByArticlesSourceID(articlesSourceID uint, 
 		return articles, err
 	}
 	return articles, nil
+}
+
+func (repo *ArticleRepo) SearchArticlesAcrossSources(keyword string, page int, pageSize int) ([]entities.Article, int64, error) {
+	articles := make([]entities.Article, 0)
+	searchKeyword := fmt.Sprint("%" + strings.ToLower(keyword) + "%")
+
+	var found int64
+
+	err := repo.DB.
+		Scopes(helpers.Paginate(page, pageSize)).
+		Where("LOWER(title) LIKE ? or LOWER(description) LIKE ?", searchKeyword, searchKeyword).
+		Find(&articles).
+		Count(&found).Error
+	if err != nil {
+		return articles, found, err
+	}
+	return articles, found, nil
 }

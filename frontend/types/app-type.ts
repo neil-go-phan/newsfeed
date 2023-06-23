@@ -50,6 +50,7 @@ type ArticlesSourceInfo = {
   description: string;
   link: string;
   image: string;
+  followed: number;
   topic_id: number;
 };
 

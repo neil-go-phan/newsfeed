@@ -6,6 +6,7 @@ type Props = {
   handleAPI: (keyword: string) => void;
 };
 
+
 const SearchBar: React.FC<Props> = (props: Props) => {
   // const [keyword, setKeyword] = useState<string>('');
   const { keyword, setKeyword } = useContext(SearchKeywordContext);

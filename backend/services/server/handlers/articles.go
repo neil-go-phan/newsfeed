@@ -15,6 +15,7 @@ type ArticleHandler struct {
 
 type ArticleHandlerInterface interface {
 	GetPaginationByArticlesSourceID(c *gin.Context)
+	SearchArticlesAcrossSources(c *gin.Context)
 	// ListAll(c *gin.Context)
 	// GetPagination(c *gin.Context)
 	// Count(c *gin.Context)
@@ -56,4 +57,28 @@ func (h *ArticleHandler) GetPaginationByArticlesSourceID(c *gin.Context) {
 		return
 	}
 	c.JSON(http.StatusOK, gin.H{"success": true, "articles": articles})
+}
+
+func (h *ArticleHandler) SearchArticlesAcrossSources(c *gin.Context) {
+	keyword := c.Query("q")
+	page, err := strconv.Atoi(c.Query("page"))
+	if err != nil {
+		log.Error("error occrus:", err)
+		c.JSON(http.StatusBadRequest, gin.H{"success": false, "message": "bad request"})
+		return
+	}
+	pageSize, err := strconv.Atoi(c.Query("page_size"))
+	if err != nil {
+		log.Error("error occrus:", err)
+		c.JSON(http.StatusBadRequest, gin.H{"success": false, "message": "bad request"})
+		return
+	}
+
+	articles, found, err := h.service.SearchArticlesAcrossSources(keyword, page, pageSize)
+	if err != nil {
+		log.Error("error occrus:", err)
+		c.JSON(http.StatusInternalServerError, gin.H{"success": false, "message": "internal server error"})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"success": true, "articles": articles, "found": found})
 }

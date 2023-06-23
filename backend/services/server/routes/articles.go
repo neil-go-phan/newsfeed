@@ -22,5 +22,6 @@ func (route *ArticleRoutes) Setup(r *gin.Engine) {
 	routes := r.Group("articles")
 	{
 		routes.GET("get-page-by-articles-source-id", middlewares.CheckAccessToken(), route.handler.GetPaginationByArticlesSourceID)
+		routes.GET("search-articles-across-source", middlewares.CheckAccessToken(), route.handler.SearchArticlesAcrossSources)
 	}
 }

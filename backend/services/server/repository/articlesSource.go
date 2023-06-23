@@ -29,7 +29,9 @@ func NewArticlesSourcesRepo(db *gorm.DB) *ArticlesSourcesRepo {
 }
 
 func (repo *ArticlesSourcesRepo) CreateIfNotExist(articlesSource entities.ArticlesSource) (entities.ArticlesSource, error) {
-	result := repo.DB.Where(entities.ArticlesSource{Link: articlesSource.Link}).FirstOrCreate(&articlesSource)
+	result := repo.DB.
+		Where(entities.ArticlesSource{Link: articlesSource.Link}).
+		FirstOrCreate(&articlesSource)
 	if result.Error != nil {
 		return articlesSource, result.Error
 	}
@@ -44,7 +46,11 @@ func (repo *ArticlesSourcesRepo) GetWithTopicPaginate(topicID uint, page int, pa
 	articlesSources := make([]entities.ArticlesSource, 0)
 	var found int64
 
-	err := repo.DB.Scopes(helpers.Paginate(page, pageSize)).Where("topic_id = ?", topicID).Find(&articlesSources).Count(&found).Error
+	err := repo.DB.
+		Scopes(helpers.Paginate(page, pageSize)).
+		Where("topic_id = ?", topicID).
+		Find(&articlesSources).
+		Count(&found).Error
 	if err != nil {
 		return articlesSources, found, err
 	}
@@ -74,7 +80,11 @@ func (repo *ArticlesSourcesRepo) SearchByTitleAndDescriptionPaginate(keyword str
 	searchKeyword := fmt.Sprint(strings.ToLower(keyword) + "%")
 	var found int64
 
-	err := repo.DB.Scopes(helpers.Paginate(page, pageSize)).Where("LOWER(title) LIKE ? or LOWER(description) LIKE ?", searchKeyword, searchKeyword).Find(&articlesSources).Count(&found).Error
+	err := repo.DB.
+		Scopes(helpers.Paginate(page, pageSize)).
+		Where("LOWER(title) LIKE ? or LOWER(description) LIKE ?", searchKeyword, searchKeyword).
+		Find(&articlesSources).
+		Count(&found).Error
 	if err != nil {
 		return articlesSources, found, err
 	}

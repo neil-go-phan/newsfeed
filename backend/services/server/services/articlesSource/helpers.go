@@ -12,6 +12,7 @@ func castEntityArticlesSourceToReponse(articlesSource entities.ArticlesSource) s
 		Description: articlesSource.Description,
 		Link: articlesSource.Link,
 		Image: articlesSource.Image,
+		Followed: articlesSource.Followed,
 		TopicID: articlesSource.TopicID,
 	}
 }

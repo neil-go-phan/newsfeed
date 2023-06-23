@@ -48,7 +48,7 @@ type ArticlesSourceResponseCrawl struct {
 }
 
 type ArticleResponse struct {
-	ID          uint    `json:"id"`
+	ID          uint      `json:"id"`
 	Title       string    `json:"title"`
 	Description string    `json:"description"`
 	Link        string    `json:"link"`
@@ -129,5 +129,6 @@ type ArticlesSourceResponseRender struct {
 	Description string `json:"description"`
 	Link        string `json:"link"`
 	Image       string `json:"image"` // base64 image
+	Followed    int    `json:"followed"`
 	TopicID     uint   `json:"topic_id"`
 }

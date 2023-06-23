@@ -11,10 +11,12 @@ import { CategoriesContext } from '@/common/contexts/categoriesContext';
 import axiosProtectedAPI from '@/helpers/axiosProtectedAPI';
 import SearchWebsResult from './webs/searchWebsResult';
 import { SearchKeywordContext } from '@/common/contexts/searchKeywordContext';
+import SearchArticles from './articles';
 
 const LIST_CATEGORY_REQUEST_FAIL_MESSAGE = 'reqeust failed';
-const INPUT_PLACE_HOLDER =
+const INPUT_PLACE_HOLDER_SEARCH_FEEDS =
   'Follow your favorite source and nerver miss a story';
+const INPUT_PLACE_HOLDER_SEARCH_ARTICLES = 'Search for any articles in your feeds';
 
 function SearchFeedsComponent() {
   const router = useRouter();
@@ -55,12 +57,41 @@ function SearchFeedsComponent() {
         return <FilterByCategory />;
       case _ROUTES.FEEDS_SEARCH_WEBS_RESULT:
         return <SearchWebsResult />;
+      case _ROUTES.FEEDS_SEARCH_ARTICLES:
+        return <SearchArticles />;
       default:
         return <SearchWebs />;
     }
   };
 
+  const searchBarPlaceHolder = () => {
+    if (
+      path === _ROUTES.FEEDS_SEARCH_WEBS ||
+      path === _ROUTES.FEEDS_SEARCH_WEBS_RESULT ||
+      path === _ROUTES.FEEDS_SEARCH_WEBS_CATEGORY
+    ) {
+      return INPUT_PLACE_HOLDER_SEARCH_FEEDS;
+    }
+    if (path === _ROUTES.FEEDS_SEARCH_ARTICLES) {
+      return INPUT_PLACE_HOLDER_SEARCH_ARTICLES;
+    }
+    return '';
+  };
+
   const pushToResultPage = (keyword: string) => {
+    switch (path) {
+      case _ROUTES.FEEDS_SEARCH_WEBS:
+        return pushToSearchWebResultPage(keyword);
+      case _ROUTES.FEEDS_SEARCH_WEBS_RESULT:
+        return pushToSearchWebResultPage(keyword);
+      case _ROUTES.FEEDS_SEARCH_WEBS_CATEGORY:
+        return pushToSearchWebResultPage(keyword);
+      default:
+        return 
+    }
+  };
+
+  const pushToSearchWebResultPage = (keyword: string) => {
     if (keyword === '') {
       router.push(_ROUTES.FEEDS_SEARCH_WEBS);
       return;
@@ -68,10 +99,6 @@ function SearchFeedsComponent() {
     if (router.asPath !== _ROUTES.FEEDS_SEARCH_WEBS_RESULT) {
       router.push(_ROUTES.FEEDS_SEARCH_WEBS_RESULT);
     }
-    // router.push({
-    //   pathname: _ROUTES.FEEDS_SEARCH_WEBS_RESULT,
-    //   query: { q: keyword },
-    // });
   };
 
   return (
@@ -113,7 +140,7 @@ function SearchFeedsComponent() {
           </div>
           <div className="searchLayout__searchBar">
             <SearchBar
-              placeholder={INPUT_PLACE_HOLDER}
+              placeholder={searchBarPlaceHolder()}
               handleAPI={pushToResultPage}
             />
           </div>

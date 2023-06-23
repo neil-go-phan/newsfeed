@@ -186,3 +186,26 @@
     }
   }
 }
+
+.searchArticles {
+  margin-top: 30px;
+  &__noResult {
+    p {
+      font-size: 16px;
+      font-weight: bold;
+    }
+  }
+  &__result {
+    margin-bottom: 20px;
+    .title {
+      font-size: 20px;
+      font-weight: bold;
+    }
+    .found {
+      color: #828d9d;
+      font-size: 12px;
+      padding-top: 5px;
+      padding-bottom: 20px;
+    }
+  }
+}

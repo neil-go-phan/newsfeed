@@ -24,6 +24,7 @@ type RoleServices interface {
 }
 
 type ArticleServices interface {
+	SearchArticlesAcrossSources(keyword string, page int, pageSize int) ([]ArticleResponse,int64, error)
 	GetPaginationByArticlesSourceID(articlesSourceID uint, page int, pageSize int) ([]ArticleResponse, error)
 
 	CreateIfNotExist(article *entities.Article) error

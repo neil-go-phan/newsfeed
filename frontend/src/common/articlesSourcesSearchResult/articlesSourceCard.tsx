@@ -69,7 +69,7 @@ const ArticleSourceCard: React.FC<Props> = (props: Props) => {
           <p>{props.articlesSource.description}</p>
         </div>
         <div className="stats colorGray">
-          <p>100k follower</p>
+          <p>{props.articlesSource.followed} follower</p>
           <p>40 articles/week</p>
         </div>
         <div className="followBtn">
