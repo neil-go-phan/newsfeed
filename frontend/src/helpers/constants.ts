@@ -17,6 +17,7 @@ export const _ROUTES = {
   FEEDS: '/feeds',
   FEEDS_SEARCH: '/feeds/search',
   FEEDS_SEARCH_WEBS: '/feeds/search/webs',
+  FEEDS_SEARCH_WEBS_RESULT: '/feeds/search/webs/results',
   FEEDS_SEARCH_WEBS_CATEGORY: '/feeds/search/webs/category',
   FEEDS_SEARCH_ARTICLES: '/feeds/search/articles'
 

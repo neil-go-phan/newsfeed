@@ -1,5 +1,4 @@
 .feeds {
-
   &__header {
     height: 48px;
     position: relative;
@@ -162,8 +161,9 @@
     }
 
     &--pageContent {
-      overflow-x: auto;
-      overflow-y: scroll;
+      // overflow-x: auto;
+      // overflow-y: scroll;
+      overflow: auto;
       display: inline-block;
       position: absolute;
       top: 0px;

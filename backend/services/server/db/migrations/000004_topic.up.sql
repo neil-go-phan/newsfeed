@@ -31,6 +31,9 @@ ADD
 
 CREATE INDEX idx_articlessource_topic_id ON public.articles_sources USING btree (topic_id);
 
+CREATE INDEX idx_topic_name ON public.topics USING btree (name);
+
+
 INSERT INTO
   categories(created_at, name)
 values

@@ -87,7 +87,7 @@ func (s *TopicService) Count() (int, error) {
 	return s.repo.Count()
 }
 
-func (s *TopicService) GetByCategory(categoryID uint)  ([]services.TopicResponse, error) {
+func (s *TopicService) GetByCategory(categoryID uint) ([]services.TopicResponse, error) {
 	topicsResponse := make([]services.TopicResponse, 0)
 	topics, err := s.repo.GetByCategory(categoryID)
 	if err != nil {
@@ -97,4 +97,30 @@ func (s *TopicService) GetByCategory(categoryID uint)  ([]services.TopicResponse
 		topicsResponse = append(topicsResponse, castEntityTopicToTopicResponse(topic))
 	}
 	return topicsResponse, nil
+}
+
+func (s *TopicService) SearchByName(keyword string) ([]services.TopicResponse, error) {
+	topicsResponse := make([]services.TopicResponse, 0)
+	topics, err := s.repo.SearchByName(keyword)
+	if err != nil {
+		return topicsResponse, err
+	}
+	for _, topic := range topics {
+		topicsResponse = append(topicsResponse, castEntityTopicToTopicResponse(topic))
+	}
+	return topicsResponse, nil
+}
+
+func (s *TopicService) SearchTopicAndArticlesSourcePaginate(keyword string, page int, pageSize int) ([]services.TopicResponse, []services.ArticlesSourceResponseRender, int64, error) {
+	topics, err := s.SearchByName(keyword)
+	if err != nil {
+		return []services.TopicResponse{}, []services.ArticlesSourceResponseRender{}, 0, err
+	}
+
+	articlesSources, articleSourcesFound, err := s.articlesSourcesServices.SearchByTitleAndDescriptionPaginate(keyword, page, pageSize)
+	if err != nil {
+		return []services.TopicResponse{}, []services.ArticlesSourceResponseRender{}, articleSourcesFound, err
+	}
+
+	return topics, articlesSources, articleSourcesFound, nil
 }

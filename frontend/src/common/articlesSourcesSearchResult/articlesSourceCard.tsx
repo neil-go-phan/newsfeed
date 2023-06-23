@@ -1,5 +1,4 @@
 import axiosProtectedAPI from '@/helpers/axiosProtectedAPI';
-import Image from 'next/image';
 import Link from 'next/link';
 import React, { useEffect, useState } from 'react';
 import { Button } from 'react-bootstrap';
@@ -81,7 +80,7 @@ const ArticleSourceCard: React.FC<Props> = (props: Props) => {
       </div>
       <div className="articles col-9">
         {articles.map((article) => (
-          <div className="article col-4">
+          <div key={`article sources card ${article.title}`} className="article col-4">
             <ArticleCard
               article={article}
               isAdmin={true}

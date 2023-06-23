@@ -61,3 +61,7 @@ CREATE UNIQUE INDEX idx_crawlers_id ON public.crawlers USING btree (id);
 CREATE UNIQUE INDEX idx_articlessource_link ON public.articles_sources USING btree (link);
 
 CREATE INDEX idx_article_articlessource_id ON public.articles USING btree (articles_source_id);
+
+CREATE INDEX idx_articles_sources_title ON public.articles_sources USING btree (title);
+
+CREATE INDEX idx_articles_sources_description ON public.articles_sources USING btree (description);

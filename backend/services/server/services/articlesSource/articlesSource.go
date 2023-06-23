@@ -29,15 +29,28 @@ func (s *ArticlesSourceService) UpdateTopicAllSource(oldTopicId uint, newTopicId
 	return s.repo.UpdateTopicAllSource(oldTopicId, newTopicId)
 }
 
-func (s *ArticlesSourceService) GetByTopicID(topicID uint) ([]services.ArticlesSourceResponseRender, error) {
+func (s *ArticlesSourceService) GetByTopicIDPaginate(topicID uint, page int, pageSize int) ([]services.ArticlesSourceResponseRender, int64, error) {
 	articlesSourcesResponse := make([]services.ArticlesSourceResponseRender, 0)
-	articlesSources, err := s.repo.GetWithTopic(topicID)
+	articlesSources, found, err := s.repo.GetWithTopicPaginate(topicID, page, pageSize)
 	if err != nil {
-		return articlesSourcesResponse, err
+		return articlesSourcesResponse, found, err
 	}
 	for _, articlesSource := range articlesSources {
 		articlesSourcesResponse = append(articlesSourcesResponse, castEntityArticlesSourceToReponse(articlesSource))
 
 	}
-	return articlesSourcesResponse, nil
+	return articlesSourcesResponse, found, nil
+}
+
+func (s *ArticlesSourceService) SearchByTitleAndDescriptionPaginate(keyword string, page int, pageSize int) ([]services.ArticlesSourceResponseRender, int64, error) {
+	articlesSourcesResponse := make([]services.ArticlesSourceResponseRender, 0)
+	articlesSources, found, err := s.repo.SearchByTitleAndDescriptionPaginate(keyword, page, pageSize)
+	if err != nil {
+		return articlesSourcesResponse, found, err
+	}
+	for _, articlesSource := range articlesSources {
+		articlesSourcesResponse = append(articlesSourcesResponse, castEntityArticlesSourceToReponse(articlesSource))
+
+	}
+	return articlesSourcesResponse, found, nil
 }

@@ -138,4 +138,51 @@
       color: #5b93e1;
     }
   }
+
+  &__articlesSources {
+    .title {
+      font-size: 20px;
+      font-weight: bold;
+    }
+    .found {
+      color: #828d9d;
+      font-size: 12px;
+      padding-top: 5px;
+      padding-bottom: 20px;
+    }
+  }
+}
+
+.searchWebsResult {
+  &__topics {
+    .title {
+      font-size: 20px;
+      font-weight: bold;
+    }
+    .list {
+      display: flex;
+      align-items: center;
+      margin: 18px 0;
+      .item {
+        border: solid 1px #929ba9;
+        font-size: 14px;
+        margin: 0 10px 0 0;
+        padding: 4px 8px;
+        border-radius: 3px;
+        cursor: pointer;
+      }
+    }
+  }
+  &__feeds {
+    .title {
+      font-size: 20px;
+      font-weight: bold;
+    }
+    .found {
+      color: #828d9d;
+      font-size: 12px;
+      padding-top: 5px;
+      padding-bottom: 20px;
+    }
+  }
 }

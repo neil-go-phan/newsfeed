@@ -1,15 +1,26 @@
-import React from 'react'
+import React from 'react';
 import ArticleSourceCard from './articlesSourceCard';
 type Props = {
-  articlesSources: ArticlesSourceInfoes
+  articlesSources: ArticlesSourceInfoes;
 };
 
 const ArticlesSourcesSearchResult: React.FC<Props> = (props: Props) => {
-  return (
-    <div className='articlesSourcesSearchResult'>
-      {props.articlesSources.map((articleSourceInfo) => <ArticleSourceCard key={`article source info - ${articleSourceInfo.title}`} articlesSource={articleSourceInfo}/>)}
-    </div>
-  )
-}
+  if (props.articlesSources.length !== 0) {
+    return (
+      <>
+        {props.articlesSources.map((articleSourceInfo) => (
+          <ArticleSourceCard
+            key={`article source info - ${articleSourceInfo.title}`}
+            articlesSource={articleSourceInfo}
+          />
+        ))}
+      </>
+    );
+  }
 
-export default ArticlesSourcesSearchResult
+  return (
+    <div className="articlesSourcesSearchResult__notFound">Not found feeds</div>
+  );
+};
+
+export default ArticlesSourcesSearchResult;

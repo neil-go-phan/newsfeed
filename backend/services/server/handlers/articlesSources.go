@@ -14,7 +14,7 @@ type ArticlesSourceHandler struct {
 }
 
 type ArticlesSourceHandlerInterface interface {
-	GetByTopicID(c *gin.Context)
+	GetByTopicIDPaginate(c *gin.Context)
 	// ListAll(c *gin.Context)
 	// GetPagination(c *gin.Context)
 	// Count(c *gin.Context)
@@ -29,19 +29,32 @@ func NewArticlesSourceHandler(service services.ArticlesSourceServices) *Articles
 	}
 }
 
-func (h *ArticlesSourceHandler) GetByTopicID(c *gin.Context) {
+func (h *ArticlesSourceHandler) GetByTopicIDPaginate(c *gin.Context) {
 	topicID, err := strconv.Atoi(c.Query("topic_id"))
 	if err != nil {
 		log.Error("error occrus:", err)
 		c.JSON(http.StatusBadRequest, gin.H{"success": false, "message": "bad request"})
 		return
 	}
+	page, err := strconv.Atoi(c.Query("page"))
+	if err != nil {
+		log.Error("error occrus:", err)
+		c.JSON(http.StatusBadRequest, gin.H{"success": false, "message": "bad request"})
+		return
+	}
 
-	articlesSources, err := h.service.GetByTopicID(uint(topicID))
+	pageSize, err := strconv.Atoi(c.Query("page_size"))
+	if err != nil {
+		log.Error("error occrus:", err)
+		c.JSON(http.StatusBadRequest, gin.H{"success": false, "message": "input invalid"})
+		return
+	}
+
+	articlesSources, found, err := h.service.GetByTopicIDPaginate(uint(topicID), page, pageSize)
 	if err != nil {
 		log.Error("error occrus:", err)
 		c.JSON(http.StatusInternalServerError, gin.H{"success": false, "message": "internal server error"})
 		return
 	}
-	c.JSON(http.StatusOK, gin.H{"success": true, "articles_sources": articlesSources})
+	c.JSON(http.StatusOK, gin.H{"success": true, "articles_sources": articlesSources, "found": found})
 }

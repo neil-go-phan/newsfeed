@@ -30,7 +30,8 @@ type ArticleServices interface {
 }
 
 type ArticlesSourceServices interface {
-	GetByTopicID(topicID uint) ([]ArticlesSourceResponseRender, error)
+	GetByTopicIDPaginate(topicID uint, page int, pageSize int) ([]ArticlesSourceResponseRender,int64, error)
+	SearchByTitleAndDescriptionPaginate(keyword string, page int, pageSize int) ([]ArticlesSourceResponseRender, int64, error)
 
 	CreateIfNotExist(articlesSource entities.ArticlesSource) (entities.ArticlesSource, error)
 	UpdateTopicOneSource(articlesSource entities.ArticlesSource, newTopicId uint) error
@@ -69,7 +70,9 @@ type CategoryServices interface {
 type TopicServices interface {
 	List() ([]TopicResponse, error)
 	GetPagination(page int, pageSize int) ([]TopicResponse, error)
-	GetByCategory(categoryID uint)  ([]TopicResponse, error) 
+	GetByCategory(categoryID uint) ([]TopicResponse, error)
+	SearchByName(keyword string) ([]TopicResponse, error)
+	SearchTopicAndArticlesSourcePaginate(keyword string, page int, pageSize int) ([]TopicResponse, []ArticlesSourceResponseRender, int64, error)
 	Count() (int, error)
 
 	CreateIfNotExist(topic entities.Topic) error

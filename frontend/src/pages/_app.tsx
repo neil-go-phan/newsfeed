@@ -1,6 +1,5 @@
 import '@fortawesome/fontawesome-svg-core/styles.css';
 import '@/styles/globals.scss';
-import ProgressBar from '@/common/processBar';
 import { SSRProvider } from 'react-bootstrap';
 import type { AppProps } from 'next/app';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -28,7 +27,6 @@ export default function App(props: MyAppProps) {
     <CacheProvider value={emotionCache}>
       <SSRProvider>
         <CssBaseline />
-        <ProgressBar />
         {getLayout(<Component {...pageProps} />)}
         <ToastContainer />
       </SSRProvider>

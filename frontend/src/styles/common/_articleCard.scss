@@ -62,3 +62,11 @@
     }
   }
 }
+
+.popup-content {
+  width: 80%;
+}
+
+.popup-overlay {
+  z-index: 99999 !important;
+}
