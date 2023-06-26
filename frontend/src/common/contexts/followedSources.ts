@@ -2,10 +2,10 @@ import { createContext } from 'react';
 
 interface FollowedSourcesContext {
   followedSources: ArticlesSourceInfoes;
-  setFollowedSources: (articlesSources: ArticlesSourceInfoes) => void;
+  callAPIGetFollow: () => void;
 }
 
 export const FollowedSourcesContext = createContext<FollowedSourcesContext>({
   followedSources: [],
-  setFollowedSources: () => {},
+  callAPIGetFollow: () => {},
 });

@@ -17,6 +17,7 @@ func SetupRoute(db *gorm.DB, r *gin.Engine, grpcClient pb.CrawlerServiceClient, 
 	categoryRoutes := InitizeCategory(db)
 	articlesSourceRoutes := InitizeArticlesSources(db)
 	articlesRoutes := InitizeArticles(db)
+	followRoutes := InitizeFollow(db)
 
 	userRoutes.Setup(r)
 	crawlerRoutes.Setup(r)
@@ -24,6 +25,7 @@ func SetupRoute(db *gorm.DB, r *gin.Engine, grpcClient pb.CrawlerServiceClient, 
 	categoryRoutes.Setup(r)
 	articlesSourceRoutes.Setup(r)
 	articlesRoutes.Setup(r)
+	followRoutes.Setup(r)
 
 	// cronjob Setup
 	go func() {

@@ -46,7 +46,7 @@
           color: #53585f;
         }
       }
-      .searchBar {
+      .searchBarHeader {
         input {
           background-color: #f3f4f7;
           color: #1a2433;
@@ -151,6 +151,7 @@
       position: relative;
       top: 0px;
       left: 0px;
+      overflow-y: scroll;
     }
 
     .sidebarReadingPartClose {
@@ -160,9 +161,107 @@
       left: -280px;
     }
 
+    .subscriptionsNav {
+      padding-top: 15px;
+      margin-bottom: 15px;
+    }
+    .item {
+      line-height: 36px;
+      padding: 2px 0;
+      position: relative;
+      .itemInner {
+        margin: 0 12px;
+        padding: 0 12px;
+        border-radius: 5px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        color: #d7dde4;
+        text-decoration: none;
+        &:hover {
+          background-color: #233e61;
+          color: #d7dde4;
+        }
+        .icon {
+          display: flex;
+          width: 20px;
+          height: 20px;
+          cursor: pointer;
+        }
+        .description {
+          display: flex;
+          align-items: center;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          padding-right: 8px;
+          margin-left: 12px;
+          font-weight: 400;
+          text-decoration: none !important;
+          margin-left: 12px;
+          font-weight: 400;
+          font-size: 14px;
+          opacity: 0.8;
+          display: inline-block;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          flex: 1;
+        }
+      }
+    }
+    .feedsNav {
+      margin: 5px 0 0 0;
+      padding: 0px 0 0 0;
+      border: 0 none;
+      border-radius: 0px;
+      position: relative;
+      min-width: 0;
+      .title {
+        display: flex;
+        flex: 1;
+        align-items: center;
+        justify-content: space-between;
+        padding: 10px 20px 10px 24px;
+        .text {
+          color: #fefefe;
+          flex: 1 0 auto;
+          text-transform: uppercase;
+          font-size: 12px;
+          letter-spacing: 0.04rem;
+          font-weight: normal;
+          opacity: 0.6;
+        }
+        .setting {
+          cursor: pointer;
+          opacity: 0.5;
+          &:hover {
+            opacity: 1;
+          }
+        }
+      }
+      .unRead {
+        min-width: 20px;
+        text-align: right;
+        position: relative;
+        span {
+          font-size: 12px;
+          vertical-align: middle;
+          text-align: right;
+          cursor: pointer;
+          line-height: 20px;
+          height: 20px;
+        }
+      }
+      .sourceIcon {
+        img {
+          border-radius: 50%;
+          overflow-clip-margin: content-box;
+          overflow: clip;
+        }
+      }
+    }
+
     &--pageContent {
-      // overflow-x: auto;
-      // overflow-y: scroll;
       overflow: auto;
       display: inline-block;
       position: absolute;

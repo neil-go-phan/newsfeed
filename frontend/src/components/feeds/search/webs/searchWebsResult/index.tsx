@@ -48,7 +48,7 @@ function SearchWebsResult() {
   };
 
   const handleSelectTopic = (topicName: string, topicID: number) => {
-    setKeyword('#' + topicName);
+    setKeyword(`#${topicName}`);
     setSelectedTopicID(topicID);
   };
 

@@ -13,5 +13,6 @@ func castEntityArticleToReponse(article entities.Article) services.ArticleRespon
 		Link: article.Link,
 		Published: article.Published,
 		Authors: article.Authors,
+		ArticlesSourceID: article.ArticlesSourceID,
 	}
 }

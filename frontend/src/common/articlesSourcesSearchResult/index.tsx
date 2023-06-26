@@ -4,7 +4,7 @@ type Props = {
   articlesSources: ArticlesSourceInfoes;
 };
 
-const ArticlesSourcesSearchResult: React.FC<Props> = (props: Props) => {
+const ArticlesSourcesSearchResult: React.FC<Props> = (props: Props) => {  
   if (props.articlesSources.length !== 0) {
     return (
       <>

@@ -15,6 +15,7 @@ type ArticleHandler struct {
 
 type ArticleHandlerInterface interface {
 	GetPaginationByArticlesSourceID(c *gin.Context)
+	GetPaginationByUserFollowedSources(c *gin.Context)
 	SearchArticlesAcrossSources(c *gin.Context)
 	// ListAll(c *gin.Context)
 	// GetPagination(c *gin.Context)
@@ -28,7 +29,8 @@ func NewArticlesHandler(service services.ArticleServices) *ArticleHandler {
 	return &ArticleHandler{
 		service: service,
 	}
-}
+}	
+
 
 func (h *ArticleHandler) GetPaginationByArticlesSourceID(c *gin.Context) {
 	page, err := strconv.Atoi(c.Query("page"))
@@ -58,6 +60,36 @@ func (h *ArticleHandler) GetPaginationByArticlesSourceID(c *gin.Context) {
 	}
 	c.JSON(http.StatusOK, gin.H{"success": true, "articles": articles})
 }
+
+func (h *ArticleHandler) GetPaginationByUserFollowedSources(c *gin.Context) {
+	page, err := strconv.Atoi(c.Query("page"))
+	if err != nil {
+		log.Error("error occrus:", err)
+		c.JSON(http.StatusBadRequest, gin.H{"success": false, "message": "bad request"})
+		return
+	}
+	pageSize, err := strconv.Atoi(c.Query("page_size"))
+	if err != nil {
+		log.Error("error occrus:", err)
+		c.JSON(http.StatusBadRequest, gin.H{"success": false, "message": "bad request"})
+		return
+	}
+	username, exsit := c.Get("username")
+	if !exsit {
+		log.Error("Not found username in token string")
+		c.JSON(http.StatusBadRequest, gin.H{"success": false, "message": "bad request"})
+		return
+	}
+
+	articles, err := h.service.GetPaginationByUserFollowedSource(username.(string), page, pageSize)
+	if err != nil {
+		log.Error("error occrus:", err)
+		c.JSON(http.StatusInternalServerError, gin.H{"success": false, "message": "internal server error"})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"success": true, "articles": articles})
+}
+
 
 func (h *ArticleHandler) SearchArticlesAcrossSources(c *gin.Context) {
 	keyword := c.Query("q")

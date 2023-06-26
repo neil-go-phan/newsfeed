@@ -1,10 +1,10 @@
 import type { ReactElement } from 'react';
 import FeedsLayout from '@/layouts/feedLayout';
-import SearchWebs from '@/components/feeds/search/webs';
 import { NextPageWithLayout } from '@/pages/_app';
+import ReadFeedComponent from '@/components/feeds/read';
 
 const FeedsArticles: NextPageWithLayout = () => {
-  return <SearchWebs />
+  return <ReadFeedComponent />
 };
 
 FeedsArticles.getLayout = function getLayout(page: ReactElement) {

@@ -9,14 +9,15 @@ import (
 	"server/repository"
 	"server/routes"
 	"server/services"
-	"server/services/article"
-	"server/services/articlesSource"
-	"server/services/crawler"
-	"server/services/cronjob"
-	"server/services/role"
-	"server/services/user"
-	"server/services/category"
-	"server/services/topic"
+	articleservices "server/services/article"
+	articlessourceservices "server/services/articlesSource"
+	categoryservices "server/services/category"
+	crawlerservices "server/services/crawler"
+	cronjobservices "server/services/cronjob"
+	followservices "server/services/follow"
+	roleservice "server/services/role"
+	topicservices "server/services/topic"
+	userservice "server/services/user"
 
 	"github.com/google/wire"
 	"github.com/robfig/cron/v3"
@@ -133,6 +134,24 @@ func InitArticles(db *gorm.DB) *routes.ArticleRoutes {
 		routes.NewArticleRoutes,
 	)
 	return &routes.ArticleRoutes{}
+}
+
+func InitFollow(db *gorm.DB) *routes.FollowRoutes {
+	wire.Build(
+		repository.NewArticlesSourcesRepo,
+		wire.Bind(new(repository.ArticlesSourcesRepository), new(*repository.ArticlesSourcesRepo)),
+		articlessourceservices.NewArticlesSourceService,
+		wire.Bind(new(services.ArticlesSourceServices), new(*articlessourceservices.ArticlesSourceService)),
+
+		repository.NewFollow,
+		wire.Bind(new(repository.FollowRepository), new(*repository.FollowRepo)),
+		followservices.NewFollowService,
+		wire.Bind(new(services.FollowServices), new(*followservices.FollowService)),
+		handlers.NewFollowHandler,
+		wire.Bind(new(handlers.FollowHandlerInterface), new(*handlers.FollowHandler)),
+		routes.NewFollowRoutes,
+	)
+	return &routes.FollowRoutes{}
 }
 
 // func InitCronjob(db *gorm.DB, grpcClient pb.CrawlerServiceClient) *routes.CrawlerRoutes {

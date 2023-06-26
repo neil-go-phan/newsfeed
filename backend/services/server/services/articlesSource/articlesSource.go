@@ -4,6 +4,8 @@ import (
 	"server/entities"
 	"server/repository"
 	"server/services"
+
+	"gorm.io/gorm"
 )
 
 type ArticlesSourceService struct {
@@ -53,4 +55,18 @@ func (s *ArticlesSourceService) SearchByTitleAndDescriptionPaginate(keyword stri
 
 	}
 	return articlesSourcesResponse, found, nil
+}
+
+func (s *ArticlesSourceService) UserFollow(articlesSourceID uint) error {
+	articlesSource := entities.ArticlesSource{
+		Model: gorm.Model{ID: articlesSourceID},
+	}
+	return s.repo.IncreaseFollowByOne(articlesSource)
+}
+
+func (s *ArticlesSourceService) UserUnfollow(articlesSourceID uint) error {
+	articlesSource := entities.ArticlesSource{
+		Model: gorm.Model{ID: articlesSourceID},
+	}
+	return s.repo.DecreaseFollowByOne(articlesSource)
 }

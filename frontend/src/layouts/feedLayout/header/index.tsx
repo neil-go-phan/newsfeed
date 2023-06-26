@@ -12,7 +12,7 @@ type Props = {
   handleToggleSidebar: () => void;
 };
 
-const VIEWS_ARTICLES_ROUTES_CONTAIN_LETTER = 'articles';
+const VIEWS_ARTICLES_ROUTES_CONTAIN_LETTER = 'read';
 
 const FeedsHeader: React.FC<Props> = (props: Props) => {
   const router = useRouter();

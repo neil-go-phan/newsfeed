@@ -31,6 +31,7 @@ type Article = {
   link: string;
   published: string;
   authors: string;
+  articles_source_id: number;
 };
 
 type Articles = Array<Article>;
@@ -50,7 +51,7 @@ type ArticlesSourceInfo = {
   description: string;
   link: string;
   image: string;
-  followed: number;
+  follower: number;
   topic_id: number;
 };
 

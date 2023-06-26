@@ -13,6 +13,7 @@ import (
 type ArticleRepository interface {
 	SearchArticlesAcrossSources(keyword string, page int, pageSize int) ([]entities.Article, int64, error)
 	GetPaginationByArticlesSourceID(articlesSourceID uint, page int, pageSize int) ([]entities.Article, error)
+	GetPaginationByUserFollowedSource(username string, page int, pageSize int) ([]entities.Article, error)
 
 	CreateIfNotExist(article *entities.Article) error
 }
@@ -39,6 +40,20 @@ func (repo *ArticleRepo) GetPaginationByArticlesSourceID(articlesSourceID uint, 
 	articles := make([]entities.Article, 0)
 
 	err := repo.DB.Where("articles_source_id = ?", articlesSourceID).Scopes(helpers.Paginate(page, pageSize)).Find(&articles).Error
+	if err != nil {
+		return articles, err
+	}
+	return articles, nil
+}
+
+func (repo *ArticleRepo) GetPaginationByUserFollowedSource(username string, page int, pageSize int) ([]entities.Article, error) {
+	articles := make([]entities.Article, 0)
+
+	err := repo.DB.
+		Joins("LEFT JOIN follows ON articles.articles_source_id = follows.articles_source_id", repo.DB.Where(&entities.Follow{Username: username})).
+		Scopes(helpers.Paginate(page, pageSize)).
+		Order("created_at desc").
+		Find(&articles).Error
 	if err != nil {
 		return articles, err
 	}

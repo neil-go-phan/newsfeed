@@ -19,8 +19,10 @@ export const _ROUTES = {
   FEEDS_SEARCH_WEBS: '/feeds/search/webs',
   FEEDS_SEARCH_WEBS_RESULT: '/feeds/search/webs/results',
   FEEDS_SEARCH_WEBS_CATEGORY: '/feeds/search/webs/category',
-  FEEDS_SEARCH_ARTICLES: '/feeds/search/articles'
-
+  FEEDS_SEARCH_ARTICLES: '/feeds/search/articles',
+  READ_FEEDS: '/feeds/read/',
+  READ_FEEDS_ALL_ARTICLES: '/feeds/read/all_articles',
+  READ_FEEDS_ARTICLES_SOURCE: '/feeds/read/articles_source',
 }
 
 export const _REGEX = {

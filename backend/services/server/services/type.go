@@ -48,12 +48,13 @@ type ArticlesSourceResponseCrawl struct {
 }
 
 type ArticleResponse struct {
-	ID          uint      `json:"id"`
-	Title       string    `json:"title"`
-	Description string    `json:"description"`
-	Link        string    `json:"link"`
-	Published   time.Time `json:"published"`
-	Authors     string    `json:"authors"`
+	ID               uint      `json:"id"`
+	Title            string    `json:"title"`
+	Description      string    `json:"description"`
+	Link             string    `json:"link"`
+	Published        time.Time `json:"published"`
+	Authors          string    `json:"authors"`
+	ArticlesSourceID uint      `json:"articles_source_id"`
 }
 
 type ArticlesSourceFromFrontend struct {
@@ -129,6 +130,6 @@ type ArticlesSourceResponseRender struct {
 	Description string `json:"description"`
 	Link        string `json:"link"`
 	Image       string `json:"image"` // base64 image
-	Followed    int    `json:"followed"`
+	Follower    int    `json:"follower"`
 	TopicID     uint   `json:"topic_id"`
 }

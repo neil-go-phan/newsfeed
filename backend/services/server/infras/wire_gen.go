@@ -18,6 +18,7 @@ import (
 	"server/services/category"
 	"server/services/crawler"
 	"server/services/cronjob"
+	"server/services/follow"
 	"server/services/role"
 	"server/services/topic"
 	"server/services/user"
@@ -85,4 +86,14 @@ func InitizeArticles(db *gorm.DB) *routes.ArticleRoutes {
 	articleHandler := handlers.NewArticlesHandler(articleService)
 	articleRoutes := routes.NewArticleRoutes(articleHandler)
 	return articleRoutes
+}
+
+func InitizeFollow(db *gorm.DB) *routes.FollowRoutes {
+	followRepo := repository.NewFollow(db)
+	articlesSourcesRepo := repository.NewArticlesSourcesRepo(db)
+	articlesSourceService := articlessourceservices.NewArticlesSourceService(articlesSourcesRepo)
+	followService := followservices.NewFollowService(followRepo, articlesSourceService)
+	followHandler := handlers.NewFollowHandler(followService)
+	followRoutes := routes.NewFollowRoutes(followHandler)
+	return followRoutes
 }

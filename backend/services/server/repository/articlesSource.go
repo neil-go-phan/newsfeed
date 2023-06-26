@@ -11,11 +11,14 @@ import (
 
 type ArticlesSourcesRepository interface {
 	GetWithTopicPaginate(topicID uint, page int, pageSize int) ([]entities.ArticlesSource, int64, error)
+
 	SearchByTitleAndDescriptionPaginate(keyword string, page int, pageSize int) ([]entities.ArticlesSource, int64, error)
 
 	CreateIfNotExist(articlesSource entities.ArticlesSource) (entities.ArticlesSource, error)
 	UpdateTopicOneSource(articlesSource entities.ArticlesSource, newTopicId uint) error
 	UpdateTopicAllSource(oldTopicId uint, newTopicId uint) error
+	IncreaseFollowByOne(articlesSource entities.ArticlesSource) error
+	DecreaseFollowByOne(articlesSource entities.ArticlesSource) error 
 }
 
 type ArticlesSourcesRepo struct {
@@ -90,3 +93,24 @@ func (repo *ArticlesSourcesRepo) SearchByTitleAndDescriptionPaginate(keyword str
 	}
 	return articlesSources, found, nil
 }
+
+func (repo *ArticlesSourcesRepo) IncreaseFollowByOne(articlesSource entities.ArticlesSource) error {
+	err := repo.DB. 
+		Model(&articlesSource).
+		Update("follower", gorm.Expr("follower + ?", 1)).Error
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (repo *ArticlesSourcesRepo) DecreaseFollowByOne(articlesSource entities.ArticlesSource) error {
+	err := repo.DB. 
+		Model(&articlesSource).
+		Update("follower", gorm.Expr("follower - ?", 1)).Error
+	if err != nil {
+		return err
+	}
+	return nil
+}
+

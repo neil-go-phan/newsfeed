@@ -34,6 +34,19 @@ func (s *ArticleService) GetPaginationByArticlesSourceID(articlesSourceID uint, 
 	return articlesResponse, nil
 }
 
+func (s *ArticleService) GetPaginationByUserFollowedSource(username string, page int, pageSize int) ([]services.ArticleResponse, error) {
+	articlesResponse := make([]services.ArticleResponse, 0)
+	articles, err := s.repo.GetPaginationByUserFollowedSource(username, page, pageSize)
+	if err != nil {
+		return articlesResponse, err
+	}
+	for _, articles := range articles {
+		articlesResponse = append(articlesResponse, castEntityArticleToReponse(articles))
+
+	}
+	return articlesResponse, nil
+}	
+
 func (s *ArticleService) SearchArticlesAcrossSources(keyword string, page int, pageSize int) ([]services.ArticleResponse,int64, error) {
 	articlesResponse := make([]services.ArticleResponse, 0)
 	articles,found, err := s.repo.SearchArticlesAcrossSources(keyword, page, pageSize)

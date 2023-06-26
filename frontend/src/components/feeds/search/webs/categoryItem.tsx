@@ -8,12 +8,10 @@ type Props = {
 const CategoryItem: React.FC<Props> = (props: Props) => {
   return (
     <div
-      className="categoryItem"
+      className='categoryItem'
       style={{
         backgroundImage:
-          "url('" +
-          props.category.illustration.replace(/(\r\n|\n|\r)/gm, '') +
-          "')",
+          `url("${props.category.illustration.replace(/(\r\n|\n|\r)/gm, '')}")`,
       }}
       onClick={() => props.onClickHandler(props.category.id)}
     >
