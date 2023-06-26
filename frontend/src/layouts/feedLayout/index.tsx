@@ -5,7 +5,7 @@ import FeedsContent from './content';
 import { FollowedSourcesContext } from '@/common/contexts/followedSources';
 import axiosProtectedAPI from '@/helpers/axiosProtectedAPI';
 
-const GET_FOLLOWED_ARTICLES_SOURCES_FAIL_MESSAGE = "get followed articles sources fail"
+const GET_FOLLOWED_ARTICLES_SOURCES_FAIL_MESSAGE = 'get followed articles sources fail'
 
 function FeedsLayout({ children }: PropsWithChildren) {
   const [isOpenSidebar, setIsOpenSidebar] = useState<boolean>(true);
