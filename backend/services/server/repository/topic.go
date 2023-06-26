@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"server/entities"
 	"server/helpers"
+	"strings"
 
 	"gorm.io/gorm"
 )
@@ -11,6 +12,8 @@ import (
 type TopicRepository interface {
 	List() ([]entities.Topic, error)
 	GetPagination(page int, pageSize int) ([]entities.Topic, error)
+	GetByCategory(categoryID uint) ([]entities.Topic, error)
+	SearchByName(keyword string) ([]entities.Topic, error)
 	Count() (int, error)
 	
 	CreateIfNotExist(topic entities.Topic) error
@@ -96,4 +99,26 @@ func (repo *TopicRepo) Count() (int, error) {
 		return 0, err
 	}
 	return int(count), nil
+}
+
+
+func (repo *TopicRepo) GetByCategory(categoryID uint) ([]entities.Topic, error) {
+	topics := make([]entities.Topic, 0)
+
+	err := repo.DB.Where("category_id = ?", categoryID).Find(&topics).Error
+	if err != nil {
+		return topics, err
+	}
+	return topics, nil
+}
+
+func (repo *TopicRepo) SearchByName(keyword string) ([]entities.Topic, error) {
+	topics := make([]entities.Topic, 0)
+	searchKeyword := fmt.Sprint(strings.ToLower(keyword) + "%")
+
+	err := repo.DB.Where("LOWER(name) LIKE ?", searchKeyword).Find(&topics).Error
+	if err != nil {
+		return topics, err
+	}
+	return topics, nil
 }

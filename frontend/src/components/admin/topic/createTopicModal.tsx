@@ -25,7 +25,7 @@ const CreateTopicModal: React.FC<Props> = (props: Props) => {
       .trim('Please enter topic name'),
     categoryName: yup
       .string()
-      .oneOf(categoryNames, "category invalid")
+      .oneOf(categoryNames, 'category invalid')
       .required('Please enter category')
       .trim('Please enter category'),
   });

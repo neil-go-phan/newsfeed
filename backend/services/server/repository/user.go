@@ -7,14 +7,14 @@ import (
 )
 
 type UserRepository interface {
-	Create(userInput *entities.User) (*entities.User, error) 
+	Create(userInput *entities.User) (*entities.User, error)
 	Get(username string) (u *entities.User, err error)
-	List() (user *[]entities.User, err error) 
+	List() (user *[]entities.User, err error)
 	Delete(username string) error
-	Update(userInput *entities.User) error 
+	Update(userInput *entities.User) error
 	GetWithEmail(email string) (*entities.User, error)
 	FindOrCreateWithEmail(*entities.User) (*entities.User, error)
-}	
+}
 
 type UserRepo struct {
 	DB *gorm.DB
@@ -86,7 +86,9 @@ func (repo *UserRepo) Update(userInput *entities.User) error {
 }
 
 func (repo *UserRepo) FindOrCreateWithEmail(user *entities.User) (*entities.User, error) {
-	err := repo.DB.FirstOrCreate(user).Error
+	err := repo.DB.
+		Where(entities.User{Username: user.Username}).
+		FirstOrCreate(user).Error
 	if err != nil {
 		return user, err
 	}

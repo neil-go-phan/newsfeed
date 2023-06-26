@@ -10,7 +10,7 @@ import Container from '@mui/material/Container';
 import Button from '@mui/material/Button';
 import MenuItem from '@mui/material/MenuItem';
 import Link from 'next/link';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { AccountCircle, Feed } from '@mui/icons-material';
 import Divider from '@mui/material/Divider';
 import List from '@mui/material/List';
@@ -19,6 +19,7 @@ import ListItemButton from '@mui/material/ListItemButton';
 import Drawer from '@mui/material/Drawer';
 import { checkAuth } from '@/helpers/checkAuth';
 import { deleteCookie } from 'cookies-next';
+import { useRouter } from 'next/router';
 
 const drawerWidth = 240;
 type NavPages = {
@@ -32,12 +33,13 @@ export const pages: Array<NavPages> = [
 ];
 
 function NavbarComponent() {
-  const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(
+  const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(
     null
   );
 
-  const [mobileOpen, setMobileOpen] = React.useState(false);
-  const [auth, setAuth] = React.useState(true);
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const [auth, setAuth] = useState(true);
+  const router = useRouter();
   useEffect(() => {
     async function checkLogIn() {
       const userChecked: boolean = await checkAuth();
@@ -45,7 +47,6 @@ function NavbarComponent() {
     }
 
     checkLogIn();
-    // eslint-disable-next-line
   }, [auth]);
 
   const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
@@ -65,6 +66,7 @@ function NavbarComponent() {
     deleteCookie('refresh_token');
     deleteCookie('access_token');
     handleCloseUserMenu();
+    router.push(_ROUTES.LADING_PAGE);
   };
 
   const drawer = (
@@ -189,7 +191,7 @@ function NavbarComponent() {
                 <div className="newsfeedLink">
                   <Link
                     className="mx-md-3 mx-1 btn btn-sm btn-primary d-block px-3 text-nowrap"
-                    href={_ROUTES.USER_HOME}
+                    href={_ROUTES.FEEDS_SEARCH_WEBS}
                   >
                     <span>My newsfeed</span>
                   </Link>

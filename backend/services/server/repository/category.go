@@ -11,6 +11,7 @@ import (
 type CategoryRepository interface {
 	Get(name string) (entities.Category, error)
 	ListName() ([]entities.Category, error)
+	ListAll() ([]entities.Category, error)
 	GetPagination(page int, pageSize int) ([]entities.Category, error)
 	Count() (int, error)
 
@@ -54,6 +55,17 @@ func (repo *CategoryRepo) ListName() ([]entities.Category, error) {
 	categories := make([]entities.Category, 0)
 	err := repo.DB.
 		Select("id", "name").
+		Find(&categories).Error
+	if err != nil {
+		return categories, err
+	}
+	return categories, nil
+}
+
+func (repo *CategoryRepo) ListAll() ([]entities.Category, error) {
+	categories := make([]entities.Category, 0)
+	err := repo.DB.
+		Select("id", "name", "illustration").
 		Find(&categories).Error
 	if err != nil {
 		return categories, err

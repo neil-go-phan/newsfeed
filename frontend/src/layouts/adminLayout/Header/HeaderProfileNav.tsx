@@ -33,7 +33,8 @@ export default function HeaderProfileNav() {
 
   const handleLogout = () => {
     logged?.setIsLogged(false);
-    deleteCookie('token');
+    deleteCookie('access_token');
+    deleteCookie('refresh_token');
     router.push(_ROUTES.LADING_PAGE);
   };
 

@@ -42,6 +42,7 @@ function AddCrawler() {
 
   const handleIsConfirmModalClose = () => {
     setIsConfirmModalOpen(false);
+    setUrl('')
   };
 
   return (

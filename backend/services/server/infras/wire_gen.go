@@ -18,6 +18,7 @@ import (
 	"server/services/category"
 	"server/services/crawler"
 	"server/services/cronjob"
+	"server/services/follow"
 	"server/services/role"
 	"server/services/topic"
 	"server/services/user"
@@ -69,4 +70,30 @@ func InitizeCategory(db *gorm.DB) *routes.CategoryRoutes {
 	categoryHandler := handlers.NewCategoryHandler(categoryService)
 	categoryRoutes := routes.NewCategoryRoutes(categoryHandler)
 	return categoryRoutes
+}
+
+func InitizeArticlesSources(db *gorm.DB) *routes.ArticlesSourceRoutes {
+	articlesSourcesRepo := repository.NewArticlesSourcesRepo(db)
+	articlesSourceService := articlessourceservices.NewArticlesSourceService(articlesSourcesRepo)
+	articlesSourceHandler := handlers.NewArticlesSourceHandler(articlesSourceService)
+	articlesSourceRoutes := routes.NewArticlesSourceRoutes(articlesSourceHandler)
+	return articlesSourceRoutes
+}
+
+func InitizeArticles(db *gorm.DB) *routes.ArticleRoutes {
+	articleRepo := repository.NewArticleRepo(db)
+	articleService := articleservices.NewArticleService(articleRepo)
+	articleHandler := handlers.NewArticlesHandler(articleService)
+	articleRoutes := routes.NewArticleRoutes(articleHandler)
+	return articleRoutes
+}
+
+func InitizeFollow(db *gorm.DB) *routes.FollowRoutes {
+	followRepo := repository.NewFollow(db)
+	articlesSourcesRepo := repository.NewArticlesSourcesRepo(db)
+	articlesSourceService := articlessourceservices.NewArticlesSourceService(articlesSourcesRepo)
+	followService := followservices.NewFollowService(followRepo, articlesSourceService)
+	followHandler := handlers.NewFollowHandler(followService)
+	followRoutes := routes.NewFollowRoutes(followHandler)
+	return followRoutes
 }

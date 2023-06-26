@@ -1,4 +1,5 @@
 import Head from 'next/head';
+import ProgressBar from '@/common/processBar';
 import React, { PropsWithChildren } from 'react';
 
 function AuthLayout({ children }: PropsWithChildren) {
@@ -10,6 +11,7 @@ function AuthLayout({ children }: PropsWithChildren) {
         <meta name="viewport" content="initial-scale=1, width=device-width" />
         <link rel="icon" href="/feed_black_48dp.svg" />
       </Head>
+      <ProgressBar />
       <div className="authLayout__wrapper">
         <div className="container">{children}</div>
         <ul className="authLayout__bg-bubbles">

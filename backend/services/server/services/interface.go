@@ -24,18 +24,27 @@ type RoleServices interface {
 }
 
 type ArticleServices interface {
+	SearchArticlesAcrossSources(keyword string, page int, pageSize int) ([]ArticleResponse, int64, error)
+	GetPaginationByUserFollowedSource(username string, page int, pageSize int) ([]ArticleResponse, error)
+	GetPaginationByArticlesSourceID(articlesSourceID uint, page int, pageSize int) ([]ArticleResponse, error)
+
 	CreateIfNotExist(article *entities.Article) error
 }
 
 type ArticlesSourceServices interface {
+	GetByTopicIDPaginate(topicID uint, page int, pageSize int) ([]ArticlesSourceResponseRender, int64, error)
+	SearchByTitleAndDescriptionPaginate(keyword string, page int, pageSize int) ([]ArticlesSourceResponseRender, int64, error)
+
 	CreateIfNotExist(articlesSource entities.ArticlesSource) (entities.ArticlesSource, error)
 	UpdateTopicOneSource(articlesSource entities.ArticlesSource, newTopicId uint) error
 	UpdateTopicAllSource(oldTopicId uint, newTopicId uint) error
+	UserFollow(articlesSourceID uint) error 
+	UserUnfollow(articlesSourceID uint) error 
 }
 
 type CrawlerServices interface {
-	TestRSSCrawler(crawler entities.Crawler) (*ArticlesSourceResponse, []*ArticleResponse, error)
-	TestCustomCrawler(crawler entities.Crawler) (*ArticlesSourceResponse, []*ArticleResponse, error)
+	TestRSSCrawler(crawler entities.Crawler) (*ArticlesSourceResponseCrawl, []*ArticleResponse, error)
+	TestCustomCrawler(crawler entities.Crawler) (*ArticlesSourceResponseCrawl, []*ArticleResponse, error)
 
 	CreateCrawlerWithCorrespondingArticlesSource(payload CreateCrawlerPayload) error
 	GetHtmlPage(url *url.URL) error
@@ -53,6 +62,7 @@ type CronjobServices interface {
 
 type CategoryServices interface {
 	ListName() ([]CategoryResponse, error)
+	ListAll() ([]CategoryResponse, error)
 	GetPagination(page int, pageSize int) ([]CategoryResponse, error)
 	Count() (int, error)
 
@@ -64,10 +74,19 @@ type CategoryServices interface {
 type TopicServices interface {
 	List() ([]TopicResponse, error)
 	GetPagination(page int, pageSize int) ([]TopicResponse, error)
+	GetByCategory(categoryID uint) ([]TopicResponse, error)
+	SearchByName(keyword string) ([]TopicResponse, error)
+	SearchTopicAndArticlesSourcePaginate(keyword string, page int, pageSize int) ([]TopicResponse, []ArticlesSourceResponseRender, int64, error)
 	Count() (int, error)
 
 	CreateIfNotExist(topic entities.Topic) error
 	Delete(topic entities.Topic) error
 	Update(topic entities.Topic) error
 	UpdateWhenDeteleCategory(oldCategoryID uint, newCategoryID uint) error
+}
+
+type FollowServices interface {
+	Follow(username string, articlesSourceID uint) error
+	Unfollow(username string, articlesSourceID uint) error
+	GetUserFollowedSources(username string) ([]ArticlesSourceResponseRender, error)
 }

@@ -41,6 +41,7 @@
         font-size: 1.5rem;
         font-weight: bold;
         color: rgb(31, 30, 30);
+        cursor: pointer;
         &:hover {
           text-decoration: underline;
         }
@@ -60,4 +61,12 @@
       }
     }
   }
+}
+
+.popup-content {
+  width: 80%;
+}
+
+.popup-overlay {
+  z-index: 99999 !important;
 }

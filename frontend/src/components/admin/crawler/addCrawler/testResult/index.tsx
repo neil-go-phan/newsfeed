@@ -6,12 +6,16 @@ import ArticlesSource from './articlesSource';
 import ArticleCard from '@/common/articleCard ';
 import Grid from '@mui/material/Grid';
 import { CRAWLER_FEED_TYPE } from '..';
+import { Table } from 'react-bootstrap';
 
 type Props = {
   url: string;
   testType: string;
   crawler: Crawler | undefined;
-  handleSubmitArticleSource: (articlesSource: ArticlesSource, topicName: string) => void;
+  handleSubmitArticleSource: (
+    articlesSource: ArticlesSource,
+    topicName: string
+  ) => void;
 };
 
 const ERROR_MESSAGE_WHEN_TEST_FAIL = 'Test fail';
@@ -56,8 +60,8 @@ const TestResult: React.FC<Props> = (props: Props) => {
         article_authors: crawler.article_authors,
       });
       setArticles(res.data.articles);
-      const articlesource: ArticlesSource = res.data.articles_source
-      setArticlesSource({...articlesource, feed_link: articlesource.link});
+      const articlesource: ArticlesSource = res.data.articles_source;
+      setArticlesSource({ ...articlesource, feed_link: articlesource.link });
       setIsloading(false);
     } catch (error: any) {
       toastifyError(ERROR_MESSAGE_WHEN_TEST_FAIL);
@@ -66,7 +70,10 @@ const TestResult: React.FC<Props> = (props: Props) => {
     }
   };
 
-  const handleSubmitArticleSource = (articlesSource: ArticlesSource, topicName: string) => {
+  const handleSubmitArticleSource = (
+    articlesSource: ArticlesSource,
+    topicName: string
+  ) => {
     props.handleSubmitArticleSource(articlesSource, topicName);
   };
 
@@ -88,7 +95,7 @@ const TestResult: React.FC<Props> = (props: Props) => {
       setArticlesSource(undefined);
       setErrorMessage('');
       setIsloading(true);
-      requestTestCustomCrawler(props.crawler)
+      requestTestCustomCrawler(props.crawler);
     }
   }, [props.crawler]);
 
@@ -146,19 +153,51 @@ const TestResult: React.FC<Props> = (props: Props) => {
               <h3>Articles</h3>
             </div>
             {articles ? (
-              <Grid container spacing={3}>
-                {articles.map((article) => (
-                  <Grid item key={article.title} xs={12} md={4}>
-                    <ArticleCard
-                      key={`${article.title}-card`}
-                      articleSourceTitle={articlesSource?.title}
-                      articleSourceLink={articlesSource?.link}
-                      article={article}
-                      isAdmin={true}
-                    />
+              <div className="articleFound">
+                <div className="table">
+                  <h3>List</h3>
+                  <Table responsive striped bordered hover>
+                    <thead>
+                      <tr>
+                        <th>#</th>
+                        <th>Title</th>
+                        <th>Description</th>
+                        <th>Link</th>
+                        <th>Published</th>
+                        <th>Authors</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {articles.map((article, index) => (
+                        <tr key={`article_crawler_test_${article.title}`}>
+                          <td>{index}</td>
+                          <td>{article.title}</td>
+                          <td><p>{article.description}</p></td>
+                          <td><a href={article.link} target='_blank'>{article.link}</a></td>
+                          <td>{article.published}</td>
+                          <td>{article.authors}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </Table>
+                </div>
+                <div className="preview">
+                  <h3>Preview</h3>
+                  <Grid container spacing={3}>
+                    {articles.map((article) => (
+                      <Grid item key={article.title} xs={12} md={4}>
+                        <ArticleCard
+                          key={`${article.title}-card`}
+                          articleSourceTitle={articlesSource?.title}
+                          articleSourceLink={articlesSource?.link}
+                          article={article}
+                          isAdmin={true}
+                        />
+                      </Grid>
+                    ))}
                   </Grid>
-                ))}
-              </Grid>
+                </div>
+              </div>
             ) : (
               <div className="notFound">
                 <p>not found article</p>
@@ -172,3 +211,47 @@ const TestResult: React.FC<Props> = (props: Props) => {
 };
 
 export default TestResult;
+
+{
+  /* <div className="table">
+<h3>List</h3>
+<Table striped bordered hover>
+  <thead>
+    <tr>
+      <th>#</th>
+      <th>Title</th>
+      <th>Description</th>
+      <th>Link</th>
+      <th>Published</th>
+      <th>Authors</th>
+    </tr>
+  </thead>
+  <tbody>
+    {articles.map((article, index) => (
+      <tr key={`article_crawler_test_${article.title}`}>
+        <td>{index}</td>
+        <td>{article.title}</td>
+        <td>{article.description}</td>
+        <td>{article.link}</td>
+      </tr>
+    ))}
+  </tbody>
+</Table>
+</div>
+<div className="preview">
+<h3>Preview</h3>
+<Grid container spacing={3}>
+  {articles.map((article) => (
+    <Grid item key={article.title} xs={12} md={4}>
+      <ArticleCard
+        key={`${article.title}-card`}
+        articleSourceTitle={articlesSource?.title}
+        articleSourceLink={articlesSource?.link}
+        article={article}
+        isAdmin={true}
+      />
+    </Grid>
+  ))}
+</Grid>
+</div> */
+}

@@ -14,7 +14,7 @@ function Token() {
       const token = route.query.refresh_token
       setCookie('refresh_token', token)
     }
-    route.push(_ROUTES.USER_HOME)
+    route.push(_ROUTES.FEEDS_SEARCH_WEBS)
   })
   return (
     <div></div>

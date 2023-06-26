@@ -9,14 +9,15 @@ import (
 	"server/repository"
 	"server/routes"
 	"server/services"
-	"server/services/article"
-	"server/services/articlesSource"
-	"server/services/crawler"
-	"server/services/cronjob"
-	"server/services/role"
-	"server/services/user"
-	"server/services/category"
-	"server/services/topic"
+	articleservices "server/services/article"
+	articlessourceservices "server/services/articlesSource"
+	categoryservices "server/services/category"
+	crawlerservices "server/services/crawler"
+	cronjobservices "server/services/cronjob"
+	followservices "server/services/follow"
+	roleservice "server/services/role"
+	topicservices "server/services/topic"
+	userservice "server/services/user"
 
 	"github.com/google/wire"
 	"github.com/robfig/cron/v3"
@@ -107,6 +108,50 @@ func InitCategory(db *gorm.DB) *routes.CategoryRoutes {
 		routes.NewCategoryRoutes,
 	)
 	return &routes.CategoryRoutes{}
+}
+
+func InitArticlesSources(db *gorm.DB) *routes.ArticlesSourceRoutes {
+	wire.Build(
+		repository.NewArticlesSourcesRepo,
+		wire.Bind(new(repository.ArticlesSourcesRepository), new(*repository.ArticlesSourcesRepo)),
+		articlessourceservices.NewArticlesSourceService,
+		wire.Bind(new(services.ArticlesSourceServices), new(*articlessourceservices.ArticlesSourceService)),
+		handlers.NewArticlesSourceHandler,
+		wire.Bind(new(handlers.ArticlesSourceHandlerInterface), new(*handlers.ArticlesSourceHandler)),
+		routes.NewArticlesSourceRoutes,
+	)
+	return &routes.ArticlesSourceRoutes{}
+}
+
+func InitArticles(db *gorm.DB) *routes.ArticleRoutes {
+	wire.Build(
+		repository.NewArticleRepo,
+		wire.Bind(new(repository.ArticleRepository), new(*repository.ArticleRepo)),
+		articleservices.NewArticleService,
+		wire.Bind(new(services.ArticleServices), new(*articleservices.ArticleService)),
+		handlers.NewArticlesHandler,
+		wire.Bind(new(handlers.ArticleHandlerInterface), new(*handlers.ArticleHandler)),
+		routes.NewArticleRoutes,
+	)
+	return &routes.ArticleRoutes{}
+}
+
+func InitFollow(db *gorm.DB) *routes.FollowRoutes {
+	wire.Build(
+		repository.NewArticlesSourcesRepo,
+		wire.Bind(new(repository.ArticlesSourcesRepository), new(*repository.ArticlesSourcesRepo)),
+		articlessourceservices.NewArticlesSourceService,
+		wire.Bind(new(services.ArticlesSourceServices), new(*articlessourceservices.ArticlesSourceService)),
+
+		repository.NewFollow,
+		wire.Bind(new(repository.FollowRepository), new(*repository.FollowRepo)),
+		followservices.NewFollowService,
+		wire.Bind(new(services.FollowServices), new(*followservices.FollowService)),
+		handlers.NewFollowHandler,
+		wire.Bind(new(handlers.FollowHandlerInterface), new(*handlers.FollowHandler)),
+		routes.NewFollowRoutes,
+	)
+	return &routes.FollowRoutes{}
 }
 
 // func InitCronjob(db *gorm.DB, grpcClient pb.CrawlerServiceClient) *routes.CrawlerRoutes {

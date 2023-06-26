@@ -49,9 +49,6 @@ const ContentModal: React.FC<Props> = (props: Props) => {
   }
 
   useEffect(() => {
-    if (!props.article.link) {
-      alertNotFoundLink('Not found link to article')
-    }
     if (props.doc) {
       if (props.doc.childNodes) {
         const temp: Array<JSX.Element | string | null> = [];
@@ -80,9 +77,9 @@ const ContentModal: React.FC<Props> = (props: Props) => {
       </div>
       <div className="info">
         <a href={props.sourceLink} target="_blank" className="source">
-          {`${props.sourceTitle},`}
+          {`${props.sourceTitle}, `}
         </a>
-        <span className="authors">{`by ${props.article.authors},`}</span>
+        <span className="authors">{`by ${props.article.authors}, `}</span>
         <span className="published">{str}</span>
       </div>
       {isCustomCrawler ? (

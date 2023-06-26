@@ -7,25 +7,16 @@ import IconButton from '@mui/material/IconButton';
 import StarBorderIcon from '@mui/icons-material/StarBorder';
 import RadioButtonUncheckedIcon from '@mui/icons-material/RadioButtonUnchecked';
 import { CARD_MAX_WIDTH } from '.';
-import { alertError } from '@/helpers/alert';
 
 type Props = {
   articleTitle: string;
   articleSourceTitle: string | undefined;
-  // articleLink: string | undefined;
   isAdmin: boolean;
   handleModal: () => void;
   content: string;
 };
 
 const ContentCard: React.FC<Props> = (props: Props) => {
-  // const handleOpenUrl = () => {
-  //   if (props.articleLink) {
-  //     window.open(props.articleLink, '_blank');
-  //   } else {
-  //     alertError('Not found link to article')
-  //   }
-  // }
   return (
     <Card
       sx={{ maxWidth: CARD_MAX_WIDTH }}
@@ -38,7 +29,6 @@ const ContentCard: React.FC<Props> = (props: Props) => {
           gutterBottom
           variant="h5"
           component="div"
-          // onClick={handleOpenUrl}
         >
           {props.articleTitle}
         </Typography>

@@ -5,6 +5,7 @@ import useWindowDimensions from '@/helpers/useWindowResize';
 
 type Props = {
   isOpenSidebar: boolean;
+  children: React.ReactNode;
 };
 
 const HEADER_HEIGHT = 48;
@@ -31,7 +32,7 @@ const FeedsContent: React.FC<Props> = (props: Props) => {
   return (
     <div className='feeds__content'>
       <FeedsSidebar isOpenSidebar={props.isOpenSidebar} contentDivHeight={contentDivHeight}/>
-      <FeedsPageContent isOpenSidebar={props.isOpenSidebar} contentDivHeight={contentDivHeight} pageContentWidth={pageContentWidth}/>
+      <FeedsPageContent isOpenSidebar={props.isOpenSidebar} contentDivHeight={contentDivHeight} pageContentWidth={pageContentWidth} children={props.children}/>
     </div>
   )
 }

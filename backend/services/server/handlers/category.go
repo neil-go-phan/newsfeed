@@ -16,6 +16,7 @@ type CategoryHandler struct {
 
 type CategoryHandlerInterface interface {
 	ListName(c *gin.Context)
+	ListAll(c *gin.Context)
 	GetPagination(c *gin.Context)
 	Count(c *gin.Context)
 
@@ -50,6 +51,16 @@ func (h *CategoryHandler) Create(c *gin.Context) {
 
 func (h *CategoryHandler) ListName(c *gin.Context) {
 	categories, err := h.service.ListName()
+	if err != nil {
+		log.Error("error occrus:", err)
+		c.JSON(http.StatusInternalServerError, gin.H{"success": false, "message": "internal server error"})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"success": true, "categories": categories})
+}
+
+func (h *CategoryHandler) ListAll(c *gin.Context) {
+	categories, err := h.service.ListAll()
 	if err != nil {
 		log.Error("error occrus:", err)
 		c.JSON(http.StatusInternalServerError, gin.H{"success": false, "message": "internal server error"})

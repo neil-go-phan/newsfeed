@@ -27,6 +27,7 @@ const IMAGE_SIZE_PIXEL = 200;
 // 100kb
 const IMAGE_FILE_SIZE_BYTES = 100000;
 const DEFAULT_IMG_SIZE = 0;
+const DEFAULT_TOPIC = 'Others';
 const GET_CATEGORIES_NAME_FAIL_MESSAGE = 'get categories names fail';
 const GET_TOPICS_FAIL_MESSAGE = 'get topics fail';
 
@@ -98,6 +99,7 @@ const ArticlesSource: React.FC<Props> = (props: Props) => {
         feed_link: props.articlesSource.feed_link,
         link: props.articlesSource.link,
         imgSize: DEFAULT_IMG_SIZE,
+        topicName: DEFAULT_TOPIC,
       };
     }, [props]),
   });

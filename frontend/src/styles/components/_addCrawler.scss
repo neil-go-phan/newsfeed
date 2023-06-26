@@ -87,6 +87,19 @@
           font-size: 1.5rem;
         }
       }
+      .articleFound {
+        table {
+          width: 100%;
+          p {
+            text-overflow: ellipsis;
+            line-clamp: 2;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            display: -webkit-box;
+            overflow: hidden;
+          }
+        }
+      }
     }
   }
 

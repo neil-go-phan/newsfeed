@@ -1,4 +1,5 @@
 import Banner from '@/common/banner';
+import ProgressBar from '@/common/processBar';
 import FooterComponent from '@/common/footer';
 import NavbarComponent from '@/common/navbar';
 import { faArrowUp } from '@fortawesome/free-solid-svg-icons';
@@ -35,6 +36,7 @@ function HomeLayout({ children }: PropsWithChildren) {
         <meta name="viewport" content="initial-scale=1, width=device-width" />
         <link rel="icon" href="/feed_black_48dp.svg" />
       </Head>
+      <ProgressBar />
       <div className="landingPageLayout__wrapper">
         <NavbarComponent />
         <div className="container">{children}</div>

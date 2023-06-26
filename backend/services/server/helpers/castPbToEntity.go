@@ -9,14 +9,14 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-func CastTestResult(result *pb.TestResult) (*services.ArticlesSourceResponse, []*services.ArticleResponse) {
+func CastTestResult(result *pb.TestResult) (*services.ArticlesSourceResponseCrawl, []*services.ArticleResponse) {
 	articlesSource := CastPbArticleSourceToArticlesSourceResponse(result.GetArticlesSource())
 	articles := CastToPbArticlesToArticlesResponse(result.GetArticles())
 	return articlesSource, articles
 }
 
-func CastPbArticleSourceToArticlesSourceResponse(pbArticlesSource *pb.ArticlesSource) (*services.ArticlesSourceResponse) {
-	return &services.ArticlesSourceResponse{
+func CastPbArticleSourceToArticlesSourceResponse(pbArticlesSource *pb.ArticlesSource) (*services.ArticlesSourceResponseCrawl) {
+	return &services.ArticlesSourceResponseCrawl{
 		Title: pbArticlesSource.Title,
 		Description: pbArticlesSource.Description,
 		Link: pbArticlesSource.Link,

@@ -21,6 +21,7 @@ func (route *CategoryRoutes)Setup(r *gin.Engine) {
 	routes := r.Group("category")
 	{
 		routes.GET("list-name", middlewares.CheckAccessToken(), route.handler.ListName)
+		routes.GET("list-all", middlewares.CheckAccessToken(), route.handler.ListAll)
 		routes.GET("get-page", middlewares.CheckAccessToken(), route.handler.GetPagination)
 		routes.GET("count", middlewares.CheckAccessToken(), route.handler.Count)
 		routes.POST("create", middlewares.CheckAccessToken(), route.handler.Create)

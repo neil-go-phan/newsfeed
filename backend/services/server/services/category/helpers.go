@@ -10,7 +10,7 @@ import (
 )
 
 func validateCategoryName(category entities.Category) error {
-	if category.Name == OTHERS_CATEGORY_NAME || category.ID == OTHERS_CATEGORY_ID {
+	if isOthersCategory(category) {
 		return fmt.Errorf("can not change 'Others' category")
 	}
 	validate := validator.New()
@@ -21,6 +21,10 @@ func validateCategoryName(category entities.Category) error {
 
 	return nil
 }
+
+func isOthersCategory(category entities.Category) bool {
+	return category.Name == OTHERS_CATEGORY_NAME || category.ID == OTHERS_CATEGORY_ID 
+} 
 
 func extractUpdateNamePayload(payload services.UpdateNameCategoryPayload) (entities.Category, string) {
 	category := entities.Category{

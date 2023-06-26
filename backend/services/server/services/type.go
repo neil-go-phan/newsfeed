@@ -39,7 +39,7 @@ type GoogleUserResult struct {
 	Locale         string
 }
 
-type ArticlesSourceResponse struct {
+type ArticlesSourceResponseCrawl struct {
 	Title       string `json:"title"`
 	Description string `json:"description"`
 	Link        string `json:"link"`
@@ -48,11 +48,13 @@ type ArticlesSourceResponse struct {
 }
 
 type ArticleResponse struct {
-	Title       string    `json:"title"`
-	Description string    `json:"description"`
-	Link        string    `json:"link"`
-	Published   time.Time `json:"published"`
-	Authors     string    `json:"authors"`
+	ID               uint      `json:"id"`
+	Title            string    `json:"title"`
+	Description      string    `json:"description"`
+	Link             string    `json:"link"`
+	Published        time.Time `json:"published"`
+	Authors          string    `json:"authors"`
+	ArticlesSourceID uint      `json:"articles_source_id"`
 }
 
 type ArticlesSourceFromFrontend struct {
@@ -120,4 +122,14 @@ type TopicResponse struct {
 	ID         uint   `json:"id"`
 	Name       string `json:"name"`
 	CategoryID uint   `json:"category_id"`
+}
+
+type ArticlesSourceResponseRender struct {
+	ID          uint   `json:"id"`
+	Title       string `json:"title"`
+	Description string `json:"description"`
+	Link        string `json:"link"`
+	Image       string `json:"image"` // base64 image
+	Follower    int    `json:"follower"`
+	TopicID     uint   `json:"topic_id"`
 }
