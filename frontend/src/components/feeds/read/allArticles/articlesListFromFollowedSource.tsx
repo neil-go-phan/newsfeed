@@ -8,9 +8,7 @@ type Props = {
 };
 
 const ArticlesListFromFollowedSource: React.FC<Props> = (props: Props) => {
-  const [articlesSource, setArticlesSource] = useState();
   const { followedSources } = useContext(FollowedSourcesContext);
-  useEffect(() => {}, [props.articles]);
 
   const getArticlesSourceByID = (
     articlesSourceID: number
@@ -30,16 +28,13 @@ const ArticlesListFromFollowedSource: React.FC<Props> = (props: Props) => {
           return (
             <Grid
               item
-              key={`article read feed card ${article.title}-${
-                articlesSource!.link
-              }`}
+              key={`article grid item from read all feed ${article.title}`}
               xs={12}
               md={4}
             >
               <ArticleCard
-                key={`articles from read feed ${article.title}`}
-                articleSourceTitle={articlesSource?.title}
-                articleSourceLink={articlesSource?.link}
+                key={`articles card from read all feed ${article.title}`}
+                articlesSource={articlesSource}
                 article={article}
                 isAdmin={false}
               />

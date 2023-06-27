@@ -1,11 +1,13 @@
 import Button from '@mui/material/Button';
 import MenuIcon from '@mui/icons-material/Menu';
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCheck, faRotateRight } from '@fortawesome/free-solid-svg-icons';
 import Popup from 'reactjs-popup';
 import { useRouter } from 'next/router';
 import ProfileNav from './profileNav';
+import { FollowedSourcesContext } from '@/common/contexts/followedSources';
+import SourceInfo from './sourceInfo';
 
 type Props = {
   isOpenSidebar: boolean;
@@ -17,6 +19,8 @@ const VIEWS_ARTICLES_ROUTES_CONTAIN_LETTER = 'read';
 const FeedsHeader: React.FC<Props> = (props: Props) => {
   const router = useRouter();
   const [isArticleViews, setIsArticleViews] = useState<boolean>(false);
+  const [articlesSource, setArticlesSource] = useState<ArticlesSourceInfo>();
+  const { followedSources } = useContext(FollowedSourcesContext);
 
   useEffect(() => {
     const path = router.asPath;
@@ -24,7 +28,19 @@ const FeedsHeader: React.FC<Props> = (props: Props) => {
     setIsArticleViews(
       beforeQuestionMark.includes(VIEWS_ARTICLES_ROUTES_CONTAIN_LETTER)
     );
+    if (router.query.source) {
+      const articlesSourceIDString = router.query.source as string;
+      const articlesSourceID: number = +articlesSourceIDString;
+      setArticlesSource(getArticlesSourceByID(articlesSourceID));
+    }
   }, [router.asPath]);
+
+  const getArticlesSourceByID = (articlesSourceID: number) => {
+    const source = followedSources.find(
+      (articlesSource) => articlesSource.id === articlesSourceID
+    );
+    return source;
+  };
 
   return (
     <div className="feeds__header">
@@ -47,6 +63,7 @@ const FeedsHeader: React.FC<Props> = (props: Props) => {
       {isArticleViews ? (
         <div className="feeds__header--readingPart">
           <div className="left">
+            <SourceInfo articlesSource={articlesSource} />
             <div className="markAsRead leftBtn">
               <FontAwesomeIcon icon={faCheck} />
               <span>Mark all as read</span>
@@ -71,12 +88,16 @@ const FeedsHeader: React.FC<Props> = (props: Props) => {
             </div>
           </div>
           <div className="right">
-            <div className="userNav"><ProfileNav /></div>
+            <div className="userNav">
+              <ProfileNav />
+            </div>
           </div>
         </div>
       ) : (
         <div className="feeds__header--searchView">
-            <div className="userNav"><ProfileNav /></div>
+          <div className="userNav">
+            <ProfileNav />
+          </div>
         </div>
       )}
     </div>

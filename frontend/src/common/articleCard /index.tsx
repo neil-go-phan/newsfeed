@@ -10,8 +10,7 @@ import ContentCard from './contentCard';
 
 type Props = {
   article: Article;
-  articleSourceTitle: string | undefined;
-  articleSourceLink: string | undefined;
+  articlesSource: ArticlesSourceInfo |ArticlesSource| undefined;
   isAdmin: boolean;
 };
 
@@ -76,7 +75,7 @@ const ArticleCard: React.FC<Props> = (props: Props) => {
     <>
       {base64Img !== '' ? (
         <ImgCard
-          articleSourceTitle={props.articleSourceTitle}
+          articleSourceTitle={props.articlesSource?.title}
           handleModal={handleModal}
           articleTitle={props.article.title}
           base64Img={base64Img}
@@ -84,7 +83,7 @@ const ArticleCard: React.FC<Props> = (props: Props) => {
         />
       ) : (
         <ContentCard
-          articleSourceTitle={props.articleSourceTitle}
+          articleSourceTitle={props.articlesSource?.title}
           handleModal={handleModal}
           articleTitle={props.article.title}
           content={shortContent}
@@ -95,8 +94,8 @@ const ArticleCard: React.FC<Props> = (props: Props) => {
         <ContentModal
           article={props.article}
           handleContentModalClose={handleContentModalClose}
-          sourceTitle={props.articleSourceTitle}
-          sourceLink={props.articleSourceLink}
+          sourceTitle={props.articlesSource?.title}
+          sourceLink={props.articlesSource?.link}
           doc={doc}
         />
       </Popup>

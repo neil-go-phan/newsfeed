@@ -188,8 +188,7 @@ const TestResult: React.FC<Props> = (props: Props) => {
                       <Grid item key={article.title} xs={12} md={4}>
                         <ArticleCard
                           key={`${article.title}-card`}
-                          articleSourceTitle={articlesSource?.title}
-                          articleSourceLink={articlesSource?.link}
+                          articlesSource={articlesSource}
                           article={article}
                           isAdmin={true}
                         />
@@ -211,47 +210,3 @@ const TestResult: React.FC<Props> = (props: Props) => {
 };
 
 export default TestResult;
-
-{
-  /* <div className="table">
-<h3>List</h3>
-<Table striped bordered hover>
-  <thead>
-    <tr>
-      <th>#</th>
-      <th>Title</th>
-      <th>Description</th>
-      <th>Link</th>
-      <th>Published</th>
-      <th>Authors</th>
-    </tr>
-  </thead>
-  <tbody>
-    {articles.map((article, index) => (
-      <tr key={`article_crawler_test_${article.title}`}>
-        <td>{index}</td>
-        <td>{article.title}</td>
-        <td>{article.description}</td>
-        <td>{article.link}</td>
-      </tr>
-    ))}
-  </tbody>
-</Table>
-</div>
-<div className="preview">
-<h3>Preview</h3>
-<Grid container spacing={3}>
-  {articles.map((article) => (
-    <Grid item key={article.title} xs={12} md={4}>
-      <ArticleCard
-        key={`${article.title}-card`}
-        articleSourceTitle={articlesSource?.title}
-        articleSourceLink={articlesSource?.link}
-        article={article}
-        isAdmin={true}
-      />
-    </Grid>
-  ))}
-</Grid>
-</div> */
-}

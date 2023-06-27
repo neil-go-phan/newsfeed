@@ -10,8 +10,8 @@ import (
 type FollowRepository interface {
 	GetByUsername(username string) ([]entities.Follow, error)
 
-	CreateIfNotExist(Follow entities.Follow) error
-	Delete(Follow entities.Follow) error
+	CreateIfNotExist(follow entities.Follow) error
+	Delete(follow entities.Follow) error
 }
 
 type FollowRepo struct {

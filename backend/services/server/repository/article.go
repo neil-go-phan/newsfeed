@@ -50,6 +50,7 @@ func (repo *ArticleRepo) GetPaginationByUserFollowedSource(username string, page
 	articles := make([]entities.Article, 0)
 
 	err := repo.DB.
+		Distinct("title", "description", "link", "published", "authors", "follows.articles_source_id", "created_at").
 		Joins("LEFT JOIN follows ON articles.articles_source_id = follows.articles_source_id", repo.DB.Where(&entities.Follow{Username: username})).
 		Scopes(helpers.Paginate(page, pageSize)).
 		Order("created_at desc").
