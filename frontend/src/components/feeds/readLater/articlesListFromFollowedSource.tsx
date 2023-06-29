@@ -1,13 +1,13 @@
 import ArticleCard from '@/common/articleCard ';
 import { FollowedSourcesContext } from '@/common/contexts/followedSources';
 import Grid from '@mui/material/Grid';
-import React, { useContext } from 'react';
+import React, { useContext  } from 'react';
 
 type Props = {
   articles: Articles;
 };
 
-const ArticlesListFromFollowedSource: React.FC<Props> = (props: Props) => {
+const ReadLaterArticlesList: React.FC<Props> = (props: Props) => {
   const { followedSources } = useContext(FollowedSourcesContext);
 
   const getArticlesSourceByID = (
@@ -28,12 +28,12 @@ const ArticlesListFromFollowedSource: React.FC<Props> = (props: Props) => {
           return (
             <Grid
               item
-              key={`article grid item from read all feed ${article.title}`}
+              key={`article grid item from read later ${article.title}`}
               xs={12}
               md={4}
             >
               <ArticleCard
-                key={`articles card from read all feed ${article.title}`}
+                key={`articles card from read later ${article.title}`}
                 articlesSource={articlesSource}
                 article={article}
                 isAdmin={false}
@@ -46,4 +46,4 @@ const ArticlesListFromFollowedSource: React.FC<Props> = (props: Props) => {
   );
 };
 
-export default ArticlesListFromFollowedSource;
+export default ReadLaterArticlesList;

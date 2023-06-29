@@ -21,7 +21,7 @@ const ALL_READ_IMAGE_SIZE = 250;
 
 const REQUEST_NEWEST_ARTILCES_FAIL_MESSAGE = 'request newest article fail';
 
-function ReadAllArticles() {
+function ReadLaterArticles() {
   const [articles, setArticles] = useState<Articles>([]);
   const [page, setPage] = useState<number>(FIRST_PAGE);
   const [hasMore, setHasMore] = useState<boolean>(true);
@@ -35,110 +35,13 @@ function ReadAllArticles() {
   }, [router.asPath]);
 
   useEffect(() => {
-    handleRequestFirstPageByActiveSection();
+    requestGetFirstPageReadLaterFromAllSource();
   }, []);
-
-  useEffect(() => {
-    setPage(FIRST_PAGE);
-    handleRequestFirstPageByActiveSection();
-  }, [activeSection]);
-
-  const handleRequestFirstPageByActiveSection = () => {
-    switch (activeSection) {
-      case SECTION_ALL_ARTICLES:
-        requestGetFirstPageArticlesFromAllSource();
-        break;
-      case SECTION_UNREAD_ARTICLES:
-        requestGetFirstPageUnreadArticlesFromAllSource();
-        break;
-      case SECTION_READ_LATER_ARTICLES:
-        requestGetFirstPageReadLaterFromAllSource();
-        break;
-      default:
-        requestGetFirstPageArticlesFromAllSource();
-    }
-  };
 
   const handleRequestMoreArticles = () => {
     const nextPage = page + 1;
-    handleRequestMoreWithSectionActicles(nextPage);
+    requestGetMoreReadLaterArticles(nextPage, PAGE_SIZE);
     setPage(nextPage);
-  };
-
-  const handleRequestMoreWithSectionActicles = (nextPage: number) => {
-    switch (activeSection) {
-      case SECTION_ALL_ARTICLES:
-        requestGetMoreArticles(nextPage, PAGE_SIZE);
-        break;
-      case SECTION_UNREAD_ARTICLES:
-        requestGetMoreUnreadArticles(nextPage, PAGE_SIZE);
-        break;
-      case SECTION_READ_LATER_ARTICLES:
-        requestGetMoreReadLaterArticles(nextPage, PAGE_SIZE);
-        break;
-      default:
-        requestGetMoreArticles(nextPage, PAGE_SIZE);
-    }
-  };
-
-  const requestGetFirstPageUnreadArticlesFromAllSource = async () => {
-    try {
-      const { data } = await axiosProtectedAPI.get(
-        '/articles/get-page-by-all-user-followed-sources-unread',
-        {
-          params: {
-            page: FIRST_PAGE,
-            page_size: PAGE_SIZE,
-          },
-        }
-      );
-      if (!data.success) {
-        if (data.message) {
-          throw data.message;
-        }
-        throw REQUEST_NEWEST_ARTILCES_FAIL_MESSAGE;
-      }
-      if (data.articles.length === PAGE_SIZE) {
-        setHasMore(true);
-      } else {
-        setHasMore(false);
-      }
-      setArticles(data.articles);
-      setIsLoading(false);
-    } catch (error: any) {
-      setArticles([]);
-      setIsLoading(false);
-    }
-  };
-
-  const requestGetFirstPageArticlesFromAllSource = async () => {
-    try {
-      const { data } = await axiosProtectedAPI.get(
-        '/articles/get-page-by-all-user-followed-sources',
-        {
-          params: {
-            page: FIRST_PAGE,
-            page_size: PAGE_SIZE,
-          },
-        }
-      );
-      if (!data.success) {
-        if (data.message) {
-          throw data.message;
-        }
-        throw REQUEST_NEWEST_ARTILCES_FAIL_MESSAGE;
-      }
-      if (data.articles.length === PAGE_SIZE) {
-        setHasMore(true);
-      } else {
-        setHasMore(false);
-      }
-      setArticles(data.articles);
-      setIsLoading(false);
-    } catch (error: any) {
-      setArticles([]);
-      setIsLoading(false);
-    }
   };
 
   const requestGetFirstPageReadLaterFromAllSource = async () => {
@@ -167,69 +70,6 @@ function ReadAllArticles() {
       setIsLoading(false);
     } catch (error: any) {
       setArticles([]);
-      setIsLoading(false);
-    }
-  };
-
-  const requestGetMoreArticles = async (page: number, pageSize: number) => {
-    try {
-      const { data } = await axiosProtectedAPI.get(
-        '/articles/get-page-by-all-user-followed-sources',
-        {
-          params: {
-            page: page,
-            page_size: pageSize,
-          },
-        }
-      );
-      if (!data.success) {
-        if (data.message) {
-          throw data.message;
-        }
-        throw REQUEST_NEWEST_ARTILCES_FAIL_MESSAGE;
-      }
-      if (data.articles.length === PAGE_SIZE) {
-        setHasMore(true);
-      } else {
-        setHasMore(false);
-      }
-      const newArticles = articles.concat(data.articles);
-      setArticles([...newArticles]);
-      setIsLoading(false);
-    } catch (error: any) {
-      setIsLoading(false);
-    }
-  };
-
-  const requestGetMoreUnreadArticles = async (
-    page: number,
-    pageSize: number
-  ) => {
-    try {
-      const { data } = await axiosProtectedAPI.get(
-        '/articles/get-page-by-all-user-followed-sources-unread',
-        {
-          params: {
-            page: page,
-            page_size: pageSize,
-          },
-        }
-      );
-      if (!data.success) {
-        if (data.message) {
-          throw data.message;
-        }
-        throw REQUEST_NEWEST_ARTILCES_FAIL_MESSAGE;
-      }
-      if (data.articles.length === PAGE_SIZE) {
-        setHasMore(true);
-      } else {
-        setHasMore(false);
-      }
-      const newArticles = articles.concat(data.articles);
-      setArticles([...newArticles]);
-      setIsLoading(false);
-    } catch (error: any) {
       setIsLoading(false);
     }
   };
@@ -340,4 +180,4 @@ function ReadAllArticles() {
   );
 }
 
-export default ReadAllArticles;
+export default ReadLaterArticles;

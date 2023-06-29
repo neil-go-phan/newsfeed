@@ -25,7 +25,7 @@ function ReadArticlesBySources() {
   const [articles, setArticles] = useState<Articles>([]);
   const [page, setPage] = useState<number>(FIRST_PAGE);
   const [hasMore, setHasMore] = useState<boolean>(true);
-  const { height, width } = useWindowDimensions();
+  const { height } = useWindowDimensions();
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [articlesSource, setArticlesSource] = useState<ArticlesSourceInfo>();
   const { followedSources } = useContext(FollowedSourcesContext);
@@ -98,8 +98,8 @@ function ReadArticlesBySources() {
         );
         break;
       case SECTION_READ_LATER_ARTICLES:
-        requestGetMoreReadLaterBySource(articlesSourceID, nextPage, PAGE_SIZE)
-          break;
+        requestGetMoreReadLaterBySource(articlesSourceID, nextPage, PAGE_SIZE);
+        break;
       default:
         requestGetMoreArticlesBySource(articlesSourceID, nextPage, PAGE_SIZE);
     }
@@ -358,7 +358,10 @@ function ReadArticlesBySources() {
               </InfiniteScroll>
             </div>
           ) : (
-            <div className="readFeeds__feeds--allRead" style={{height: height - HEADER_HEIGHT}}>
+            <div
+              className="readFeeds__feeds--allRead"
+              style={{ height: height - HEADER_HEIGHT }}
+            >
               <div className="warpper">
                 <div className="img">
                   <Image

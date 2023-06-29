@@ -15,6 +15,7 @@ export const _ROUTES = {
   ADD_CUSTOM_CRAWLER :'/admin/crawler/add/custom',
   ADMIN_CRONJOB: '/admin/cronjob',
   FEEDS: '/feeds',
+  FEEDS_LATER: '/feeds/later',
   FEEDS_SEARCH: '/feeds/search',
   FEEDS_SEARCH_WEBS: '/feeds/search/webs',
   FEEDS_SEARCH_WEBS_RESULT: '/feeds/search/webs/results',

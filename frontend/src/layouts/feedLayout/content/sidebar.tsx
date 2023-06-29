@@ -60,7 +60,7 @@ const FeedsSidebar: React.FC<Props> = (props: Props) => {
           </Link>
         </div>
         <div className="item">
-          <Link href={''} className="itemInner">
+          <Link href={_ROUTES.FEEDS_LATER} className="itemInner">
             <div className="icon">
               <FontAwesomeIcon icon={faStar} />{' '}
             </div>
