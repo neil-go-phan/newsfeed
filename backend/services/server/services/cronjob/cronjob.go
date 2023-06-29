@@ -39,6 +39,7 @@ func (s *CronjobService) CreateCrawlerCronjob(crawler entities.Crawler) {
 	}
 
 	log.Printf("create cronjob %s", cronjobName)
+	s.cronjobCrawlerFunction(crawler, cronjobName)
 	mapKey := newMapKey(crawler.SourceLink, crawler.Schedule)
 	s.jobIDMap[mapKey] = entryID
 }

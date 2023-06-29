@@ -13,9 +13,11 @@ import (
 
 type ArticleRepository interface {
 	SearchArticlesAcrossUserFollowedSources(username string, keyword string, page int, pageSize int) ([]entities.Article, int64, error)
-	GetPaginationByArticlesSourceID(articlesSourceID uint, page int, pageSize int) ([]entities.Article, error)
-	GetPaginationByUserFollowedSource(username string, page int, pageSize int) ([]ArticleLeftJoinRead, error) 
-	GetPaginationByArticlesSourceIDWithReadStatus(username string, articlesSourceID uint, page int, pageSize int) ([]ArticleLeftJoinRead, error)
+	GetArticlesPaginationByArticlesSourceID(articlesSourceID uint, page int, pageSize int) ([]entities.Article, error)
+	GetArticlesPaginationByUserFollowedSource(username string, page int, pageSize int) ([]ArticleLeftJoinRead, error) 
+	GetArticlesPaginationByArticlesSourceIDWithReadStatus(username string, articlesSourceID uint, page int, pageSize int) ([]ArticleLeftJoinRead, error)
+	GetUnreadArticlesPaginationByArticlesSourceID(username string, articlesSourceID uint, page int, pageSize int) ([]ArticleLeftJoinRead, error)
+	GetUnreadArticlesByUserFollowedSource(username string, page int, pageSize int) ([]ArticleLeftJoinRead, error) 
 	CountArticleCreateAWeekAgoByArticlesSourceID(articlesSourceID uint) (int64, error)
 
 	CreateIfNotExist(article *entities.Article) error
@@ -45,7 +47,7 @@ func (repo *ArticleRepo) CreateIfNotExist(article *entities.Article) error {
 	return nil
 }
 
-func (repo *ArticleRepo) GetPaginationByArticlesSourceID(articlesSourceID uint, page int, pageSize int) ([]entities.Article, error) {
+func (repo *ArticleRepo) GetArticlesPaginationByArticlesSourceID(articlesSourceID uint, page int, pageSize int) ([]entities.Article, error) {
 	articles := make([]entities.Article, 0)
 
 	err := repo.DB.
@@ -59,7 +61,7 @@ func (repo *ArticleRepo) GetPaginationByArticlesSourceID(articlesSourceID uint, 
 	return articles, nil
 }
 
-func (repo *ArticleRepo) GetPaginationByArticlesSourceIDWithReadStatus(username string, articlesSourceID uint, page int, pageSize int) ([]ArticleLeftJoinRead, error) {
+func (repo *ArticleRepo) GetArticlesPaginationByArticlesSourceIDWithReadStatus(username string, articlesSourceID uint, page int, pageSize int) ([]ArticleLeftJoinRead, error) {
 	articles := make([]ArticleLeftJoinRead, 0)
 	subQuery := repo.DB.
 		Model(&entities.Read{}).
@@ -80,12 +82,8 @@ func (repo *ArticleRepo) GetPaginationByArticlesSourceIDWithReadStatus(username 
 	return articles, nil
 }
 
-func (repo *ArticleRepo) GetPaginationByUserFollowedSource(username string, page int, pageSize int) ([]ArticleLeftJoinRead, error) {
+func (repo *ArticleRepo) GetArticlesPaginationByUserFollowedSource(username string, page int, pageSize int) ([]ArticleLeftJoinRead, error) {
 	articles := make([]ArticleLeftJoinRead, 0)
-	// subQuery := repo.DB.
-	// 	Model(&entities.Follow{}).
-	// 	Select("follows.articles_source_id", "reads.article_id", "reads.username").
-	// 	Joins("JOIN reads on (follows.username = ? AND follows.articles_source_id = reads.articles_source_id AND follows.username = reads.username)", username)
 		subQuery := repo.DB.
 		Model(&entities.Follow{}).
 		Select("articles_source_id").
@@ -96,6 +94,50 @@ func (repo *ArticleRepo) GetPaginationByUserFollowedSource(username string, page
 		Distinct("id", "title", "description", "link", "published", "authors", "articles.articles_source_id", "created_at", "username", "article_id").
 		Joins("JOIN (?) q on q.articles_source_id = articles.articles_source_id", subQuery).
 		Joins("LEFT JOIN reads r on articles.id = r.article_id").
+		Scopes(helpers.Paginate(page, pageSize)).
+		Order("created_at desc").
+		Find(&articles).Error
+
+	if err != nil {
+		return articles, err
+	}
+	return articles, nil
+}
+
+func (repo *ArticleRepo) GetUnreadArticlesPaginationByArticlesSourceID(username string, articlesSourceID uint, page int, pageSize int) ([]ArticleLeftJoinRead, error) {
+	articles := make([]ArticleLeftJoinRead, 0)
+	subQuery := repo.DB.
+		Model(&entities.Read{}).
+		Select("*").
+		Where("username = ? AND articles_source_id = ?", username, articlesSourceID)
+
+	err := repo.DB.
+		Model(&entities.Article{}).
+		Distinct("id", "title", "description", "link", "published", "authors", "articles.articles_source_id", "created_at", "username", "article_id").
+		Joins("LEFT OUTER JOIN (?) q on articles.id = q.article_id", subQuery).
+		Where("articles.articles_source_id = ? AND q.article_id IS NULL", articlesSourceID).
+		Scopes(helpers.Paginate(page, pageSize)).
+		Order("created_at desc").
+		Find(&articles).Error
+	if err != nil {
+		return articles, err
+	}
+	return articles, nil
+}
+
+func (repo *ArticleRepo) GetUnreadArticlesByUserFollowedSource(username string, page int, pageSize int) ([]ArticleLeftJoinRead, error) {
+	articles := make([]ArticleLeftJoinRead, 0)
+		subQuery := repo.DB.
+		Model(&entities.Follow{}).
+		Select("articles_source_id").
+		Where("username = ?", username)
+
+	err := repo.DB.
+		Model(&entities.Article{}).
+		Distinct("id", "title", "description", "link", "published", "authors", "articles.articles_source_id", "created_at", "username", "article_id").
+		Joins("JOIN (?) q on q.articles_source_id = articles.articles_source_id", subQuery).
+		Joins("LEFT OUTER JOIN reads r on articles.id = r.article_id").
+		Where("r.article_id IS NULL").
 		Scopes(helpers.Paginate(page, pageSize)).
 		Order("created_at desc").
 		Find(&articles).Error

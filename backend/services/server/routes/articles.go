@@ -21,8 +21,12 @@ func NewArticleRoutes(handler handlers.ArticleHandlerInterface) *ArticleRoutes {
 func (route *ArticleRoutes) Setup(r *gin.Engine) {
 	routes := r.Group("articles")
 	{
-		routes.GET("get-page-by-articles-source-id", middlewares.CheckAccessToken(), route.handler.GetPaginationByArticlesSourceID)
-		routes.GET("get-page-by-all-user-followed-sources", middlewares.CheckAccessToken(), route.handler.GetPaginationByUserFollowedSources)
+		routes.GET("get-page-by-articles-source-id", middlewares.CheckAccessToken(), route.handler.GetArticlesPaginationByArticlesSourceID)
+		routes.GET("get-page-by-all-user-followed-sources", middlewares.CheckAccessToken(), route.handler.GetArticlesPaginationByUserFollowedSources)
+		routes.GET("get-page-by-articles-source-id-unread", middlewares.CheckAccessToken(), route.handler.GetUnreadArticlesPaginationByArticlesSourceID)
+
+		routes.GET("get-page-by-all-user-followed-sources-unread", middlewares.CheckAccessToken(), route.handler.GetUnreadArticlesByUserFollowedSource)
+
 		routes.GET("search-articles-across-source", middlewares.CheckAccessToken(), route.handler.SearchArticlesAcrossUserFollowedSources)
 		routes.GET("count-article-previous-week", middlewares.CheckAccessToken(), route.handler.CountArticleCreateAWeekAgoByArticlesSourceID)
 

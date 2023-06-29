@@ -38,9 +38,6 @@ const ArticleCard: React.FC<Props> = (props: Props) => {
   const handleContentModalClose = () => {
     setIsContentModalOpen(false);
     if (!readStatus && !props.isAdmin) {
-      console.log('props.article.id', props.article.id);
-      console.log('articles_source_id', props.article.articles_source_id);
-
       handleRequestMarkArticleAsRead(
         props.article.id,
         props.article.articles_source_id

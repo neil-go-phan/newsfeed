@@ -8,6 +8,7 @@ import StarBorderIcon from '@mui/icons-material/StarBorder';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCircle, faCircleCheck } from '@fortawesome/free-regular-svg-icons';
 import { CARD_MAX_WIDTH } from '.';
+import Popup from 'reactjs-popup';
 
 type Props = {
   article: Article;
@@ -21,7 +22,10 @@ type Props = {
 
 const ContentCard: React.FC<Props> = (props: Props) => {
   return (
-    <Card sx={{ maxWidth: CARD_MAX_WIDTH }} className="articleCard">
+    <Card
+      sx={{ maxWidth: CARD_MAX_WIDTH }}
+      className={props.readStatus ? 'articleCard alreadyRead' : 'articleCard'}
+    >
       <CardContent onClick={props.handleModal}>
         <Typography
           className="articleCard__title"
@@ -53,11 +57,26 @@ const ContentCard: React.FC<Props> = (props: Props) => {
         <IconButton aria-label="read later">
           <StarBorderIcon />
         </IconButton>
+
         <IconButton aria-label="status" onClick={props.handleChangeReadStatus}>
           {props.readStatus ? (
-            <FontAwesomeIcon icon={faCircleCheck} />
+            <Popup
+              trigger={() => <FontAwesomeIcon icon={faCircleCheck} />}
+              position="bottom center"
+              closeOnDocumentClick
+              on={['hover', 'focus']}
+            >
+              <span>Mark article as unread</span>
+            </Popup>
           ) : (
-            <FontAwesomeIcon icon={faCircle} />
+            <Popup
+              trigger={() => <FontAwesomeIcon icon={faCircle} />}
+              position="bottom center"
+              closeOnDocumentClick
+              on={['hover', 'focus']}
+            >
+              <span>Mark article as read</span>
+            </Popup>
           )}
         </IconButton>
       </CardActions>

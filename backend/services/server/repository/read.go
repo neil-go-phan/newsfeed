@@ -12,6 +12,8 @@ type ReadRepository interface {
 	SelectByUsernameAndSourceIDOnDay(username string, articlesSourceID uint, day time.Time) ([]entities.Read, error)
 	CountByUsernameAndSourceID(read entities.Read) (int64, error)
 
+	MarkAllAsReadBySourceID(username string, articlesSourceID uint) error
+	MarkAllAsReadByUserFollowedSource(username string) error 
 	Create(read entities.Read) error
 	Delete(read entities.Read) error
 }
@@ -36,7 +38,7 @@ func (repo *ReadRepo) Create(read entities.Read) error {
 
 func (repo *ReadRepo) Delete(read entities.Read) error {
 	err := repo.DB.
-		Where(entities.Read{Username: read.Username, ArticlesSourceID: read.ArticlesSourceID}).
+		Where(entities.Read{Username: read.Username, ArticlesSourceID: read.ArticlesSourceID, ArticleID: read.ArticleID}).
 		Delete(&read).Error
 	if err != nil {
 		return err
@@ -78,3 +80,44 @@ func (repo *ReadRepo) SelectByUsernameAndSourceIDOnDay(username string, articles
 	}
 	return reads, nil
 }
+
+func (repo *ReadRepo) MarkAllAsReadBySourceID(username string, articlesSourceID uint) error {
+	query := `INSERT INTO reads (username, article_id, articles_source_id)
+	SELECT ?, id, articles_source_id
+	FROM articles
+	WHERE NOT EXISTS (
+		SELECT 1
+		FROM reads
+		WHERE reads.article_id = articles.id
+		AND reads.username =  ?
+		AND articles_source_id = ?
+	) AND articles_source_id = ?;`
+	err := repo.DB.Exec(query, username, username, articlesSourceID, articlesSourceID).Error
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (repo *ReadRepo) MarkAllAsReadByUserFollowedSource(username string) error {
+	query := `INSERT INTO reads (username, article_id, articles_source_id)
+		SELECT ?, id, articles.articles_source_id
+		FROM articles JOIN (
+			SELECT articles_source_id 
+			FROM "follows" 
+			WHERE username = ?) 
+		q on q.articles_source_id = articles.articles_source_id 
+		WHERE NOT EXISTS (
+			SELECT 1
+			FROM reads
+			WHERE reads.article_id = articles.id
+			AND reads.username =  ?
+	);`
+	err := repo.DB.Exec(query, username, username, username).Error
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+

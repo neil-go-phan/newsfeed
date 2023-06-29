@@ -21,9 +21,9 @@ func (s *ArticleService) CreateIfNotExist(article *entities.Article) error {
 	return s.repo.CreateIfNotExist(article)
 }
 
-// func (s *ArticleService) GetPaginationByArticlesSourceID(articlesSourceID uint, page int, pageSize int) ([]services.ArticleResponse, error) {
+// func (s *ArticleService) GetArticlesPaginationByArticlesSourceID(articlesSourceID uint, page int, pageSize int) ([]services.ArticleResponse, error) {
 // 	// articlesResponse := make([]services.ArticleResponse, 0)
-// 	// articles, err := s.repo.GetPaginationByArticlesSourceID(articlesSourceID, page, pageSize)
+// 	// articles, err := s.repo.GetArticlesPaginationByArticlesSourceID(articlesSourceID, page, pageSize)
 // 	// if err != nil {
 // 	// 	return articlesResponse, err
 // 	// }
@@ -34,9 +34,9 @@ func (s *ArticleService) CreateIfNotExist(article *entities.Article) error {
 // 	// return articlesResponse, nil
 // }
 
-func (s *ArticleService) GetPaginationByArticlesSourceID(username string, articlesSourceID uint, page int, pageSize int) ([]services.ArticleForReadResponse, error) {
+func (s *ArticleService) GetArticlesPaginationByArticlesSourceID(username string, articlesSourceID uint, page int, pageSize int) ([]services.ArticleForReadResponse, error) {
 	articlesResponse := make([]services.ArticleForReadResponse, 0)
-	articles, err := s.repo.GetPaginationByArticlesSourceIDWithReadStatus(username, articlesSourceID, page, pageSize)
+	articles, err := s.repo.GetArticlesPaginationByArticlesSourceIDWithReadStatus(username, articlesSourceID, page, pageSize)
 	if err != nil {
 		return articlesResponse, err
 	}
@@ -47,9 +47,35 @@ func (s *ArticleService) GetPaginationByArticlesSourceID(username string, articl
 	return articlesResponse, nil
 }
 
-func (s *ArticleService) GetPaginationByUserFollowedSource(username string, page int, pageSize int) ([]services.ArticleForReadResponse, error) {
+func (s *ArticleService) GetArticlesPaginationByUserFollowedSource(username string, page int, pageSize int) ([]services.ArticleForReadResponse, error) {
 	articlesResponse := make([]services.ArticleForReadResponse, 0)
-	articles, err := s.repo.GetPaginationByUserFollowedSource(username, page, pageSize)
+	articles, err := s.repo.GetArticlesPaginationByUserFollowedSource(username, page, pageSize)
+	if err != nil {
+		return articlesResponse, err
+	}
+	for _, article := range articles {
+		articlesResponse = append(articlesResponse, castArticleFromRepoToArticleReadReponse(article))
+
+	}
+	return articlesResponse, nil
+}	
+
+func (s *ArticleService) GetUnreadArticlesPaginationByArticlesSourceID(username string, articlesSourceID uint, page int, pageSize int) ([]services.ArticleForReadResponse, error) {
+	articlesResponse := make([]services.ArticleForReadResponse, 0)
+	articles, err := s.repo.GetUnreadArticlesPaginationByArticlesSourceID(username, articlesSourceID, page, pageSize)
+	if err != nil {
+		return articlesResponse, err
+	}
+	for _, article := range articles {
+		articlesResponse = append(articlesResponse, castArticleFromRepoToArticleReadReponse(article))
+
+	}
+	return articlesResponse, nil
+}
+
+func (s *ArticleService) GetUnreadArticlesByUserFollowedSource(username string, page int, pageSize int) ([]services.ArticleForReadResponse, error) {
+	articlesResponse := make([]services.ArticleForReadResponse, 0)
+	articles, err := s.repo.GetUnreadArticlesByUserFollowedSource(username, page, pageSize)
 	if err != nil {
 		return articlesResponse, err
 	}

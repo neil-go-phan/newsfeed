@@ -23,5 +23,8 @@ func (route *ReadRoutes) Setup(r *gin.Engine) {
 	{
 		routes.POST("read", middlewares.CheckAccessToken(), route.handler.Read)
 		routes.POST("unread", middlewares.CheckAccessToken(), route.handler.Unread)
+		routes.POST("mark-all-as-read", middlewares.CheckAccessToken(), route.handler.MarkAllAsRead)
+		routes.POST("mark-all-as-read-by-sourceid", middlewares.CheckAccessToken(), route.handler.MarkAllAsReadBySourceID)
+
 	}
 }

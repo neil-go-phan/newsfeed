@@ -14,8 +14,11 @@ type ArticleHandler struct {
 }
 
 type ArticleHandlerInterface interface {
-	GetPaginationByArticlesSourceID(c *gin.Context)
-	GetPaginationByUserFollowedSources(c *gin.Context)
+	GetArticlesPaginationByArticlesSourceID(c *gin.Context)
+	GetArticlesPaginationByUserFollowedSources(c *gin.Context)
+	GetUnreadArticlesPaginationByArticlesSourceID(c *gin.Context) 
+	GetUnreadArticlesByUserFollowedSource(c *gin.Context)
+
 	SearchArticlesAcrossUserFollowedSources(c *gin.Context)
 	CountArticleCreateAWeekAgoByArticlesSourceID(c *gin.Context)
 	// ListAll(c *gin.Context)
@@ -32,7 +35,7 @@ func NewArticlesHandler(service services.ArticleServices) *ArticleHandler {
 	}
 }
 
-func (h *ArticleHandler) GetPaginationByArticlesSourceID(c *gin.Context) {
+func (h *ArticleHandler) GetArticlesPaginationByArticlesSourceID(c *gin.Context) {
 	page, err := strconv.Atoi(c.Query("page"))
 	if err != nil {
 		log.Error("error occrus:", err)
@@ -58,7 +61,7 @@ func (h *ArticleHandler) GetPaginationByArticlesSourceID(c *gin.Context) {
 		return
 	}
 
-	articles, err := h.service.GetPaginationByArticlesSourceID(username.(string), uint(articlesSourceID), page, pageSize)
+	articles, err := h.service.GetArticlesPaginationByArticlesSourceID(username.(string), uint(articlesSourceID), page, pageSize)
 	if err != nil {
 		log.Error("error occrus:", err)
 		c.JSON(http.StatusInternalServerError, gin.H{"success": false, "message": "internal server error"})
@@ -67,7 +70,7 @@ func (h *ArticleHandler) GetPaginationByArticlesSourceID(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"success": true, "articles": articles})
 }
 
-func (h *ArticleHandler) GetPaginationByUserFollowedSources(c *gin.Context) {
+func (h *ArticleHandler) GetArticlesPaginationByUserFollowedSources(c *gin.Context) {
 	page, err := strconv.Atoi(c.Query("page"))
 	if err != nil {
 		log.Error("error occrus:", err)
@@ -87,7 +90,71 @@ func (h *ArticleHandler) GetPaginationByUserFollowedSources(c *gin.Context) {
 		return
 	}
 
-	articles, err := h.service.GetPaginationByUserFollowedSource(username.(string), page, pageSize)
+	articles, err := h.service.GetArticlesPaginationByUserFollowedSource(username.(string), page, pageSize)
+	if err != nil {
+		log.Error("error occrus:", err)
+		c.JSON(http.StatusInternalServerError, gin.H{"success": false, "message": "internal server error"})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"success": true, "articles": articles})
+}
+
+func (h *ArticleHandler) GetUnreadArticlesPaginationByArticlesSourceID(c *gin.Context) {
+	page, err := strconv.Atoi(c.Query("page"))
+	if err != nil {
+		log.Error("error occrus:", err)
+		c.JSON(http.StatusBadRequest, gin.H{"success": false, "message": "bad request"})
+		return
+	}
+	pageSize, err := strconv.Atoi(c.Query("page_size"))
+	if err != nil {
+		log.Error("error occrus:", err)
+		c.JSON(http.StatusBadRequest, gin.H{"success": false, "message": "bad request"})
+		return
+	}
+	articlesSourceID, err := strconv.Atoi(c.Query("articles_source_id"))
+	if err != nil {
+		log.Error("error occrus:", err)
+		c.JSON(http.StatusBadRequest, gin.H{"success": false, "message": "bad request"})
+		return
+	}
+	username, exsit := c.Get("username")
+	if !exsit {
+		log.Error("Not found username in token string")
+		c.JSON(http.StatusBadRequest, gin.H{"success": false, "message": "bad request"})
+		return
+	}
+
+	articles, err := h.service.GetUnreadArticlesPaginationByArticlesSourceID(username.(string), uint(articlesSourceID), page, pageSize)
+	if err != nil {
+		log.Error("error occrus:", err)
+		c.JSON(http.StatusInternalServerError, gin.H{"success": false, "message": "internal server error"})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"success": true, "articles": articles})
+}
+
+func (h *ArticleHandler) GetUnreadArticlesByUserFollowedSource(c *gin.Context) {
+	page, err := strconv.Atoi(c.Query("page"))
+	if err != nil {
+		log.Error("error occrus:", err)
+		c.JSON(http.StatusBadRequest, gin.H{"success": false, "message": "bad request"})
+		return
+	}
+	pageSize, err := strconv.Atoi(c.Query("page_size"))
+	if err != nil {
+		log.Error("error occrus:", err)
+		c.JSON(http.StatusBadRequest, gin.H{"success": false, "message": "bad request"})
+		return
+	}
+	username, exsit := c.Get("username")
+	if !exsit {
+		log.Error("Not found username in token string")
+		c.JSON(http.StatusBadRequest, gin.H{"success": false, "message": "bad request"})
+		return
+	}
+
+	articles, err := h.service.GetUnreadArticlesByUserFollowedSource(username.(string), page, pageSize)
 	if err != nil {
 		log.Error("error occrus:", err)
 		c.JSON(http.StatusInternalServerError, gin.H{"success": false, "message": "internal server error"})

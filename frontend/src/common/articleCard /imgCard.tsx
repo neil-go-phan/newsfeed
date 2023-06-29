@@ -12,7 +12,7 @@ import { faCircle, faCircleCheck } from '@fortawesome/free-regular-svg-icons';
 
 type Props = {
   article: Article;
-  articlesSource: ArticlesSourceInfo | ArticlesSource | undefined
+  articlesSource: ArticlesSourceInfo | ArticlesSource | undefined;
   isAdmin: boolean;
   handleModal: () => void;
   base64Img: string;
@@ -22,10 +22,7 @@ type Props = {
 
 const ImgCard: React.FC<Props> = (props: Props) => {
   return (
-    <Card
-      sx={{ maxWidth: CARD_MAX_WIDTH }}
-      className="articleCard"
-    >
+    <Card sx={{ maxWidth: CARD_MAX_WIDTH }} className={props.readStatus ? "articleCard alreadyRead" : "articleCard"}>
       <CardMedia
         component="img"
         height={CARD_IMG_HEIGHT}
@@ -33,7 +30,7 @@ const ImgCard: React.FC<Props> = (props: Props) => {
         alt="thumbnail"
         onClick={props.handleModal}
       />
-      <CardContent>
+      <CardContent onClick={props.handleModal}>
         <Typography
           className="articleCard__title"
           gutterBottom
