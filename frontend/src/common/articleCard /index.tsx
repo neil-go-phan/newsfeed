@@ -23,6 +23,10 @@ const REQUEST_MARK_ARTICLE_AS_READ_FAIL_MESSAGE =
   'request mark article as read fail';
 const REQUEST_MARK_ARTICLE_AS_UNREAD_FAIL_MESSAGE =
   'request mark article as unread fail';
+const REQUEST_ADD_ARTICLE_TO_READ_LATER_LIST_FAIL_MESSAGE =
+  'request add article to read later list fail';
+const REQUEST_REMOVE_ARTICLE_TO_READ_LATER_LIST_FAIL_MESSAGE =
+  'request remove article to read later list fail';
 
 const ArticleCard: React.FC<Props> = (props: Props) => {
   const [isContentModalOpen, setIsContentModalOpen] = useState<boolean>(false);
@@ -30,10 +34,9 @@ const ArticleCard: React.FC<Props> = (props: Props) => {
   const [shortContent, setShortContent] = useState<string>('');
   const [doc, setDoc] = useState<any>();
   const [readStatus, setReadStatus] = useState<boolean>(false);
+  const [isReadLater, setIsReadLater] = useState<boolean>(false);
 
-  const { followedSources, callAPIGetFollow } = useContext(
-    FollowedSourcesContext
-  );
+  const { callAPIGetFollow } = useContext(FollowedSourcesContext);
 
   const handleContentModalClose = () => {
     setIsContentModalOpen(false);
@@ -139,6 +142,45 @@ const ArticleCard: React.FC<Props> = (props: Props) => {
     }
   };
 
+  const handleReadLater = () => {
+    if (!isReadLater) {
+      handleRequestAddArticleToReadLaterList(props.article.id);
+    }
+    if (isReadLater) {
+      handleRequestRemoveArticleToReadLaterList(props.article.id)
+    }
+  };
+
+  const handleRequestAddArticleToReadLaterList = async (articleID: number) => {
+    try {
+      const { data } = await axiosProtectedAPI.post('read-later/add', {
+        article_id: articleID,
+      });
+      if (!data.success) {
+        if (data.message) {
+          throw data.message;
+        }
+        throw REQUEST_ADD_ARTICLE_TO_READ_LATER_LIST_FAIL_MESSAGE;
+      }
+      setIsReadLater(true);
+    } catch (error: any) {}
+  };
+
+  const handleRequestRemoveArticleToReadLaterList = async (articleID: number) => {
+    try {
+      const { data } = await axiosProtectedAPI.post('read-later/remove', {
+        article_id: articleID,
+      });
+      if (!data.success) {
+        if (data.message) {
+          throw data.message;
+        }
+        throw REQUEST_REMOVE_ARTICLE_TO_READ_LATER_LIST_FAIL_MESSAGE;
+      }
+      setIsReadLater(false);
+    } catch (error: any) {}
+  };
+
   useEffect(() => {
     if (props.article.description !== '') {
       const newdom = htmlparser2.parseDocument(props.article.description);
@@ -149,6 +191,9 @@ const ArticleCard: React.FC<Props> = (props: Props) => {
     }
     if (props.article.is_read !== undefined) {
       setReadStatus(props.article.is_read);
+    }
+    if (props.article.is_read_later !== undefined) {
+      setIsReadLater(props.article.is_read_later);
     }
   }, [props.article]);
   return (
@@ -162,6 +207,8 @@ const ArticleCard: React.FC<Props> = (props: Props) => {
           isAdmin={props.isAdmin}
           readStatus={readStatus}
           handleChangeReadStatus={handleChangeReadStatus}
+          isReadLater={isReadLater}
+          handleReadLater={handleReadLater}
         />
       ) : (
         <ContentCard
@@ -172,6 +219,8 @@ const ArticleCard: React.FC<Props> = (props: Props) => {
           isAdmin={props.isAdmin}
           readStatus={readStatus}
           handleChangeReadStatus={handleChangeReadStatus}
+          isReadLater={isReadLater}
+          handleReadLater={handleReadLater}
         />
       )}
       <Popup modal open={isContentModalOpen} onClose={handleContentModalClose}>

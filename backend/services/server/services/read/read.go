@@ -3,19 +3,15 @@ package readservices
 import (
 	"server/entities"
 	"server/repository"
-	"server/services"
 )
 
 type ReadService struct {
 	repo repository.ReadRepository
-	followServices services.FollowServices
-	
 }
 
-func NewReadService(repo repository.ReadRepository, followServices services.FollowServices) *ReadService {
+func NewReadService(repo repository.ReadRepository) *ReadService {
 	ReadService := &ReadService{
 		repo: repo,
-		followServices: followServices,
 	}
 	return ReadService
 }

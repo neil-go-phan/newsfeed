@@ -10,6 +10,7 @@ import { TriggerRefreshContext } from '@/common/contexts/triggerRefreshContext';
 import {
   ActiveSectionContext,
   SECTION_ALL_ARTICLES,
+  SECTION_READ_LATER_ARTICLES,
   SECTION_UNREAD_ARTICLES,
 } from '@/common/contexts/activeArticlesSectionContext';
 import useWindowDimensions from '@/helpers/useWindowResize';
@@ -73,6 +74,9 @@ function ReadArticlesBySources() {
       case SECTION_UNREAD_ARTICLES:
         requestGetFirstPageUnreadArticlesBySource(articlesSourceID);
         break;
+      case SECTION_READ_LATER_ARTICLES:
+        requestGetFirstPageReadLaterBySource(articlesSourceID);
+        break;
       default:
         requestGetFirstPageArticlesBySource(articlesSourceID);
     }
@@ -93,6 +97,9 @@ function ReadArticlesBySources() {
           PAGE_SIZE
         );
         break;
+      case SECTION_READ_LATER_ARTICLES:
+        requestGetMoreReadLaterBySource(articlesSourceID, nextPage, PAGE_SIZE)
+          break;
       default:
         requestGetMoreArticlesBySource(articlesSourceID, nextPage, PAGE_SIZE);
     }
@@ -164,6 +171,39 @@ function ReadArticlesBySources() {
     }
   };
 
+  const requestGetFirstPageReadLaterBySource = async (
+    articlesSourceID: number
+  ) => {
+    try {
+      const { data } = await axiosProtectedAPI.get(
+        '/articles/get-page-by-articles-source-id-readlater',
+        {
+          params: {
+            page: FIRST_PAGE,
+            page_size: PAGE_SIZE,
+            articles_source_id: articlesSourceID,
+          },
+        }
+      );
+      if (!data.success) {
+        if (data.message) {
+          throw data.message;
+        }
+        throw REQUEST_NEWEST_ARTILCES_FAIL_MESSAGE;
+      }
+      if (data.articles.length === PAGE_SIZE) {
+        setHasMore(true);
+      } else {
+        setHasMore(false);
+      }
+      setArticles(data.articles);
+      setIsLoading(false);
+    } catch (error: any) {
+      setArticles([]);
+      setIsLoading(false);
+    }
+  };
+
   const requestGetMoreArticlesBySource = async (
     articlesSourceID: number,
     page: number,
@@ -207,6 +247,41 @@ function ReadArticlesBySources() {
     try {
       const { data } = await axiosProtectedAPI.get(
         '/articles/get-page-by-articles-source-id-unread',
+        {
+          params: {
+            page: page,
+            page_size: pageSize,
+            articles_source_id: articlesSourceID,
+          },
+        }
+      );
+      if (!data.success) {
+        if (data.message) {
+          throw data.message;
+        }
+        throw REQUEST_NEWEST_ARTILCES_FAIL_MESSAGE;
+      }
+      if (data.articles.length === PAGE_SIZE) {
+        setHasMore(true);
+      } else {
+        setHasMore(false);
+      }
+      const newArticles = articles.concat(data.articles);
+      setArticles([...newArticles]);
+      setIsLoading(false);
+    } catch (error: any) {
+      setIsLoading(false);
+    }
+  };
+
+  const requestGetMoreReadLaterBySource = async (
+    articlesSourceID: number,
+    page: number,
+    pageSize: number
+  ) => {
+    try {
+      const { data } = await axiosProtectedAPI.get(
+        '/articles/get-page-by-articles-source-id-readlater',
         {
           params: {
             page: page,

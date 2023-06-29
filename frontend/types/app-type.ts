@@ -33,6 +33,7 @@ type Article = {
   authors: string;
   articles_source_id: number;
   is_read: boolean;
+  is_read_later: boolean;
 };
 
 type Articles = Array<Article>;

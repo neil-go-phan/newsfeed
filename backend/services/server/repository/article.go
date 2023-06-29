@@ -17,6 +17,8 @@ type ArticleRepository interface {
 	GetArticlesPaginationByUserFollowedSource(username string, page int, pageSize int) ([]ArticleLeftJoinRead, error) 
 	GetArticlesPaginationByArticlesSourceIDWithReadStatus(username string, articlesSourceID uint, page int, pageSize int) ([]ArticleLeftJoinRead, error)
 	GetUnreadArticlesPaginationByArticlesSourceID(username string, articlesSourceID uint, page int, pageSize int) ([]ArticleLeftJoinRead, error)
+	GetReadLaterListPaginationByUserFollowedSource(username string, page int, pageSize int) ([]ArticleLeftJoinRead, error)
+	GetReadLaterListPaginationByArticlesSourceID(username string, articlesSourceID uint, page int, pageSize int) ([]ArticleLeftJoinRead, error)
 	GetUnreadArticlesByUserFollowedSource(username string, page int, pageSize int) ([]ArticleLeftJoinRead, error) 
 	CountArticleCreateAWeekAgoByArticlesSourceID(articlesSourceID uint) (int64, error)
 
@@ -29,8 +31,8 @@ type ArticleRepo struct {
 
 type ArticleLeftJoinRead struct {
 	entities.Article
-	Username  string `json:"username"`
-	ArticleID uint   `json:"article_id"`
+	IsRead  bool `json:"is_read"`
+	IsReadLater  bool `json:"is_read_later"`
 }
 
 func NewArticleRepo(db *gorm.DB) *ArticleRepo {
@@ -63,15 +65,21 @@ func (repo *ArticleRepo) GetArticlesPaginationByArticlesSourceID(articlesSourceI
 
 func (repo *ArticleRepo) GetArticlesPaginationByArticlesSourceIDWithReadStatus(username string, articlesSourceID uint, page int, pageSize int) ([]ArticleLeftJoinRead, error) {
 	articles := make([]ArticleLeftJoinRead, 0)
-	subQuery := repo.DB.
+	subQuery1 := repo.DB.
 		Model(&entities.Read{}).
 		Select("*").
 		Where("username = ? AND articles_source_id = ?", username, articlesSourceID)
 
+	subQuery2 := repo.DB.
+		Model(&entities.ReadLater{}).
+		Select("*").
+		Where("username = ?", username)
+
 	err := repo.DB.
 		Model(&entities.Article{}).
-		Distinct("id", "title", "description", "link", "published", "authors", "articles.articles_source_id", "created_at", "username", "article_id").
-		Joins("LEFT JOIN (?) q on articles.id = q.article_id", subQuery).
+		Distinct("id", "title", "description", "link", "published", "authors", "articles.articles_source_id", "created_at", "CASE WHEN r.username IS NULL THEN false ELSE true END AS is_read", "CASE WHEN rl.username IS NULL THEN false ELSE true END AS is_read_later").
+		Joins("LEFT JOIN (?) r on articles.id = r.article_id", subQuery1).
+		Joins("LEFT JOIN (?) rl on articles.id = rl.article_id ", subQuery2).
 		Where("articles.articles_source_id = ?", articlesSourceID).
 		Scopes(helpers.Paginate(page, pageSize)).
 		Order("created_at desc").
@@ -84,16 +92,23 @@ func (repo *ArticleRepo) GetArticlesPaginationByArticlesSourceIDWithReadStatus(u
 
 func (repo *ArticleRepo) GetArticlesPaginationByUserFollowedSource(username string, page int, pageSize int) ([]ArticleLeftJoinRead, error) {
 	articles := make([]ArticleLeftJoinRead, 0)
-		subQuery := repo.DB.
+		subQuery1 := repo.DB.
 		Model(&entities.Follow{}).
 		Select("articles_source_id").
 		Where("username = ?", username)
 
+		subQuery2 := repo.DB.
+		Model(&entities.ReadLater{}).
+		Select("username, article_id").
+		Where("username = ?", username)
+
+
 	err := repo.DB.
 		Model(&entities.Article{}).
-		Distinct("id", "title", "description", "link", "published", "authors", "articles.articles_source_id", "created_at", "username", "article_id").
-		Joins("JOIN (?) q on q.articles_source_id = articles.articles_source_id", subQuery).
+		Distinct("id", "title", "description", "link", "published", "authors", "articles.articles_source_id", "created_at", "CASE WHEN r.username IS NULL THEN false ELSE true END AS is_read", "CASE WHEN rl.username IS NULL THEN false ELSE true END AS is_read_later").
+		Joins("JOIN (?) f on f.articles_source_id = articles.articles_source_id", subQuery1).
 		Joins("LEFT JOIN reads r on articles.id = r.article_id").
+		Joins("LEFT JOIN (?) rl on articles.id = rl.article_id", subQuery2).
 		Scopes(helpers.Paginate(page, pageSize)).
 		Order("created_at desc").
 		Find(&articles).Error
@@ -101,6 +116,64 @@ func (repo *ArticleRepo) GetArticlesPaginationByUserFollowedSource(username stri
 	if err != nil {
 		return articles, err
 	}
+
+	return articles, nil
+}
+
+func (repo *ArticleRepo) GetReadLaterListPaginationByArticlesSourceID(username string, articlesSourceID uint, page int, pageSize int) ([]ArticleLeftJoinRead, error) {
+	articles := make([]ArticleLeftJoinRead, 0)
+	subQuery1 := repo.DB.
+		Model(&entities.Read{}).
+		Select("username, article_id").
+		Where("username = ? AND articles_source_id = ?", username, articlesSourceID)
+
+	subQuery2 := repo.DB.
+		Model(&entities.ReadLater{}).
+		Select("username, article_id").
+		Where("username = ?", username)
+
+	err := repo.DB.
+		Model(&entities.Article{}).
+		Distinct("id", "title", "description", "link", "published", "authors", "articles.articles_source_id", "created_at", "CASE WHEN r.username IS NULL THEN false ELSE true END AS is_read", "CASE WHEN rl.username IS NULL THEN false ELSE true END AS is_read_later").
+		Joins("LEFT JOIN (?) r on articles.id = r.article_id", subQuery1).
+		Joins("JOIN (?) rl on articles.id = rl.article_id ", subQuery2).
+		Where("articles.articles_source_id = ?", articlesSourceID).
+		Scopes(helpers.Paginate(page, pageSize)).
+		Order("created_at desc").
+		Find(&articles).Error
+	if err != nil {
+		return articles, err
+	}
+	return articles, nil
+}
+
+func (repo *ArticleRepo) GetReadLaterListPaginationByUserFollowedSource(username string, page int, pageSize int) ([]ArticleLeftJoinRead, error) {
+	articles := make([]ArticleLeftJoinRead, 0)
+		subQuery1 := repo.DB.
+		Model(&entities.Follow{}).
+		Select("articles_source_id").
+		Where("username = ?", username)
+
+		subQuery2 := repo.DB.
+		Model(&entities.ReadLater{}).
+		Select("username, article_id").
+		Where("username = ?", username)
+
+
+	err := repo.DB.
+		Model(&entities.Article{}).
+		Distinct("id", "title", "description", "link", "published", "authors", "articles.articles_source_id", "created_at", "CASE WHEN r.username IS NULL THEN false ELSE true END AS is_read", "CASE WHEN rl.username IS NULL THEN false ELSE true END AS is_read_later").
+		Joins("JOIN (?) f on f.articles_source_id = articles.articles_source_id", subQuery1).
+		Joins("LEFT JOIN reads r on articles.id = r.article_id").
+		Joins("JOIN (?) rl on articles.id = rl.article_id", subQuery2).
+		Scopes(helpers.Paginate(page, pageSize)).
+		Order("created_at desc").
+		Find(&articles).Error
+
+	if err != nil {
+		return articles, err
+	}
+
 	return articles, nil
 }
 

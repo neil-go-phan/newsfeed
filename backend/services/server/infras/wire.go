@@ -19,7 +19,7 @@ import (
 	topicservices "server/services/topic"
 	userservices "server/services/user"
 	readservices "server/services/read"
-
+	readlaterservices "server/services/readLater"
 	"github.com/google/wire"
 	"github.com/robfig/cron/v3"
 	"gorm.io/gorm"
@@ -157,16 +157,6 @@ func InitFollow(db *gorm.DB) *routes.FollowRoutes {
 
 func InitRead(db *gorm.DB) *routes.ReadRoutes {
 	wire.Build(
-		repository.NewArticlesSourcesRepo,
-		wire.Bind(new(repository.ArticlesSourcesRepository), new(*repository.ArticlesSourcesRepo)),
-		articlessourceservices.NewArticlesSourceService,
-		wire.Bind(new(services.ArticlesSourceServices), new(*articlessourceservices.ArticlesSourceService)),
-
-		repository.NewFollow,
-		wire.Bind(new(repository.FollowRepository), new(*repository.FollowRepo)),
-		followservices.NewFollowService,
-		wire.Bind(new(services.FollowServices), new(*followservices.FollowService)),
-		
 		repository.NewRead,
 		wire.Bind(new(repository.ReadRepository), new(*repository.ReadRepo)),
 		readservices.NewReadService,
@@ -176,6 +166,19 @@ func InitRead(db *gorm.DB) *routes.ReadRoutes {
 		routes.NewReadRoutes,
 	)
 	return &routes.ReadRoutes{}
+}
+
+func InitReadLater(db *gorm.DB) *routes.ReadLaterRoutes {
+	wire.Build(
+		repository.NewReadLater,
+		wire.Bind(new(repository.ReadLaterRepository), new(*repository.ReadLaterRepo)),
+		readlaterservices.NewReadLaterService,
+		wire.Bind(new(services.ReadLaterServices), new(*readlaterservices.ReadLaterService)),
+		handlers.NewReadLaterHandler,
+		wire.Bind(new(handlers.ReadLaterHandlerInterface), new(*handlers.ReadLaterHandler)),
+		routes.NewReadLaterRoutes,
+	)
+	return &routes.ReadLaterRoutes{}
 }
 
 // func InitCronjob(db *gorm.DB, grpcClient pb.CrawlerServiceClient) *routes.CrawlerRoutes {

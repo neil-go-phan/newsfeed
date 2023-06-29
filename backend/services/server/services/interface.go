@@ -25,10 +25,16 @@ type RoleServices interface {
 
 type ArticleServices interface {
 	SearchArticlesAcrossUserFollowedSources(username string, keyword string, page int, pageSize int) ([]ArticleResponse, int64, error)
+
 	GetArticlesPaginationByUserFollowedSource(username string, page int, pageSize int) ([]ArticleForReadResponse, error)
 	GetArticlesPaginationByArticlesSourceID(username string, articlesSourceID uint, page int, pageSize int) ([]ArticleForReadResponse, error)
+
 	GetUnreadArticlesPaginationByArticlesSourceID(username string, articlesSourceID uint, page int, pageSize int) ([]ArticleForReadResponse, error)
 	GetUnreadArticlesByUserFollowedSource(username string, page int, pageSize int) ([]ArticleForReadResponse, error)
+
+	GetReadLaterListPaginationByArticlesSourceID(username string, articlesSourceID uint, page int, pageSize int) ([]ArticleForReadResponse, error)
+	GetReadLaterListPaginationByUserFollowedSource(username string, page int, pageSize int) ([]ArticleForReadResponse, error)
+
 	CountArticleCreateAWeekAgoByArticlesSourceID(articlesSourceID uint) (int64, error)
 
 	CreateIfNotExist(article *entities.Article) error
@@ -99,4 +105,9 @@ type ReadServices interface {
 	MarkAllAsReadByUserFollowedSource(username string) error
 	MarkArticleAsRead(username string, articleID uint, articlesSourceID uint) error
 	MarkArticleAsUnRead(username string, articleID uint, articlesSourceID uint) error
+}
+
+type ReadLaterServices interface {
+	AddToReadLaterList(username string, articleID uint) error
+	RemoveFromReadLaterList(username string, articleID uint) error
 }

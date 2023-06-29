@@ -86,6 +86,32 @@ func (s *ArticleService) GetUnreadArticlesByUserFollowedSource(username string, 
 	return articlesResponse, nil
 }	
 
+func (s *ArticleService) GetReadLaterListPaginationByArticlesSourceID(username string, articlesSourceID uint, page int, pageSize int) ([]services.ArticleForReadResponse, error) {
+	articlesResponse := make([]services.ArticleForReadResponse, 0)
+	articles, err := s.repo.GetReadLaterListPaginationByArticlesSourceID(username, articlesSourceID, page, pageSize)
+	if err != nil {
+		return articlesResponse, err
+	}
+	for _, article := range articles {
+		articlesResponse = append(articlesResponse, castArticleFromRepoToArticleReadReponse(article))
+
+	}
+	return articlesResponse, nil
+}
+
+func (s *ArticleService) GetReadLaterListPaginationByUserFollowedSource(username string, page int, pageSize int) ([]services.ArticleForReadResponse, error) {
+	articlesResponse := make([]services.ArticleForReadResponse, 0)
+	articles, err := s.repo.GetReadLaterListPaginationByUserFollowedSource(username, page, pageSize)
+	if err != nil {
+		return articlesResponse, err
+	}
+	for _, article := range articles {
+		articlesResponse = append(articlesResponse, castArticleFromRepoToArticleReadReponse(article))
+
+	}
+	return articlesResponse, nil
+}
+
 func (s *ArticleService) CountArticleCreateAWeekAgoByArticlesSourceID(articlesSourceID uint) (int64, error) {
 	return s.repo.CountArticleCreateAWeekAgoByArticlesSourceID(articlesSourceID)
 }

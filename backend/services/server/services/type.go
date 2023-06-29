@@ -66,6 +66,7 @@ type ArticleForReadResponse struct {
 	Authors          string    `json:"authors"`
 	ArticlesSourceID uint      `json:"articles_source_id"`
 	IsRead           bool      `json:"is_read"`
+	IsReadLater      bool      `json:"is_read_later"`
 }
 
 type ArticlesSourceFromFrontend struct {

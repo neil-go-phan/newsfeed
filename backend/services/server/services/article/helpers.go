@@ -27,12 +27,8 @@ func castArticleFromRepoToArticleReadReponse(article repository.ArticleLeftJoinR
 		Published: article.Published,
 		Authors: article.Authors,
 		ArticlesSourceID: article.ArticlesSourceID,
+		IsRead: article.IsRead,
+		IsReadLater: article.IsReadLater,
 	}
-	if (article.Username != "" && article.ArticleID != 0) {
-		newArticle.IsRead = true
-	} else {
-		newArticle.IsRead = false
-	}
-
 	return newArticle
 }

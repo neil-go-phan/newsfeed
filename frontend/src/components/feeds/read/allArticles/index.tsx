@@ -9,6 +9,7 @@ import Image from 'next/image';
 import {
   ActiveSectionContext,
   SECTION_ALL_ARTICLES,
+  SECTION_READ_LATER_ARTICLES,
   SECTION_UNREAD_ARTICLES,
 } from '@/common/contexts/activeArticlesSectionContext';
 import useWindowDimensions from '@/helpers/useWindowResize';
@@ -50,6 +51,9 @@ function ReadAllArticles() {
       case SECTION_UNREAD_ARTICLES:
         requestGetFirstPageUnreadArticlesFromAllSource();
         break;
+      case SECTION_READ_LATER_ARTICLES:
+        requestGetFirstPageReadLaterFromAllSource();
+        break;
       default:
         requestGetFirstPageArticlesFromAllSource();
     }
@@ -68,6 +72,9 @@ function ReadAllArticles() {
         break;
       case SECTION_UNREAD_ARTICLES:
         requestGetMoreUnreadArticles(nextPage, PAGE_SIZE);
+        break;
+      case SECTION_READ_LATER_ARTICLES:
+        requestGetMoreReadLaterArticles(nextPage, PAGE_SIZE);
         break;
       default:
         requestGetMoreArticles(nextPage, PAGE_SIZE);
@@ -108,6 +115,36 @@ function ReadAllArticles() {
     try {
       const { data } = await axiosProtectedAPI.get(
         '/articles/get-page-by-all-user-followed-sources',
+        {
+          params: {
+            page: FIRST_PAGE,
+            page_size: PAGE_SIZE,
+          },
+        }
+      );
+      if (!data.success) {
+        if (data.message) {
+          throw data.message;
+        }
+        throw REQUEST_NEWEST_ARTILCES_FAIL_MESSAGE;
+      }
+      if (data.articles.length === PAGE_SIZE) {
+        setHasMore(true);
+      } else {
+        setHasMore(false);
+      }
+      setArticles(data.articles);
+      setIsLoading(false);
+    } catch (error: any) {
+      setArticles([]);
+      setIsLoading(false);
+    }
+  };
+
+  const requestGetFirstPageReadLaterFromAllSource = async () => {
+    try {
+      const { data } = await axiosProtectedAPI.get(
+        '/articles/get-page-by-all-user-followed-sources-readlater',
         {
           params: {
             page: FIRST_PAGE,
@@ -196,6 +233,40 @@ function ReadAllArticles() {
       setIsLoading(false);
     }
   };
+
+  const requestGetMoreReadLaterArticles = async (
+    page: number,
+    pageSize: number
+  ) => {
+    try {
+      const { data } = await axiosProtectedAPI.get(
+        '/articles/get-page-by-all-user-followed-sources-readlater',
+        {
+          params: {
+            page: page,
+            page_size: pageSize,
+          },
+        }
+      );
+      if (!data.success) {
+        if (data.message) {
+          throw data.message;
+        }
+        throw REQUEST_NEWEST_ARTILCES_FAIL_MESSAGE;
+      }
+      if (data.articles.length === PAGE_SIZE) {
+        setHasMore(true);
+      } else {
+        setHasMore(false);
+      }
+      const newArticles = articles.concat(data.articles);
+      setArticles([...newArticles]);
+      setIsLoading(false);
+    } catch (error: any) {
+      setIsLoading(false);
+    }
+  };
+
   return (
     <div className="readFeeds__feeds">
       {isLoading ? (
@@ -242,7 +313,10 @@ function ReadAllArticles() {
               </InfiniteScroll>
             </div>
           ) : (
-            <div className="readFeeds__feeds--allRead" style={{height: height - HEADER_HEIGHT}}>
+            <div
+              className="readFeeds__feeds--allRead"
+              style={{ height: height - HEADER_HEIGHT }}
+            >
               <div className="img">
                 <Image
                   alt="all read article images"

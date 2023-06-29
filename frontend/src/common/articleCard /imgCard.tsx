@@ -5,10 +5,15 @@ import CardContent from '@mui/material/CardContent';
 import Typography from '@mui/material/Typography';
 import CardActions from '@mui/material/CardActions';
 import IconButton from '@mui/material/IconButton';
-import StarBorderIcon from '@mui/icons-material/StarBorder';
+import {
+  faCircle,
+  faCircleCheck,
+  faStar,
+} from '@fortawesome/free-regular-svg-icons';
+import { faStar as starSolid } from '@fortawesome/free-solid-svg-icons';
 import { CARD_IMG_HEIGHT, CARD_MAX_WIDTH } from '.';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCircle, faCircleCheck } from '@fortawesome/free-regular-svg-icons';
+import Popup from 'reactjs-popup';
 
 type Props = {
   article: Article;
@@ -18,6 +23,8 @@ type Props = {
   base64Img: string;
   readStatus: boolean;
   handleChangeReadStatus: () => void;
+  isReadLater: boolean;
+  handleReadLater: () => void;
 };
 
 const ImgCard: React.FC<Props> = (props: Props) => {
@@ -51,8 +58,26 @@ const ImgCard: React.FC<Props> = (props: Props) => {
         disableSpacing
         className={props.isAdmin ? 'd-none' : 'd-block'}
       >
-        <IconButton aria-label="read later">
-          <StarBorderIcon />
+        <IconButton aria-label="read later" onClick={props.handleReadLater}>
+          {props.isReadLater ? (
+            <Popup
+              trigger={() => <FontAwesomeIcon icon={starSolid} className='starSolid'/>}
+              position="bottom center"
+              closeOnDocumentClick
+              on={['hover', 'focus']}
+            >
+              <span>Remove article to read later list</span>
+            </Popup>
+          ) : (
+            <Popup  
+              trigger={() => <FontAwesomeIcon icon={faStar} />}
+              position="bottom center"
+              closeOnDocumentClick
+              on={['hover', 'focus']}
+            >
+              <span>Add article from read later list</span>
+            </Popup>
+          )}
         </IconButton>
         <IconButton aria-label="status" onClick={props.handleChangeReadStatus}>
           {props.readStatus ? (

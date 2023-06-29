@@ -20,6 +20,7 @@ import (
 	"server/services/cronjob"
 	"server/services/follow"
 	"server/services/read"
+	"server/services/readLater"
 	"server/services/role"
 	"server/services/topic"
 	"server/services/user"
@@ -101,12 +102,16 @@ func InitizeFollow(db *gorm.DB) *routes.FollowRoutes {
 
 func InitizeRead(db *gorm.DB) *routes.ReadRoutes {
 	readRepo := repository.NewRead(db)
-	followRepo := repository.NewFollow(db)
-	articlesSourcesRepo := repository.NewArticlesSourcesRepo(db)
-	articlesSourceService := articlessourceservices.NewArticlesSourceService(articlesSourcesRepo)
-	followService := followservices.NewFollowService(followRepo, articlesSourceService)
-	readService := readservices.NewReadService(readRepo, followService)
+	readService := readservices.NewReadService(readRepo)
 	readHandler := handlers.NewReadHandler(readService)
 	readRoutes := routes.NewReadRoutes(readHandler)
 	return readRoutes
+}
+
+func InitizeReadLater(db *gorm.DB) *routes.ReadLaterRoutes {
+	readLaterRepo := repository.NewReadLater(db)
+	readLaterService := readlaterservices.NewReadLaterService(readLaterRepo)
+	readLaterHandler := handlers.NewReadLaterHandler(readLaterService)
+	readLaterRoutes := routes.NewReadLaterRoutes(readLaterHandler)
+	return readLaterRoutes
 }
