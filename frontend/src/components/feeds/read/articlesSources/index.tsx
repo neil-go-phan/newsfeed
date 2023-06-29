@@ -1,22 +1,30 @@
 import { FollowedSourcesContext } from '@/common/contexts/followedSources';
 import axiosProtectedAPI from '@/helpers/axiosProtectedAPI';
+import Image from 'next/image';
 import { useRouter } from 'next/router';
 import React, { useContext, useEffect, useState } from 'react';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import { ThreeDots } from 'react-loader-spinner';
 import ArticlesListFilterBySource from './articlesListFilterBySource';
 import { TriggerRefreshContext } from '@/common/contexts/triggerRefreshContext';
-import { ActiveSectionContext, SECTION_ALL_ARTICLES, SECTION_UNREAD_ARTICLES } from '@/common/contexts/activeArticlesSectionContext';
+import {
+  ActiveSectionContext,
+  SECTION_ALL_ARTICLES,
+  SECTION_UNREAD_ARTICLES,
+} from '@/common/contexts/activeArticlesSectionContext';
+import useWindowDimensions from '@/helpers/useWindowResize';
+import { HEADER_HEIGHT, SIDEBAR_WIDTH } from '@/layouts/feedLayout/content';
 
 const FIRST_PAGE = 1;
 const PAGE_SIZE = 6;
+const ALL_READ_IMAGE_SIZE = 250;
 const REQUEST_NEWEST_ARTILCES_FAIL_MESSAGE = 'request newest article fail';
 
 function ReadArticlesBySources() {
   const [articles, setArticles] = useState<Articles>([]);
   const [page, setPage] = useState<number>(FIRST_PAGE);
   const [hasMore, setHasMore] = useState<boolean>(true);
-
+  const { height, width } = useWindowDimensions();
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [articlesSource, setArticlesSource] = useState<ArticlesSourceInfo>();
   const { followedSources } = useContext(FollowedSourcesContext);
@@ -275,7 +283,23 @@ function ReadArticlesBySources() {
               </InfiniteScroll>
             </div>
           ) : (
-            <></>
+            <div className="readFeeds__feeds--allRead" style={{height: height - HEADER_HEIGHT}}>
+              <div className="warpper">
+                <div className="img">
+                  <Image
+                    alt="all read article images"
+                    src="/images/section-all-read-aqua.svg"
+                    width={ALL_READ_IMAGE_SIZE}
+                    height="0"
+                    style={{ height: 'auto' }}
+                  ></Image>
+                </div>
+                <div className="title">Done!</div>
+                <div className="message">
+                  There are no more articles in this section
+                </div>
+              </div>
+            </div>
           )}
         </div>
       )}

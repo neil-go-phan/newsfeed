@@ -1,6 +1,6 @@
 type WindowDimentions = {
-  width: number | undefined;
-  height: number | undefined;
+  width: number;
+  height: number;
 };
 
 type ChangePasswordFormProperty = {

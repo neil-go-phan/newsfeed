@@ -1,4 +1,9 @@
-import { ActiveSectionContext, SECTION_ALL_ARTICLES, SECTION_READ_LATER_ARTICLES, SECTION_UNREAD_ARTICLES } from '@/common/contexts/activeArticlesSectionContext';
+import {
+  ActiveSectionContext,
+  SECTION_ALL_ARTICLES,
+  SECTION_READ_LATER_ARTICLES,
+  SECTION_UNREAD_ARTICLES,
+} from '@/common/contexts/activeArticlesSectionContext';
 import { FollowedSourcesContext } from '@/common/contexts/followedSources';
 import { TriggerRefreshContext } from '@/common/contexts/triggerRefreshContext';
 import axiosProtectedAPI from '@/helpers/axiosProtectedAPI';
@@ -26,11 +31,25 @@ const ReadNav: React.FC<Props> = (props: Props) => {
     if (props.articlesSource) {
       if (props.articlesSource.unread) {
         setUnread(unreadNumberToString(props.articlesSource.unread));
+      } else {
+        setUnread('0');
       }
     } else {
       setUnread(unreadNumberToString(cacultateTotalUnreadArticle()));
     }
-  }, [props.articlesSource, followedSources]);
+  }, [props.articlesSource]);
+
+  useEffect(() => {
+    if (props.articlesSource) {
+      if (props.articlesSource.unread) {
+        setUnread(unreadNumberToString(props.articlesSource.unread));
+      } else {
+        setUnread('0');
+      }
+    } else {
+      setUnread(unreadNumberToString(cacultateTotalUnreadArticle()));
+    }
+  }, [followedSources]);
 
   const handleMarkAllAsRead = () => {
     if (router.query.source) {

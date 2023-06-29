@@ -37,7 +37,7 @@ function FeedsLayout({ children }: PropsWithChildren) {
         }
         throw GET_FOLLOWED_ARTICLES_SOURCES_FAIL_MESSAGE;
       }
-      setFollowedSources([...data.articles_sources]);
+      setFollowedSources([...data.articles_sources]);      
     } catch (error: any) {
       setFollowedSources([]);
     }

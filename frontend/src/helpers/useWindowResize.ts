@@ -1,11 +1,12 @@
 // source: https://dev.to/adrien/creating-a-custom-react-hook-to-get-the-window-s-dimensions-in-next-js-135k
 
+import { HEADER_HEIGHT, SIDEBAR_WIDTH } from '@/layouts/feedLayout/content';
 import { useEffect, useState } from 'react';
 
 const useWindowDimensions = (): WindowDimentions => {
   const [windowDimensions, setWindowDimensions] = useState<WindowDimentions>({
-    width: undefined,
-    height: undefined,
+    width: SIDEBAR_WIDTH,
+    height: HEADER_HEIGHT,
   });
   useEffect(() => {
     function handleResize(): void {

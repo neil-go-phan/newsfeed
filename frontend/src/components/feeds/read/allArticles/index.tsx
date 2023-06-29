@@ -6,7 +6,13 @@ import ArticlesListFromFollowedSource from './articlesListFromFollowedSource';
 import { useRouter } from 'next/router';
 import { TriggerRefreshContext } from '@/common/contexts/triggerRefreshContext';
 import Image from 'next/image';
-import { ActiveSectionContext, SECTION_ALL_ARTICLES, SECTION_UNREAD_ARTICLES } from '@/common/contexts/activeArticlesSectionContext';
+import {
+  ActiveSectionContext,
+  SECTION_ALL_ARTICLES,
+  SECTION_UNREAD_ARTICLES,
+} from '@/common/contexts/activeArticlesSectionContext';
+import useWindowDimensions from '@/helpers/useWindowResize';
+import { HEADER_HEIGHT, SIDEBAR_WIDTH } from '@/layouts/feedLayout/content';
 
 const FIRST_PAGE = 1;
 const PAGE_SIZE = 6;
@@ -21,6 +27,7 @@ function ReadAllArticles() {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const router = useRouter();
   const { activeSection } = useContext(ActiveSectionContext);
+  const { height, width } = useWindowDimensions();
   const { triggerRefresh } = useContext(TriggerRefreshContext);
   useEffect(() => {
     setPage(FIRST_PAGE);
@@ -235,7 +242,7 @@ function ReadAllArticles() {
               </InfiniteScroll>
             </div>
           ) : (
-            <div className="readFeeds__feeds--allRead">
+            <div className="readFeeds__feeds--allRead" style={{height: height - HEADER_HEIGHT}}>
               <div className="img">
                 <Image
                   alt="all read article images"
@@ -245,7 +252,7 @@ function ReadAllArticles() {
                   style={{ height: 'auto' }}
                 ></Image>
               </div>
-              <div className="title">done!</div>
+              <div className="title">Done!</div>
               <div className="message">
                 There are no more articles in this section
               </div>

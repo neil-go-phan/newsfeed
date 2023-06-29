@@ -213,4 +213,28 @@
 .readFeeds {
   margin-top: 30px;
   padding: 20px 5px;
+  &__feeds {
+    &--allRead {
+      position: relative;
+      .warpper {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        .title {
+          font-size: 20px;
+          font-weight: bold;
+          color: #1a2433;
+          text-align: center;
+        }
+        .message {
+          color: #707d90;
+          font-size: 14px;
+          margin-bottom: 16px;
+          font-weight: normal;
+          margin-top: 8px;
+        }
+      }
+    }
+  }
 }
