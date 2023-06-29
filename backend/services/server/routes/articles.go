@@ -23,6 +23,8 @@ func (route *ArticleRoutes) Setup(r *gin.Engine) {
 	{
 		routes.GET("get-page-by-articles-source-id", middlewares.CheckAccessToken(), route.handler.GetPaginationByArticlesSourceID)
 		routes.GET("get-page-by-all-user-followed-sources", middlewares.CheckAccessToken(), route.handler.GetPaginationByUserFollowedSources)
-		routes.GET("search-articles-across-source", middlewares.CheckAccessToken(), route.handler.SearchArticlesAcrossSources)
+		routes.GET("search-articles-across-source", middlewares.CheckAccessToken(), route.handler.SearchArticlesAcrossUserFollowedSources)
+		routes.GET("count-article-previous-week", middlewares.CheckAccessToken(), route.handler.CountArticleCreateAWeekAgoByArticlesSourceID)
+
 	}
 }

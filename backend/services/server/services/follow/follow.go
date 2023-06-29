@@ -44,10 +44,10 @@ func (s *FollowService) Unfollow(username string, articlesSourceID uint) error {
 	return s.articleSourceServices.UserUnfollow(articlesSourceID)
 }
 
-func (s *FollowService) GetUserFollowedSources(username string) ([]services.ArticlesSourceResponseRender, error) {
+func (s *FollowService) GetUserFollowedSources(username string) ([]services.ArticlesSourceUserFollow, error) {
 	follows, err := s.repo.GetByUsername(username)
 	if err != nil {
-		return []services.ArticlesSourceResponseRender{}, err
+		return []services.ArticlesSourceUserFollow{}, err
 	}
 	articlesSources := getArticlesSourcesFromArrayFollow(follows)
 

@@ -23,6 +23,22 @@ const IMAGE_SIZE = 20;
 const FeedsSidebar: React.FC<Props> = (props: Props) => {
   const [currentPage, setCurrentPage] = useState<string>('');
   const { followedSources } = useContext(FollowedSourcesContext);
+
+
+  const cacultateTotalUnreadArticle = (): number => {
+    let total = 0;
+    followedSources.forEach((followedSource) => {
+      total = total + followedSource.unread;
+    });
+    return total;
+  };
+
+  const unreadNumberToString = (unreadNumber : number):string => {
+    if (unreadNumber <= 100) {
+      return unreadNumber.toString()
+    }
+    return '100+'
+  }
   return (
     <div
       className={
@@ -80,7 +96,7 @@ const FeedsSidebar: React.FC<Props> = (props: Props) => {
               <span>All articles</span>
             </div>
             <div className="unRead">
-              <span>100+</span>
+              <span>{unreadNumberToString(cacultateTotalUnreadArticle())}</span>
             </div>
           </Link>
         </div>
@@ -95,7 +111,7 @@ const FeedsSidebar: React.FC<Props> = (props: Props) => {
                   <span>{sourceFollowed.title}</span>
                 </div>
                 <div className="unRead">
-                  <span>100+</span>
+                  <span>{unreadNumberToString(sourceFollowed.unread)}</span>
                 </div>
               </Link>
             </div>

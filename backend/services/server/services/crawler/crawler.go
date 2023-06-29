@@ -24,7 +24,7 @@ type CrawlerService struct {
 	grpcClient             pb.CrawlerServiceClient
 }
 
-const DEFAULT_SCHEDULE =  "@every 0h10m"
+const DEFAULT_SCHEDULE =  "@every 0h5m"
 
 func NewCrawlerService(repo repository.CrawlerRepository, articleService services.ArticleServices, articlesSourceServices services.ArticlesSourceServices, cronjobService services.CronjobServices, grpcClient pb.CrawlerServiceClient) *CrawlerService {
 	crawlerService := &CrawlerService{

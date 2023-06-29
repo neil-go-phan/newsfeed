@@ -24,9 +24,10 @@ type RoleServices interface {
 }
 
 type ArticleServices interface {
-	SearchArticlesAcrossSources(keyword string, page int, pageSize int) ([]ArticleResponse, int64, error)
-	GetPaginationByUserFollowedSource(username string, page int, pageSize int) ([]ArticleResponse, error)
-	GetPaginationByArticlesSourceID(articlesSourceID uint, page int, pageSize int) ([]ArticleResponse, error)
+	SearchArticlesAcrossUserFollowedSources(username string, keyword string, page int, pageSize int) ([]ArticleResponse, int64, error)
+	GetPaginationByUserFollowedSource(username string, page int, pageSize int) ([]ArticleForReadResponse, error)
+	GetPaginationByArticlesSourceID(username string, articlesSourceID uint, page int, pageSize int) ([]ArticleForReadResponse, error) 
+	CountArticleCreateAWeekAgoByArticlesSourceID(articlesSourceID uint) (int64, error)
 
 	CreateIfNotExist(article *entities.Article) error
 }
@@ -38,8 +39,8 @@ type ArticlesSourceServices interface {
 	CreateIfNotExist(articlesSource entities.ArticlesSource) (entities.ArticlesSource, error)
 	UpdateTopicOneSource(articlesSource entities.ArticlesSource, newTopicId uint) error
 	UpdateTopicAllSource(oldTopicId uint, newTopicId uint) error
-	UserFollow(articlesSourceID uint) error 
-	UserUnfollow(articlesSourceID uint) error 
+	UserFollow(articlesSourceID uint) error
+	UserUnfollow(articlesSourceID uint) error
 }
 
 type CrawlerServices interface {
@@ -88,5 +89,10 @@ type TopicServices interface {
 type FollowServices interface {
 	Follow(username string, articlesSourceID uint) error
 	Unfollow(username string, articlesSourceID uint) error
-	GetUserFollowedSources(username string) ([]ArticlesSourceResponseRender, error)
+	GetUserFollowedSources(username string) ([]ArticlesSourceUserFollow, error)
+}
+
+type ReadServices interface {
+	MarkArticleAsRead(username string, articleID uint, articlesSourceID uint) error
+	MarkArticleAsUnRead(username string, articleID uint, articlesSourceID uint) error
 }

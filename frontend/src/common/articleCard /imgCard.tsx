@@ -6,8 +6,9 @@ import Typography from '@mui/material/Typography';
 import CardActions from '@mui/material/CardActions';
 import IconButton from '@mui/material/IconButton';
 import StarBorderIcon from '@mui/icons-material/StarBorder';
-import RadioButtonUncheckedIcon from '@mui/icons-material/RadioButtonUnchecked';
 import { CARD_IMG_HEIGHT, CARD_MAX_WIDTH } from '.';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faCircle, faCircleCheck } from '@fortawesome/free-regular-svg-icons';
 
 type Props = {
   articleTitle: string;
@@ -15,6 +16,8 @@ type Props = {
   isAdmin: boolean;
   handleModal: () => void;
   base64Img: string;
+  readStatus: boolean;
+  handleChangeReadStatus: () => void;
 };
 
 const ImgCard: React.FC<Props> = (props: Props) => {
@@ -54,8 +57,12 @@ const ImgCard: React.FC<Props> = (props: Props) => {
         <IconButton aria-label="read later">
           <StarBorderIcon />
         </IconButton>
-        <IconButton aria-label="status">
-          <RadioButtonUncheckedIcon />
+        <IconButton aria-label="status" onClick={props.handleChangeReadStatus}>
+          {props.readStatus ? (
+            <FontAwesomeIcon icon={faCircleCheck} />
+          ) : (
+            <FontAwesomeIcon icon={faCircle} />
+          )}
         </IconButton>
       </CardActions>
     </Card>

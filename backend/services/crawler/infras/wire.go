@@ -10,6 +10,7 @@ import (
 	"crawler/services/articlesSource"
 	"crawler/services/article"
 	"crawler/services/crawler"
+	"crawler/services/follow"
 
 	"github.com/google/wire"
 	"gorm.io/gorm"
@@ -26,6 +27,11 @@ func InitGRPCServer(db *gorm.DB) *handlers.GRPCServer {
 		wire.Bind(new(repository.ArticlesSourcesRepository), new(*repository.ArticlesSourcesRepo)),
 		articlessourceservices.NewArticlesSourceService,
 		wire.Bind(new(services.ArticlesSourceServices), new(*articlessourceservices.ArticlesSourceService)),
+
+		repository.NewFollow,
+		wire.Bind(new(repository.FollowRepository), new(*repository.FollowRepo)),
+		followservices.NewFollowService,
+		wire.Bind(new(services.FollowServices), new(*followservices.FollowService)),
 
 		repository.NewCrawlerRepo,
 		wire.Bind(new(repository.CrawlerRepository), new(*repository.CrawlerRepo)),

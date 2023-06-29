@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import Popup from 'reactjs-popup';
 import * as htmlparser2 from 'htmlparser2';
 import * as domutils from 'domutils';
@@ -7,23 +7,45 @@ import ContentModal from './contentModal';
 import { toDataUrl } from '@/helpers/imgUrlToData';
 import ImgCard from './imgCard';
 import ContentCard from './contentCard';
+import { FollowedSourcesContext } from '../contexts/followedSources';
+import axiosProtectedAPI from '@/helpers/axiosProtectedAPI';
 
 type Props = {
   article: Article;
-  articlesSource: ArticlesSourceInfo |ArticlesSource| undefined;
+  articlesSource: ArticlesSourceInfo | ArticlesSource | undefined;
   isAdmin: boolean;
 };
 
 export const CARD_MAX_WIDTH = 345;
 export const CARD_IMG_HEIGHT = 194;
 
+const REQUEST_MARK_ARTICLE_AS_READ_FAIL_MESSAGE =
+  'request mark article as read fail';
+const REQUEST_MARK_ARTICLE_AS_UNREAD_FAIL_MESSAGE =
+  'request mark article as unread fail';
+
 const ArticleCard: React.FC<Props> = (props: Props) => {
   const [isContentModalOpen, setIsContentModalOpen] = useState<boolean>(false);
   const [base64Img, setBase64Img] = useState<string>('');
   const [shortContent, setShortContent] = useState<string>('');
   const [doc, setDoc] = useState<any>();
+  const [readStatus, setReadStatus] = useState<boolean>(false);
+
+  const { followedSources, callAPIGetFollow } = useContext(
+    FollowedSourcesContext
+  );
+  
   const handleContentModalClose = () => {
     setIsContentModalOpen(false);
+    if (!readStatus && !props.isAdmin) {
+      console.log('props.article.id', props.article.id);
+      console.log('articles_source_id', props.article.articles_source_id);
+
+      handleRequestMarkArticleAsRead(
+        props.article.id,
+        props.article.articles_source_id
+      );
+    }
   };
   const handleModal = () => {
     setIsContentModalOpen(!isContentModalOpen);
@@ -61,6 +83,65 @@ const ArticleCard: React.FC<Props> = (props: Props) => {
     }
   };
 
+  const handleChangeReadStatus = () => {
+    if (!readStatus) {
+      handleRequestMarkArticleAsRead(
+        props.article.id,
+        props.article.articles_source_id
+      );
+    }
+    if (readStatus) {
+      handleRequestMarkArticleAsUnread(
+        props.article.id,
+        props.article.articles_source_id
+      );
+    }
+  };
+
+  const handleRequestMarkArticleAsRead = async (
+    articleID: number,
+    articlesSourceID: number
+  ) => {
+    try {
+      const { data } = await axiosProtectedAPI.post('read/read', {
+        articles_source_id: articlesSourceID,
+        article_id: articleID,
+      });
+      if (!data.success) {
+        if (data.message) {
+          throw data.message;
+        }
+        throw REQUEST_MARK_ARTICLE_AS_READ_FAIL_MESSAGE;
+      }
+      callAPIGetFollow();
+      setReadStatus(true);
+    } catch (error: any) {
+      callAPIGetFollow();
+    }
+  };
+
+  const handleRequestMarkArticleAsUnread = async (
+    articleID: number,
+    articlesSourceID: number
+  ) => {
+    try {
+      const { data } = await axiosProtectedAPI.post('read/unread', {
+        articles_source_id: articlesSourceID,
+        article_id: articleID,
+      });
+      if (!data.success) {
+        if (data.message) {
+          throw data.message;
+        }
+        throw REQUEST_MARK_ARTICLE_AS_UNREAD_FAIL_MESSAGE;
+      }
+      callAPIGetFollow();
+      setReadStatus(false);
+    } catch (error: any) {
+      callAPIGetFollow();
+    }
+  };
+
   useEffect(() => {
     if (props.article.description !== '') {
       const newdom = htmlparser2.parseDocument(props.article.description);
@@ -69,8 +150,10 @@ const ArticleCard: React.FC<Props> = (props: Props) => {
       addTargetBlankToLinkTag(newdom.childNodes);
       setDoc(newdom);
     }
+    if (props.article.is_read !== undefined) {
+      setReadStatus(props.article.is_read);
+    }
   }, [props.article]);
-
   return (
     <>
       {base64Img !== '' ? (
@@ -80,6 +163,8 @@ const ArticleCard: React.FC<Props> = (props: Props) => {
           articleTitle={props.article.title}
           base64Img={base64Img}
           isAdmin={props.isAdmin}
+          readStatus={readStatus}
+          handleChangeReadStatus={handleChangeReadStatus}
         />
       ) : (
         <ContentCard
@@ -88,6 +173,8 @@ const ArticleCard: React.FC<Props> = (props: Props) => {
           articleTitle={props.article.title}
           content={shortContent}
           isAdmin={props.isAdmin}
+          readStatus={readStatus}
+          handleChangeReadStatus={handleChangeReadStatus}
         />
       )}
       <Popup modal open={isContentModalOpen} onClose={handleContentModalClose}>

@@ -12,6 +12,7 @@ import (
 	"crawler/services/article"
 	"crawler/services/articlesSource"
 	"crawler/services/crawler"
+	"crawler/services/follow"
 	"gorm.io/gorm"
 )
 
@@ -23,7 +24,9 @@ func InitizeGRPCServer(db *gorm.DB) *handlers.GRPCServer {
 	articleService := articleservices.NewArticleService(articleRepo)
 	articlesSourcesRepo := repository.NewArticlesSourcesRepo(db)
 	articlesSourceService := articlessourceservices.NewArticlesSourceService(articlesSourcesRepo)
-	crawlerService := crawlerservices.NewCrawlerService(crawlerRepo, articleService, articlesSourceService)
+	followRepo := repository.NewFollow(db)
+	followService := followservices.NewFollowService(followRepo)
+	crawlerService := crawlerservices.NewCrawlerService(crawlerRepo, articleService, articlesSourceService, followService)
 	grpcServer := handlers.NewGRPCServer(crawlerService)
 	return grpcServer
 }

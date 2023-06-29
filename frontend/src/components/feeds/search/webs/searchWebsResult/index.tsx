@@ -2,6 +2,7 @@ import ArticlesSourcesSearchResult from '@/common/articlesSourcesSearchResult';
 import { SearchKeywordContext } from '@/common/contexts/searchKeywordContext';
 import axiosProtectedAPI from '@/helpers/axiosProtectedAPI';
 import { _ROUTES } from '@/helpers/constants';
+import { useRouter } from 'next/router';
 import React, { useContext, useEffect, useRef, useState } from 'react';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import { ThreeDots } from 'react-loader-spinner';
@@ -13,6 +14,7 @@ const PAGE_SIZE = 10;
 const FIRST_PAGE = 1;
 
 function SearchWebsResult() {
+  const router = useRouter()
   const [page, setPage] = useState<number>(FIRST_PAGE);
   const [found, setFound] = useState<number>(0);
   const [topics, setTopics] = useState<Topics>([]);
@@ -33,6 +35,7 @@ function SearchWebsResult() {
       requestGetFirstPageArticlesSourcesByTopicID(selectedTopicID);
       return;
     }
+
     requestSearchFirstPage(keyword);
   };
 

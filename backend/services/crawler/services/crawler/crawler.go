@@ -4,6 +4,7 @@ import (
 	"crawler/entities"
 	"crawler/repository"
 	"crawler/services"
+
 	log "github.com/sirupsen/logrus"
 )
 
@@ -14,13 +15,15 @@ type CrawlerService struct {
 	repo                   repository.CrawlerRepository
 	articleService         services.ArticleServices
 	articlesSourceServices services.ArticlesSourceServices
+	followServices         services.FollowServices
 }
 
-func NewCrawlerService(repo repository.CrawlerRepository, articleService services.ArticleServices, articlesSourceServices services.ArticlesSourceServices) *CrawlerService {
+func NewCrawlerService(repo repository.CrawlerRepository, articleService services.ArticleServices, articlesSourceServices services.ArticlesSourceServices, followServices services.FollowServices) *CrawlerService {
 	crawlerService := &CrawlerService{
-		repo: repo,
-		articleService: articleService,
-		articlesSourceServices:articlesSourceServices,
+		repo:                   repo,
+		articleService:         articleService,
+		articlesSourceServices: articlesSourceServices,
+		followServices:         followServices,
 	}
 	return crawlerService
 }
@@ -61,6 +64,10 @@ func (s *CrawlerService) Crawl(crawler entities.Crawler) (newArticleCount int32,
 
 	newArticleCount = s.articleService.StoreArticles(articles, crawler.ArticlesSourceID)
 	log.Printf("Found %v new articles", newArticleCount)
-
+	
+	err = s.followServices.UpdateNewUnreadArticles(crawler.ArticlesSourceID, newArticleCount)
+	if err != nil {
+		log.Error(err)
+	}
 	return newArticleCount, nil
 }

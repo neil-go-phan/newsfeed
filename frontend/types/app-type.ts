@@ -32,9 +32,23 @@ type Article = {
   published: string;
   authors: string;
   articles_source_id: number;
+  is_read: boolean;
 };
 
 type Articles = Array<Article>;
+
+type ArticleWithReadStatus = {
+  id: number;
+  title: string;
+  description: string;
+  link: string;
+  published: string;
+  authors: string;
+  articles_source_id: number;
+  
+};
+
+type ArrayArticleWithReadStatus = Array<ArticleWithReadStatus>
 
 type ArticlesSource = {
   title: string;
@@ -53,6 +67,7 @@ type ArticlesSourceInfo = {
   image: string;
   follower: number;
   topic_id: number;
+  unread: number;
 };
 
 type ArticlesSourceInfoes = Array<ArticlesSourceInfo>;

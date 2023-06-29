@@ -13,15 +13,6 @@ type Props = {
 const IMAGE_SIZE = 24;
 
 const SourceInfo: React.FC<Props> = (props: Props) => {
-  const router = useRouter();
-  if (router.asPath === _ROUTES.READ_FEEDS_ALL_ARTICLES) {
-    return (
-      <div className="sourceInfo">
-        <FontAwesomeIcon className="icon" icon={faNewspaper} />
-        <span>All articles</span>
-      </div>
-    );
-  }
   if (props.articlesSource) {
     return (
       <Popup
@@ -45,7 +36,12 @@ const SourceInfo: React.FC<Props> = (props: Props) => {
       </Popup>
     );
   }
-  return <div className="sourceInfo"></div>;
+  return (
+    <div className="sourceInfo">
+      <FontAwesomeIcon className="icon" icon={faNewspaper} />
+      <span>All articles</span>
+    </div>
+  );
 };
 
 export default SourceInfo;

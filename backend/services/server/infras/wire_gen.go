@@ -19,6 +19,7 @@ import (
 	"server/services/crawler"
 	"server/services/cronjob"
 	"server/services/follow"
+	"server/services/read"
 	"server/services/role"
 	"server/services/topic"
 	"server/services/user"
@@ -96,4 +97,16 @@ func InitizeFollow(db *gorm.DB) *routes.FollowRoutes {
 	followHandler := handlers.NewFollowHandler(followService)
 	followRoutes := routes.NewFollowRoutes(followHandler)
 	return followRoutes
+}
+
+func InitizeRead(db *gorm.DB) *routes.ReadRoutes {
+	readRepo := repository.NewRead(db)
+	followRepo := repository.NewFollow(db)
+	articlesSourcesRepo := repository.NewArticlesSourcesRepo(db)
+	articlesSourceService := articlessourceservices.NewArticlesSourceService(articlesSourcesRepo)
+	followService := followservices.NewFollowService(followRepo, articlesSourceService)
+	readService := readservices.NewReadService(readRepo, followService)
+	readHandler := handlers.NewReadHandler(readService)
+	readRoutes := routes.NewReadRoutes(readHandler)
+	return readRoutes
 }

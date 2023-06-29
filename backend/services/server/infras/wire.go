@@ -17,7 +17,8 @@ import (
 	followservices "server/services/follow"
 	roleservice "server/services/role"
 	topicservices "server/services/topic"
-	userservice "server/services/user"
+	userservices "server/services/user"
+	readservices "server/services/read"
 
 	"github.com/google/wire"
 	"github.com/robfig/cron/v3"
@@ -28,13 +29,13 @@ func InitUser(db *gorm.DB) *routes.UserRoutes {
 	wire.Build(
 		repository.NewUserRepo,
 		repository.NewRoleRepo,
-		userservice.NewUserService,
+		userservices.NewUserService,
 		roleservice.NewRoleService,
 		handlers.NewUserHandler,
 		routes.NewUserRoutes,
 		wire.Bind(new(repository.UserRepository), new(*repository.UserRepo)),
 		wire.Bind(new(repository.RoleRepository), new(*repository.RoleRepo)),
-		wire.Bind(new(services.UserServices), new(*userservice.UserService)),
+		wire.Bind(new(services.UserServices), new(*userservices.UserService)),
 		wire.Bind(new(services.RoleServices), new(*roleservice.RoleService)),
 		wire.Bind(new(handlers.UserHandlerInterface), new(*handlers.UserHandler)),
 	)
@@ -152,6 +153,29 @@ func InitFollow(db *gorm.DB) *routes.FollowRoutes {
 		routes.NewFollowRoutes,
 	)
 	return &routes.FollowRoutes{}
+}
+
+func InitRead(db *gorm.DB) *routes.ReadRoutes {
+	wire.Build(
+		repository.NewArticlesSourcesRepo,
+		wire.Bind(new(repository.ArticlesSourcesRepository), new(*repository.ArticlesSourcesRepo)),
+		articlessourceservices.NewArticlesSourceService,
+		wire.Bind(new(services.ArticlesSourceServices), new(*articlessourceservices.ArticlesSourceService)),
+
+		repository.NewFollow,
+		wire.Bind(new(repository.FollowRepository), new(*repository.FollowRepo)),
+		followservices.NewFollowService,
+		wire.Bind(new(services.FollowServices), new(*followservices.FollowService)),
+		
+		repository.NewRead,
+		wire.Bind(new(repository.ReadRepository), new(*repository.ReadRepo)),
+		readservices.NewReadService,
+		wire.Bind(new(services.ReadServices), new(*readservices.ReadService)),
+		handlers.NewReadHandler,
+		wire.Bind(new(handlers.ReadHandlerInterface), new(*handlers.ReadHandler)),
+		routes.NewReadRoutes,
+	)
+	return &routes.ReadRoutes{}
 }
 
 // func InitCronjob(db *gorm.DB, grpcClient pb.CrawlerServiceClient) *routes.CrawlerRoutes {

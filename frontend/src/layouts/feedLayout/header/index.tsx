@@ -1,13 +1,11 @@
 import Button from '@mui/material/Button';
 import MenuIcon from '@mui/icons-material/Menu';
 import React, { useContext, useEffect, useState } from 'react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCheck, faRotateRight } from '@fortawesome/free-solid-svg-icons';
-import Popup from 'reactjs-popup';
 import { useRouter } from 'next/router';
 import ProfileNav from './profileNav';
 import { FollowedSourcesContext } from '@/common/contexts/followedSources';
 import SourceInfo from './sourceInfo';
+import ReadNav from './readNav';
 
 type Props = {
   isOpenSidebar: boolean;
@@ -32,6 +30,9 @@ const FeedsHeader: React.FC<Props> = (props: Props) => {
       const articlesSourceIDString = router.query.source as string;
       const articlesSourceID: number = +articlesSourceIDString;
       setArticlesSource(getArticlesSourceByID(articlesSourceID));
+    }
+    return () => {
+      setArticlesSource(undefined)
     }
   }, [router.asPath]);
 
@@ -63,29 +64,8 @@ const FeedsHeader: React.FC<Props> = (props: Props) => {
       {isArticleViews ? (
         <div className="feeds__header--readingPart">
           <div className="left">
-            <SourceInfo articlesSource={articlesSource} />
-            <div className="markAsRead leftBtn">
-              <FontAwesomeIcon icon={faCheck} />
-              <span>Mark all as read</span>
-            </div>
-            <div className="articlesUnread leftBtn">
-              <span>100 Unread</span>
-            </div>
-            <div className="allArticles leftBtn active">All articles</div>
-            <div className="readLater leftBtn">Read later</div>
-            <div className="refresh">
-              <div className="icon">
-                <Popup
-                  trigger={() => <FontAwesomeIcon icon={faRotateRight} />}
-                  position="bottom center"
-                  closeOnDocumentClick
-                  on={['hover', 'focus']}
-                >
-                  <span>Refresh article from current feeds</span>
-                </Popup>
-              </div>
-              <div className="newArticleNotification">20</div>
-            </div>
+          <SourceInfo articlesSource={articlesSource} />
+          <ReadNav articlesSource={articlesSource}/>
           </div>
           <div className="right">
             <div className="userNav">
