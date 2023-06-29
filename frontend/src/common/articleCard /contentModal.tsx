@@ -3,8 +3,7 @@ import React, { useEffect, useState } from 'react';
 
 type Props = {
   article: Article;
-  sourceTitle: string | undefined;
-  sourceLink: string | undefined;
+  articlesSource: ArticlesSourceInfo | ArticlesSource | undefined
 
   handleContentModalClose: () => void;
   doc: any;
@@ -76,8 +75,8 @@ const ContentModal: React.FC<Props> = (props: Props) => {
           </p>
       </div>
       <div className="info">
-        <a href={props.sourceLink} target="_blank" className="source">
-          {`${props.sourceTitle}, `}
+        <a href={props.articlesSource?.link} target="_blank" className="source">
+          {`${props.articlesSource?.title}, `}
         </a>
         <span className="authors">{`by ${props.article.authors}, `}</span>
         <span className="published">{str}</span>

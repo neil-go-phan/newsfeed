@@ -10,8 +10,8 @@ import { faCircle, faCircleCheck } from '@fortawesome/free-regular-svg-icons';
 import { CARD_MAX_WIDTH } from '.';
 
 type Props = {
-  articleTitle: string;
-  articleSourceTitle: string | undefined;
+  article: Article;
+  articlesSource: ArticlesSourceInfo | ArticlesSource | undefined;
   isAdmin: boolean;
   handleModal: () => void;
   content: string;
@@ -21,26 +21,22 @@ type Props = {
 
 const ContentCard: React.FC<Props> = (props: Props) => {
   return (
-    <Card
-      sx={{ maxWidth: CARD_MAX_WIDTH }}
-      className="articleCard"
-      onClick={props.handleModal}
-    >
-      <CardContent>
+    <Card sx={{ maxWidth: CARD_MAX_WIDTH }} className="articleCard">
+      <CardContent onClick={props.handleModal}>
         <Typography
           className="articleCard__title"
           gutterBottom
           variant="h5"
           component="div"
         >
-          {props.articleTitle}
+          {props.article.title}
         </Typography>
         <Typography
           className="articleCard__source"
           variant="body2"
           color="text.secondary"
         >
-          {props.articleSourceTitle}
+          {props.articlesSource?.title}
         </Typography>
         <Typography
           className="articleCard__shortContent"

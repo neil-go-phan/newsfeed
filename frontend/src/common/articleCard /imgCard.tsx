@@ -11,8 +11,8 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCircle, faCircleCheck } from '@fortawesome/free-regular-svg-icons';
 
 type Props = {
-  articleTitle: string;
-  articleSourceTitle: string | undefined;
+  article: Article;
+  articlesSource: ArticlesSourceInfo | ArticlesSource | undefined
   isAdmin: boolean;
   handleModal: () => void;
   base64Img: string;
@@ -25,13 +25,13 @@ const ImgCard: React.FC<Props> = (props: Props) => {
     <Card
       sx={{ maxWidth: CARD_MAX_WIDTH }}
       className="articleCard"
-      onClick={props.handleModal}
     >
       <CardMedia
         component="img"
         height={CARD_IMG_HEIGHT}
         image={props.base64Img}
         alt="thumbnail"
+        onClick={props.handleModal}
       />
       <CardContent>
         <Typography
@@ -40,14 +40,14 @@ const ImgCard: React.FC<Props> = (props: Props) => {
           variant="h5"
           component="div"
         >
-          {props.articleTitle}
+          {props.article.title}
         </Typography>
         <Typography
           className="articleCard__source"
           variant="body2"
           color="text.secondary"
         >
-          {props.articleSourceTitle}
+          {props.articlesSource?.title}
         </Typography>
       </CardContent>
       <CardActions

@@ -34,7 +34,7 @@ const ArticleCard: React.FC<Props> = (props: Props) => {
   const { followedSources, callAPIGetFollow } = useContext(
     FollowedSourcesContext
   );
-  
+
   const handleContentModalClose = () => {
     setIsContentModalOpen(false);
     if (!readStatus && !props.isAdmin) {
@@ -158,9 +158,9 @@ const ArticleCard: React.FC<Props> = (props: Props) => {
     <>
       {base64Img !== '' ? (
         <ImgCard
-          articleSourceTitle={props.articlesSource?.title}
+          articlesSource={props.articlesSource}
+          article={props.article}
           handleModal={handleModal}
-          articleTitle={props.article.title}
           base64Img={base64Img}
           isAdmin={props.isAdmin}
           readStatus={readStatus}
@@ -168,9 +168,9 @@ const ArticleCard: React.FC<Props> = (props: Props) => {
         />
       ) : (
         <ContentCard
-          articleSourceTitle={props.articlesSource?.title}
+          articlesSource={props.articlesSource}
+          article={props.article}
           handleModal={handleModal}
-          articleTitle={props.article.title}
           content={shortContent}
           isAdmin={props.isAdmin}
           readStatus={readStatus}
@@ -181,8 +181,7 @@ const ArticleCard: React.FC<Props> = (props: Props) => {
         <ContentModal
           article={props.article}
           handleContentModalClose={handleContentModalClose}
-          sourceTitle={props.articlesSource?.title}
-          sourceLink={props.articlesSource?.link}
+          articlesSource={props.articlesSource}
           doc={doc}
         />
       </Popup>
