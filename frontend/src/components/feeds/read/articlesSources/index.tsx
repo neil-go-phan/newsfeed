@@ -110,7 +110,7 @@ function ReadArticlesBySources() {
   ) => {
     try {
       const { data } = await axiosProtectedAPI.get(
-        '/articles/get-page-by-articles-source-id',
+        '/articles/get/sourceid',
         {
           params: {
             page: FIRST_PAGE,
@@ -143,7 +143,7 @@ function ReadArticlesBySources() {
   ) => {
     try {
       const { data } = await axiosProtectedAPI.get(
-        '/articles/get-page-by-articles-source-id-unread',
+        '/articles/get/sourceid/unread',
         {
           params: {
             page: FIRST_PAGE,
@@ -176,7 +176,7 @@ function ReadArticlesBySources() {
   ) => {
     try {
       const { data } = await axiosProtectedAPI.get(
-        '/articles/get-page-by-articles-source-id-readlater',
+        '/articles/get/sourceid/readlater',
         {
           params: {
             page: FIRST_PAGE,
@@ -211,7 +211,7 @@ function ReadArticlesBySources() {
   ) => {
     try {
       const { data } = await axiosProtectedAPI.get(
-        '/articles/get-page-by-articles-source-id',
+        '/articles/get/sourceid',
         {
           params: {
             page: page,
@@ -246,7 +246,7 @@ function ReadArticlesBySources() {
   ) => {
     try {
       const { data } = await axiosProtectedAPI.get(
-        '/articles/get-page-by-articles-source-id-unread',
+        '/articles/get/sourceid/unread',
         {
           params: {
             page: page,
@@ -281,7 +281,7 @@ function ReadArticlesBySources() {
   ) => {
     try {
       const { data } = await axiosProtectedAPI.get(
-        '/articles/get-page-by-articles-source-id-readlater',
+        '/articles/get/sourceid/readlater',
         {
           params: {
             page: page,

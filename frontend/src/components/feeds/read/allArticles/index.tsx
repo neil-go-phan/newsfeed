@@ -84,7 +84,7 @@ function ReadAllArticles() {
   const requestGetFirstPageUnreadArticlesFromAllSource = async () => {
     try {
       const { data } = await axiosProtectedAPI.get(
-        '/articles/get-page-by-all-user-followed-sources-unread',
+        '/articles/get/all/followed/unread',
         {
           params: {
             page: FIRST_PAGE,
@@ -114,7 +114,7 @@ function ReadAllArticles() {
   const requestGetFirstPageArticlesFromAllSource = async () => {
     try {
       const { data } = await axiosProtectedAPI.get(
-        '/articles/get-page-by-all-user-followed-sources',
+        '/articles/get/all/followed',
         {
           params: {
             page: FIRST_PAGE,
@@ -144,7 +144,7 @@ function ReadAllArticles() {
   const requestGetFirstPageReadLaterFromAllSource = async () => {
     try {
       const { data } = await axiosProtectedAPI.get(
-        '/articles/get-page-by-all-user-followed-sources-readlater',
+        '/articles/get/all/followed/readlater',
         {
           params: {
             page: FIRST_PAGE,
@@ -174,7 +174,7 @@ function ReadAllArticles() {
   const requestGetMoreArticles = async (page: number, pageSize: number) => {
     try {
       const { data } = await axiosProtectedAPI.get(
-        '/articles/get-page-by-all-user-followed-sources',
+        '/articles/get/all/followed',
         {
           params: {
             page: page,
@@ -207,7 +207,7 @@ function ReadAllArticles() {
   ) => {
     try {
       const { data } = await axiosProtectedAPI.get(
-        '/articles/get-page-by-all-user-followed-sources-unread',
+        '/articles/get/all/followed/unread',
         {
           params: {
             page: page,
@@ -240,7 +240,7 @@ function ReadAllArticles() {
   ) => {
     try {
       const { data } = await axiosProtectedAPI.get(
-        '/articles/get-page-by-all-user-followed-sources-readlater',
+        '/articles/get/all/followed/readlater',
         {
           params: {
             page: page,

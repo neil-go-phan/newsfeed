@@ -35,6 +35,8 @@ type ArticleServices interface {
 	GetReadLaterListPaginationByArticlesSourceID(username string, articlesSourceID uint, page int, pageSize int) ([]ArticleForReadResponse, error)
 	GetReadLaterListPaginationByUserFollowedSource(username string, page int, pageSize int) ([]ArticleForReadResponse, error)
 
+	GetRecentlyReadArticle(username string, page int, pageSize int) ([]ArticleForReadResponse, error) 
+
 	CountArticleCreateAWeekAgoByArticlesSourceID(articlesSourceID uint) (int64, error)
 
 	CreateIfNotExist(article *entities.Article) error

@@ -33,7 +33,7 @@ function SearchArticles() {
   const requestSearchFirstPage = async (keyword: string) => {
     try {
       const { data } = await axiosProtectedAPI.get(
-        'articles/search-articles-across-source',
+        'articles/search/across-source',
         {
           params: { q: keyword, page: FIRST_PAGE, page_size: PAGE_SIZE },
         }
@@ -65,7 +65,7 @@ function SearchArticles() {
   ) => {
     try {
       const { data } = await axiosProtectedAPI.get(
-        'articles/search-articles-across-source',
+        'articles/search/across-source',
         {
           params: { q: keyword, page: page, page_size: PAGE_SIZE },
         }

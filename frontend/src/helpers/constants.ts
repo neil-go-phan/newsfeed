@@ -24,6 +24,9 @@ export const _ROUTES = {
   READ_FEEDS: '/feeds/read/',
   READ_FEEDS_ALL_ARTICLES: '/feeds/read/all_articles',
   READ_FEEDS_ARTICLES_SOURCE: '/feeds/read/articles_source',
+  LIBRARY_PAGE: '/library',
+  DASHBOARD_PAGE: '/dashboard',
+  RECENTLY_READ_PAGE: '/recently'
 }
 
 export const _REGEX = {

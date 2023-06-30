@@ -1,4 +1,5 @@
 CREATE TABLE follows (
+  created_at timestamp with time zone default current_timestamp,
   username text NOT NULL,
   articles_source_id SERIAL NOT NULL,
   unread integer default 0 NOT NULL,
@@ -6,6 +7,7 @@ CREATE TABLE follows (
 );
 
 CREATE TABLE reads (
+  created_at timestamp with time zone default current_timestamp,
   username text,
   article_id SERIAL,
   articles_source_id SERIAL,
@@ -40,6 +42,8 @@ ADD
 CREATE UNIQUE INDEX idx_follows ON public.follows USING btree (articles_source_id, username);
 
 CREATE INDEX idx_follows_user ON public.follows USING btree (username);
+
+CREATE INDEX idx_follows_created_at ON public.follows USING btree (created_at);
 
 CREATE INDEX idx_read_username ON public.reads USING btree (username);
 

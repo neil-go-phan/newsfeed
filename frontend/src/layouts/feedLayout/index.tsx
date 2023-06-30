@@ -29,7 +29,7 @@ function FeedsLayout({ children }: PropsWithChildren) {
   const requestGetFollowedSources = async () => {
     try {
       const { data } = await axiosProtectedAPI.get(
-        'follow/get-followed-articles-sources'
+        'follow/get/articles-sources'
       );
       if (!data.success) {
         if (data.message) {

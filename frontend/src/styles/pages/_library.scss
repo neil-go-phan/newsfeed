@@ -1,0 +1,240 @@
+.library {
+  background: #f9f9fb;
+  width: 100%;
+  height: 100%;
+  padding: 36px 50px;
+  &__title {
+    font-weight: bold;
+    font-size: 24px;
+    margin-bottom: 10px;
+  }
+  &__readlater {
+    .title {
+      margin-bottom: 10px;
+      display: flex;
+      justify-content: space-between;
+      .text {
+        a {
+          font-weight: bold;
+          font-size: 18px;
+          text-decoration: none;
+          color: #212529;
+          span {
+            margin-left: 10px;
+          }
+        }
+        .viewall {
+          font-size: 14px;
+          font-weight: normal;
+        }
+      }
+    }
+    .articlesList {
+      .foundArticles {
+        display: flex;
+        align-items: stretch;
+        .right {
+          .smallLibCard {
+            background: #fefefe;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+            border-radius: 5px;
+            overflow: hidden;
+            margin-bottom: 10px;
+            padding: 12px;
+            margin-left: 20px;
+            align-items: stretch;
+            flex: 0 1 auto;
+            min-height: 60px;
+            cursor: pointer;
+            .warpper {
+              display: flex;
+              padding: 5px;
+              .imgWarpper {
+                display: flex;
+                align-items: center;
+                .img {
+                  width: 60px;
+                  min-width: 60px;
+                  height: 60px;
+                  background-size: cover;
+                  border-radius: 5px;
+                  background-position: center;
+                }
+              }
+              .content {
+                margin-left: 16px;
+                flex: 0 1 100%;
+                flex-direction: column;
+                display: flex;
+                justify-content: space-between;
+                min-width: 0;
+                .title {
+                  font-weight: bold;
+                  max-height: 36px;
+                  overflow: hidden;
+                  line-height: 18px;
+                  text-overflow: ellipsis;
+                  display: -webkit-box;
+                  -webkit-line-clamp: 2;
+                  -webkit-box-orient: vertical;
+                  margin: 0;
+                  font-size: 16px;
+                }
+                .description {
+                  overflow: hidden;
+                  white-space: nowrap;
+                  text-overflow: ellipsis;
+                  max-width: 100%;
+                  color: #828d9d;
+                  font-size: 14px;
+                }
+              }
+            }
+            .alreadyRead {
+              opacity: 0.5;
+            }
+            .action {
+              display: flex;
+              justify-content: flex-end;
+              .starSolid {
+                color: #ffbf00;
+              }
+              .icon {
+                width: auto;
+                height: 20px;
+              }
+              button {
+                height: 20px;
+              }
+            }
+          }
+        }
+      }
+      .noArticles {
+        margin-top: 20px;
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+        .right {
+          margin-right: 60px;
+          .title {
+            font-size: 18px;
+            font-weight: bold;
+          }
+          .message {
+            color: #828d9d;
+            font-size: 16px;
+          }
+          .btn {
+            margin-top: 10px;
+            button {
+              font-size: 14px;
+              line-height: 15px;
+              height: 32px;
+              padding: 8px 12px;
+              cursor: pointer;
+              margin: 0;
+              box-shadow: none;
+              border-radius: 3px;
+              font-weight: 500;
+              white-space: nowrap;
+              color: #fefefe;
+              border: 1px solid #3c62ac;
+              background-color: #3c62ac;
+              &:hover {
+                background-color: #274979;
+                border: 1px solid #274979;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
+  &__recentlyRead {
+    padding: 60px 0;
+    background: #f9f9fb;
+    .title {
+      margin-bottom: 10px;
+      display: flex;
+      justify-content: space-between;
+      .text {
+        a {
+          font-weight: bold;
+          font-size: 18px;
+          text-decoration: none;
+          color: #212529;
+          span {
+            margin-left: 10px;
+          }
+        }
+        .viewall {
+          font-size: 14px;
+          font-weight: normal;
+        }
+      }
+    }
+    .articlesList {
+      .list {
+        padding: 20px;
+        border-radius: 10px;
+        background: #fefefe;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+        .recenlyReadItem {
+          border-bottom: 1px solid #d7dde6;
+          width: 100%;
+          padding-top: 16px;
+          padding-bottom: 16px;
+          position: relative;
+          cursor: pointer;
+          .title {
+            margin: 4px 0;
+            font-weight: 500;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            font-size: 16px;
+          }
+          .source {
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            max-width: 100%;
+            color: #828d9d;
+            font-size: 12px;
+          }
+        }
+      }
+
+      .noRead {
+        .message {
+          text-align: center;
+        }
+        .btn {
+          margin-top: 10px;
+          margin: auto;
+          button {
+            font-size: 14px;
+            line-height: 15px;
+            height: 32px;
+            padding: 8px 12px;
+            cursor: pointer;
+            margin: 0;
+            box-shadow: none;
+            border-radius: 3px;
+            font-weight: 500;
+            white-space: nowrap;
+            color: #fefefe;
+            border: 1px solid #3c62ac;
+            background-color: #3c62ac;
+            &:hover {
+              background-color: #274979;
+              border: 1px solid #274979;
+            }
+          }
+        }
+      }
+    }
+  }
+}

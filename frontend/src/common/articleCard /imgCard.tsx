@@ -11,7 +11,7 @@ import {
   faStar,
 } from '@fortawesome/free-regular-svg-icons';
 import { faStar as starSolid } from '@fortawesome/free-solid-svg-icons';
-import { CARD_IMG_HEIGHT, CARD_MAX_WIDTH } from '.';
+import { CARD_IMG_HEIGHT, CARD_MAX_WIDTH, CARD_MIN_HEIGHT } from '.';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Popup from 'reactjs-popup';
 
@@ -29,7 +29,10 @@ type Props = {
 
 const ImgCard: React.FC<Props> = (props: Props) => {
   return (
-    <Card sx={{ maxWidth: CARD_MAX_WIDTH }} className={props.readStatus ? "articleCard alreadyRead" : "articleCard"}>
+    <Card
+      sx={{ maxWidth: CARD_MAX_WIDTH, minHeight: CARD_MIN_HEIGHT }}
+      className={props.readStatus ? 'articleCard alreadyRead' : 'articleCard'}
+    >
       <CardMedia
         component="img"
         height={CARD_IMG_HEIGHT}
@@ -61,7 +64,9 @@ const ImgCard: React.FC<Props> = (props: Props) => {
         <IconButton aria-label="read later" onClick={props.handleReadLater}>
           {props.isReadLater ? (
             <Popup
-              trigger={() => <FontAwesomeIcon icon={starSolid} className='starSolid'/>}
+              trigger={() => (
+                <FontAwesomeIcon icon={starSolid} className="starSolid" />
+              )}
               position="bottom center"
               closeOnDocumentClick
               on={['hover', 'focus']}
@@ -69,7 +74,7 @@ const ImgCard: React.FC<Props> = (props: Props) => {
               <span>Remove article to read later list</span>
             </Popup>
           ) : (
-            <Popup  
+            <Popup
               trigger={() => <FontAwesomeIcon icon={faStar} />}
               position="bottom center"
               closeOnDocumentClick

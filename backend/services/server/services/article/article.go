@@ -112,6 +112,19 @@ func (s *ArticleService) GetReadLaterListPaginationByUserFollowedSource(username
 	return articlesResponse, nil
 }
 
+func (s *ArticleService) GetRecentlyReadArticle(username string, page int, pageSize int) ([]services.ArticleForReadResponse, error) {
+	articlesResponse := make([]services.ArticleForReadResponse, 0)
+	articles, err := s.repo.GetRecentlyReadArticle(username, page, pageSize)
+	if err != nil {
+		return articlesResponse, err
+	}
+	for _, article := range articles {
+		articlesResponse = append(articlesResponse, castArticleFromRepoToArticleReadReponse(article))
+
+	}
+	return articlesResponse, nil
+}	
+
 func (s *ArticleService) CountArticleCreateAWeekAgoByArticlesSourceID(articlesSourceID uint) (int64, error) {
 	return s.repo.CountArticleCreateAWeekAgoByArticlesSourceID(articlesSourceID)
 }

@@ -38,7 +38,7 @@ const ArticleSourceCard: React.FC<Props> = (props: Props) => {
   ) => {
     try {
       const { data } = await axiosProtectedAPI.get(
-        '/articles/count-article-previous-week',
+        '/articles/count/previous-week',
         {
           params: {
             articles_source_id: articlesSourceID,
@@ -64,7 +64,7 @@ const ArticleSourceCard: React.FC<Props> = (props: Props) => {
   ) => {
     try {
       const { data } = await axiosProtectedAPI.get(
-        '/articles/get-page-by-articles-source-id',
+        '/articles/get/sourceid',
         {
           params: {
             page: page,

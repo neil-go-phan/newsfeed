@@ -17,6 +17,7 @@ type Props = {
 };
 
 export const CARD_MAX_WIDTH = 345;
+export const CARD_MIN_HEIGHT = 378;
 export const CARD_IMG_HEIGHT = 194;
 
 const REQUEST_MARK_ARTICLE_AS_READ_FAIL_MESSAGE =

@@ -23,6 +23,8 @@ type ArticleHandlerInterface interface {
 	GetReadLaterListPaginationByArticlesSourceID(c *gin.Context)
 	GetReadLaterListPaginationByUserFollowedSource(c *gin.Context) 
 	
+	GetRecentlyReadArticle(c *gin.Context)
+
 	SearchArticlesAcrossUserFollowedSources(c *gin.Context)
 	CountArticleCreateAWeekAgoByArticlesSourceID(c *gin.Context)
 	// ListAll(c *gin.Context)
@@ -230,6 +232,36 @@ func (h *ArticleHandler) GetReadLaterListPaginationByUserFollowedSource(c *gin.C
 	}
 	c.JSON(http.StatusOK, gin.H{"success": true, "articles": articles})
 }
+
+func (h *ArticleHandler) GetRecentlyReadArticle(c *gin.Context) {
+	page, err := strconv.Atoi(c.Query("page"))
+	if err != nil {
+		log.Error("error occrus:", err)
+		c.JSON(http.StatusBadRequest, gin.H{"success": false, "message": "bad request"})
+		return
+	}
+	pageSize, err := strconv.Atoi(c.Query("page_size"))
+	if err != nil {
+		log.Error("error occrus:", err)
+		c.JSON(http.StatusBadRequest, gin.H{"success": false, "message": "bad request"})
+		return
+	}
+	username, exsit := c.Get("username")
+	if !exsit {
+		log.Error("Not found username in token string")
+		c.JSON(http.StatusBadRequest, gin.H{"success": false, "message": "bad request"})
+		return
+	}
+
+	articles, err := h.service.GetRecentlyReadArticle(username.(string), page, pageSize)
+	if err != nil {
+		log.Error("error occrus:", err)
+		c.JSON(http.StatusInternalServerError, gin.H{"success": false, "message": "internal server error"})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"success": true, "articles": articles})
+}
+
 
 func (h *ArticleHandler) CountArticleCreateAWeekAgoByArticlesSourceID(c *gin.Context) {
 	articlesSourceID, err := strconv.Atoi(c.Query("articles_source_id"))

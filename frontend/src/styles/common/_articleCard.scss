@@ -78,3 +78,39 @@
 .popup-overlay {
   z-index: 99999 !important;
 }
+
+.articleContentModal {
+  height: 90vh;
+  padding: 20px;
+  overflow-y: scroll;
+  img,
+  iframe {
+    max-width: 95%;
+    height: auto;
+  }
+  .title {
+    p {
+      text-decoration: none;
+      font-size: 1.5rem;
+      font-weight: bold;
+      color: rgb(31, 30, 30);
+      cursor: pointer;
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+    margin: 10px 0;
+  }
+  .info {
+    color: $color-gray-1;
+    font-size: 0.8rem;
+    margin-bottom: 10px;
+    .source {
+      color: $color-gray-1;
+      text-decoration: none;
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+  }
+}

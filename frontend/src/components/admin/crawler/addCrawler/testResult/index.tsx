@@ -28,7 +28,7 @@ const TestResult: React.FC<Props> = (props: Props) => {
 
   const requestTestCrawlerRSS = async (url: string) => {
     try {
-      const res = await axiosProtectedAPI.post('crawler/test-rss', {
+      const res = await axiosProtectedAPI.post('crawler/test/rss', {
         source_link: url,
       });
       if (res?.data.success) {
@@ -49,7 +49,7 @@ const TestResult: React.FC<Props> = (props: Props) => {
 
   const requestTestCustomCrawler = async (crawler: Crawler) => {
     try {
-      const res = await axiosProtectedAPI.post('crawler/test-custom', {
+      const res = await axiosProtectedAPI.post('crawler/test/custom', {
         source_link: crawler.source_link,
         crawl_type: crawler.crawl_type,
         article_div: crawler.article_div,
@@ -172,8 +172,14 @@ const TestResult: React.FC<Props> = (props: Props) => {
                         <tr key={`article_crawler_test_${article.title}`}>
                           <td>{index}</td>
                           <td>{article.title}</td>
-                          <td><p>{article.description}</p></td>
-                          <td><a href={article.link} target='_blank'>{article.link}</a></td>
+                          <td>
+                            <p>{article.description}</p>
+                          </td>
+                          <td>
+                            <a href={article.link} target="_blank">
+                              {article.link}
+                            </a>
+                          </td>
                           <td>{article.published}</td>
                           <td>{article.authors}</td>
                         </tr>

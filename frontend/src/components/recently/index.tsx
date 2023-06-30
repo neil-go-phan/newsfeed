@@ -1,19 +1,12 @@
 import axiosProtectedAPI from '@/helpers/axiosProtectedAPI';
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import { ThreeDots } from 'react-loader-spinner';
 import ArticlesListFromFollowedSource from './articlesListFromFollowedSource';
 import { useRouter } from 'next/router';
-import { TriggerRefreshContext } from '@/common/contexts/triggerRefreshContext';
 import Image from 'next/image';
-import {
-  ActiveSectionContext,
-  SECTION_ALL_ARTICLES,
-  SECTION_READ_LATER_ARTICLES,
-  SECTION_UNREAD_ARTICLES,
-} from '@/common/contexts/activeArticlesSectionContext';
 import useWindowDimensions from '@/helpers/useWindowResize';
-import { HEADER_HEIGHT, SIDEBAR_WIDTH } from '@/layouts/feedLayout/content';
+import { HEADER_HEIGHT } from '@/layouts/feedLayout/content';
 
 const FIRST_PAGE = 1;
 const PAGE_SIZE = 6;
@@ -21,7 +14,7 @@ const ALL_READ_IMAGE_SIZE = 250;
 
 const REQUEST_NEWEST_ARTILCES_FAIL_MESSAGE = 'request newest article fail';
 
-function ReadLaterArticles() {
+function RecentlyRead() {
   const [articles, setArticles] = useState<Articles>([]);
   const [page, setPage] = useState<number>(FIRST_PAGE);
   const [hasMore, setHasMore] = useState<boolean>(true);
@@ -34,19 +27,19 @@ function ReadLaterArticles() {
   }, [router.asPath]);
 
   useEffect(() => {
-    requestGetFirstPageReadLaterFromAllSource();
+    requestGetFirstPage();
   }, []);
 
   const handleRequestMoreArticles = () => {
     const nextPage = page + 1;
-    requestGetMoreReadLaterArticles(nextPage, PAGE_SIZE);
+    requestGetMoreArticles(nextPage, PAGE_SIZE);
     setPage(nextPage);
   };
 
-  const requestGetFirstPageReadLaterFromAllSource = async () => {
+  const requestGetFirstPage = async () => {
     try {
       const { data } = await axiosProtectedAPI.get(
-        '/articles/get/all/followed/readlater',
+        '/articles/get/all/recently',
         {
           params: {
             page: FIRST_PAGE,
@@ -73,13 +66,10 @@ function ReadLaterArticles() {
     }
   };
 
-  const requestGetMoreReadLaterArticles = async (
-    page: number,
-    pageSize: number
-  ) => {
+  const requestGetMoreArticles = async (page: number, pageSize: number) => {
     try {
       const { data } = await axiosProtectedAPI.get(
-        '/articles/get/all/followed/readlater',
+        '/articles/get/all/recently',
         {
           params: {
             page: page,
@@ -181,4 +171,4 @@ function ReadLaterArticles() {
   );
 }
 
-export default ReadLaterArticles;
+export default RecentlyRead;

@@ -57,7 +57,7 @@ function FilterByCategory() {
 
   const requestGetTopicsByCategory = async (categoryID: string) => {
     try {
-      const { data } = await axiosProtectedAPI.get('topic/get-by-category', {
+      const { data } = await axiosProtectedAPI.get('topic/get/category', {
         params: { category_id: categoryID },
       });
       if (!data.success) {
@@ -77,7 +77,7 @@ function FilterByCategory() {
   ) => {
     try {
       const { data } = await axiosProtectedAPI.get(
-        'articles-sources/get-by-topicid',
+        'articles-sources/get/topicid',
         {
           params: { topic_id: topicID, page: FIRST_PAGE, page_size: PAGE_SIZE },
         }
@@ -102,7 +102,7 @@ function FilterByCategory() {
   ) => {
     try {
       const { data } = await axiosProtectedAPI.get(
-        'articles-sources/get-by-topicid',
+        'articles-sources/get/topicid',
         {
           params: { topic_id: topicID, page: page, page_size: PAGE_SIZE },
         }

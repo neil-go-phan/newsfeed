@@ -63,7 +63,7 @@ const ReadNav: React.FC<Props> = (props: Props) => {
 
   const requestMarkAllAsRead = async () => {
     try {
-      const { data } = await axiosProtectedAPI.post('read/mark-all-as-read');
+      const { data } = await axiosProtectedAPI.post('read/read/all');
       if (!data.success) {
         if (data.message) {
           throw data.message;
@@ -80,7 +80,7 @@ const ReadNav: React.FC<Props> = (props: Props) => {
   const requestMarkAllAsReadBySourceID = async (articlesSourceID: number) => {
     try {
       const { data } = await axiosProtectedAPI.post(
-        'read/mark-all-as-read-by-sourceid',
+        'read/read/all/sourceid',
         {
           articles_source_id: articlesSourceID,
         }

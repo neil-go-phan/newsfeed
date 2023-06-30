@@ -11,7 +11,7 @@ import {
   faStar,
 } from '@fortawesome/free-regular-svg-icons';
 import { faStar as starSolid } from '@fortawesome/free-solid-svg-icons';
-import { CARD_MAX_WIDTH } from '.';
+import { CARD_MAX_WIDTH, CARD_MIN_HEIGHT } from '.';
 import Popup from 'reactjs-popup';
 
 type Props = {
@@ -29,7 +29,7 @@ type Props = {
 const ContentCard: React.FC<Props> = (props: Props) => {
   return (
     <Card
-      sx={{ maxWidth: CARD_MAX_WIDTH }}
+      sx={{ maxWidth: CARD_MAX_WIDTH, minHeight: CARD_MIN_HEIGHT }}
       className={props.readStatus ? 'articleCard alreadyRead' : 'articleCard'}
     >
       <CardContent onClick={props.handleModal}>

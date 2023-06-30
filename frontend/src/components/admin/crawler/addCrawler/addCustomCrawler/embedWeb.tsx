@@ -9,8 +9,8 @@ type Props = {
   handleClick: (event: Event) => void;
 };
 
-const GET_PAGE_SUCCESS_MESSAGE = 'Get page success'
-const GET_PAGE_FAIL_MESSAGE = 'Get page fail'
+const GET_PAGE_SUCCESS_MESSAGE = 'Get page success';
+const GET_PAGE_FAIL_MESSAGE = 'Get page fail';
 
 const EmbedWeb: React.FC<Props> = (props: Props) => {
   const [htmlContent, setHtmlContent] = useState<string>();
@@ -42,7 +42,7 @@ const EmbedWeb: React.FC<Props> = (props: Props) => {
   const iframeRef = useRef<any>(null);
 
   useEffect(() => {
-    removeOnClickEvents()
+    removeOnClickEvents();
     const iframe = iframeRef.current;
     if (iframe) {
       const iframeDocument =
@@ -67,38 +67,37 @@ const EmbedWeb: React.FC<Props> = (props: Props) => {
         });
       };
     }
-
   }, [htmlContent]);
 
-  const handleMouseOver = (event:Event) => {
-    const target = event.target  as HTMLElement; 
+  const handleMouseOver = (event: Event) => {
+    const target = event.target as HTMLElement;
     target.style.backgroundColor = 'rgba(255, 0, 0, 0.2)';
   };
 
-  const handleMouseOut = (event:Event) => {
+  const handleMouseOut = (event: Event) => {
     const target = event.target as HTMLElement;
     target.style.backgroundColor = '';
-  }
+  };
 
-  const handleClick = useCallback((event:Event) => {
-    props.handleClick(event)
+  const handleClick = useCallback((event: Event) => {
+    props.handleClick(event);
   }, []);
 
   const requestHtmlPage = async (url: string) => {
     try {
-      const { data } = await axiosProtectedAPI.get('crawler/get-html-page', {
+      const { data } = await axiosProtectedAPI.get('crawler/get/html-page', {
         params: { url: url },
       });
       if (data.success === false) {
         throw 'Throw error occurred while get html page';
       } else {
-        toastifySuccess(GET_PAGE_SUCCESS_MESSAGE)
+        toastifySuccess(GET_PAGE_SUCCESS_MESSAGE);
         setHtmlContent(data);
         setIsLoading(false);
       }
     } catch (error) {
       setIsError(true);
-      toastifyError(GET_PAGE_FAIL_MESSAGE)
+      toastifyError(GET_PAGE_FAIL_MESSAGE);
     }
   };
 

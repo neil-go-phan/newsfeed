@@ -6,7 +6,6 @@ import ProfileNav from './profileNav';
 import { FollowedSourcesContext } from '@/common/contexts/followedSources';
 import SourceInfo from './sourceInfo';
 import ReadNav from './readNav';
-import { TriggerRefreshContext } from '@/common/contexts/triggerRefreshContext';
 
 type Props = {
   isOpenSidebar: boolean;
@@ -20,9 +19,7 @@ const FeedsHeader: React.FC<Props> = (props: Props) => {
   const [isArticleViews, setIsArticleViews] = useState<boolean>(false);
   const [articlesSource, setArticlesSource] = useState<ArticlesSourceInfo>();
   const { followedSources } = useContext(FollowedSourcesContext);
-  const { triggerRefresh, setTriggerRefresh } = useContext(
-    TriggerRefreshContext
-  );
+
   useEffect(() => {
     const path = router.asPath;
     const beforeQuestionMark = path.split('?')[0];

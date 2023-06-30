@@ -1,4 +1,5 @@
 CREATE TABLE read_laters (
+  created_at timestamp with time zone default current_timestamp,
   username text,
   article_id SERIAL,
   PRIMARY KEY (username, article_id)
