@@ -53,3 +53,13 @@ func (s *FollowService) GetUserFollowedSources(username string) ([]services.Arti
 
 	return articlesSources, nil
 }
+
+func (s *FollowService) GetNewestSourceUpdatedID(username string) ([]uint, error) {
+	follows, err := s.repo.GetNewestFeedsUpdated(username)
+	if err != nil {
+		return []uint{}, err
+	}
+	ids := getArticlesSourceID(follows)
+
+	return ids, nil
+}

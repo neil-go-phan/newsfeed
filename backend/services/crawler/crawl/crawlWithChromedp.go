@@ -154,7 +154,7 @@ func chromedpCrawlLink(article *entities.Article, ctx context.Context, crawler e
 	for _, linkNode := range linkNodes {
 		link, ok := linkNode.Attribute("href")
 		if ok {
-			article.Link = helpers.FormatLink(link, crawler.ArticleLink)
+			article.Link = helpers.FormatLink(link, crawler.SourceLink)
 		} else {
 			var linkChilds []*cdp.Node
 			err = chromedp.Run(linkCtx, chromedp.Nodes(fmt.Sprintf(`%s//*`, linkNode.FullXPath()), &linkChilds))
@@ -164,7 +164,7 @@ func chromedpCrawlLink(article *entities.Article, ctx context.Context, crawler e
 			for _, child := range linkChilds {
 				linkChild, ok := child.Attribute("href")
 				if ok {
-					article.Link = helpers.FormatLink(linkChild, crawler.ArticleLink)
+					article.Link = helpers.FormatLink(linkChild, crawler.SourceLink)
 					break
 				}
 			}

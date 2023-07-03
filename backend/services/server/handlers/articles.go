@@ -25,6 +25,8 @@ type ArticleHandlerInterface interface {
 	
 	GetRecentlyReadArticle(c *gin.Context)
 
+	GetTredingArticle(c *gin.Context)
+
 	SearchArticlesAcrossUserFollowedSources(c *gin.Context)
 	CountArticleCreateAWeekAgoByArticlesSourceID(c *gin.Context)
 	// ListAll(c *gin.Context)
@@ -308,4 +310,21 @@ func (h *ArticleHandler) SearchArticlesAcrossUserFollowedSources(c *gin.Context)
 		return
 	}
 	c.JSON(http.StatusOK, gin.H{"success": true, "articles": articles, "found": found})
+}
+
+func (h *ArticleHandler) GetTredingArticle(c *gin.Context) {
+	username, exsit := c.Get("username")
+	if !exsit {
+		log.Error("Not found username in token string")
+		c.JSON(http.StatusBadRequest, gin.H{"success": false, "message": "bad request"})
+		return
+	}
+
+	articles, err := h.service.GetTredingArticle(username.(string))
+	if err != nil {
+		log.Error("error occrus:", err)
+		c.JSON(http.StatusInternalServerError, gin.H{"success": false, "message": "internal server error"})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"success": true, "articles": articles})
 }

@@ -70,3 +70,16 @@ func (s *ArticlesSourceService) UserUnfollow(articlesSourceID uint) error {
 	}
 	return s.repo.DecreaseFollowByOne(articlesSource)
 }
+
+func (s *ArticlesSourceService) GetMostActiveSources() ([]services.ArticlesSourceRecommended, error) {
+	articlesSourcesResponse := make([]services.ArticlesSourceRecommended, 0)
+	articlesSources, err := s.repo.GetMostActiveSources()
+	if err != nil {
+		return articlesSourcesResponse, err
+	}
+	for _, articlesSource := range articlesSources {
+		articlesSourcesResponse = append(articlesSourcesResponse, castArticlesSourceRecommended(articlesSource))
+
+	}
+	return articlesSourcesResponse, nil
+}

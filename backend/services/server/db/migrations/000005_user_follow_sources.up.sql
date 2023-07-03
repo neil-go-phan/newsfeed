@@ -1,5 +1,6 @@
 CREATE TABLE follows (
   created_at timestamp with time zone default current_timestamp,
+  updated_at timestamp with time zone,
   username text NOT NULL,
   articles_source_id SERIAL NOT NULL,
   unread integer default 0 NOT NULL,
@@ -49,39 +50,51 @@ CREATE INDEX idx_read_username ON public.reads USING btree (username);
 
 CREATE INDEX idx_read_username_articles_source_id ON public.reads USING btree (username, articles_source_id);
 
-CREATE OR REPLACE FUNCTION decrease_unread()
-  RETURNS TRIGGER AS $$
-BEGIN
+CREATE
+OR REPLACE FUNCTION decrease_unread() RETURNS TRIGGER AS $$ 
+BEGIN 
   IF NEW.username IS NOT NULL THEN
-    UPDATE follows
-    SET unread = unread - 1
-    WHERE username = NEW.username
+    UPDATE
+      follows
+    SET
+      unread = unread - 1
+    WHERE
+      username = NEW.username
       AND articles_source_id = NEW.articles_source_id
       AND unread > 0;
+
   END IF;
+
   RETURN NEW;
 END;
+
 $$ LANGUAGE plpgsql;
 
 CREATE TRIGGER trg_decrease_unread
-AFTER INSERT ON reads
-FOR EACH ROW
-EXECUTE FUNCTION decrease_unread();
+AFTER
+INSERT
+  ON reads FOR EACH ROW EXECUTE FUNCTION decrease_unread();
 
-CREATE OR REPLACE FUNCTION increase_unread()
-  RETURNS TRIGGER AS $$
-BEGIN
+CREATE
+OR REPLACE FUNCTION increase_unread() RETURNS TRIGGER AS $$ 
+BEGIN 
   IF OLD.username IS NOT NULL THEN
-    UPDATE follows
-    SET unread = unread + 1
-    WHERE username = OLD.username
+    UPDATE
+      follows
+    SET
+     unread = unread + 1
+    WHERE
+      username = OLD.username
       AND articles_source_id = OLD.articles_source_id;
+
   END IF;
+
   RETURN OLD;
+
 END;
+
 $$ LANGUAGE plpgsql;
 
 CREATE TRIGGER trg_increase_unread
-AFTER DELETE ON reads
-FOR EACH ROW
-EXECUTE FUNCTION increase_unread();
+AFTER
+  DELETE ON reads FOR EACH ROW EXECUTE FUNCTION increase_unread();

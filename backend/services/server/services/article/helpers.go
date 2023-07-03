@@ -32,3 +32,18 @@ func castArticleFromRepoToArticleReadReponse(article repository.ArticleLeftJoinR
 	}
 	return newArticle
 }
+
+func castTrendingArticle(article repository.TredingArticle) services.TredingArticleResponse {
+	newArticle := services.TredingArticleResponse{
+		ID: article.ID,
+		Title: article.Title,
+		Description: article.Description,
+		Link: article.Link,
+		Published: article.Published,
+		Authors: article.Authors,
+		ArticlesSourceID: article.ArticlesSourceID,
+		IsReadLater: article.IsReadLater,
+		ArticlesSource: article.ArticlesSource,
+	}
+	return newArticle
+}

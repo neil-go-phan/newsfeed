@@ -4,6 +4,7 @@ import React, { useContext, useEffect, useState } from 'react';
 import { Button } from 'react-bootstrap';
 import ArticleCard from '../articleCard ';
 import { FollowedSourcesContext } from '../contexts/followedSources';
+import Image from 'next/image';
 type Props = {
   articlesSource: ArticlesSourceInfo;
 };
@@ -141,9 +142,10 @@ const ArticleSourceCard: React.FC<Props> = (props: Props) => {
     <div className="articlesSourcesSearchResult__item d-flex">
       <div className="info col-3">
         <div className="logo">
-          <img
+          <Image
             alt="sources logo"
             src={props.articlesSource.image}
+            height={'0'}
             style={{ height: 'auto' }}
             width={LOGO_SIZE}
           />

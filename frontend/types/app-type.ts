@@ -46,10 +46,24 @@ type ArticleWithReadStatus = {
   published: string;
   authors: string;
   articles_source_id: number;
-  
 };
 
 type ArrayArticleWithReadStatus = Array<ArticleWithReadStatus>
+
+type DashboardArticle = {
+  id: number;
+  title: string;
+  description: string;
+  link: string;
+  published: string;
+  authors: string;
+  is_read_later: boolean;
+  is_read: boolean;
+  articles_source_id: number;
+  articles_source: ArticlesSourceInfo;
+};
+
+type DashboardArticles = Array<DashboardArticle>;
 
 type ArticlesSource = {
   title: string;
@@ -69,9 +83,22 @@ type ArticlesSourceInfo = {
   follower: number;
   topic_id: number;
   unread: number;
+  articles_previous_week: number;
 };
 
 type ArticlesSourceInfoes = Array<ArticlesSourceInfo>;
+
+type NewestSourceDashboard = {
+  id: number;
+  title: string;
+  description: string;
+  link: string;
+  image: string;
+  follower: number;
+  articles: Article;
+};
+
+type NewestSourceDashboards = Array<NewestSourceDashboard>;
 
 type Crawler = {
   source_link: string;

@@ -26,6 +26,7 @@ export const _ROUTES = {
   READ_FEEDS_ARTICLES_SOURCE: '/feeds/read/articles_source',
   LIBRARY_PAGE: '/library',
   DASHBOARD_PAGE: '/dashboard',
+  SOURCE_DETAIL_PAGE: '/source',
   RECENTLY_READ_PAGE: '/recently'
 }
 

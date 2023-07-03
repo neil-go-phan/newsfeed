@@ -141,3 +141,16 @@ func (s *ArticleService) SearchArticlesAcrossUserFollowedSources(username string
 	}
 	return articlesResponse,found, nil
 }
+
+func (s *ArticleService) GetTredingArticle(username string) ([]services.TredingArticleResponse, error) {
+	articlesResponse := make([]services.TredingArticleResponse, 0)
+	articles, err := s.repo.GetTredingArticle(username)
+	if err != nil {
+		return articlesResponse, err
+	}
+	for _, article := range articles {
+		articlesResponse = append(articlesResponse, castTrendingArticle(article))
+
+	}
+	return articlesResponse, nil
+}	

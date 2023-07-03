@@ -49,7 +49,7 @@ const TestResult: React.FC<Props> = (props: Props) => {
 
   const requestTestCustomCrawler = async (crawler: Crawler) => {
     try {
-      const res = await axiosProtectedAPI.post('crawler/test/custom', {
+      const {data} = await axiosProtectedAPI.post('crawler/test/custom', {
         source_link: crawler.source_link,
         crawl_type: crawler.crawl_type,
         article_div: crawler.article_div,
@@ -59,8 +59,8 @@ const TestResult: React.FC<Props> = (props: Props) => {
         article_published: crawler.article_published,
         article_authors: crawler.article_authors,
       });
-      setArticles(res.data.articles);
-      const articlesource: ArticlesSource = res.data.articles_source;
+      setArticles(data.articles);
+      const articlesource: ArticlesSource = data.articles_source;
       setArticlesSource({ ...articlesource, feed_link: articlesource.link });
       setIsloading(false);
     } catch (error: any) {

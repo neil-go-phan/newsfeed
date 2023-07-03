@@ -24,5 +24,7 @@ func (route *FollowRoutes) Setup(r *gin.Engine) {
 		routes.GET("follow", middlewares.CheckAccessToken(), route.handler.Follow)
 		routes.GET("unfollow", middlewares.CheckAccessToken(), route.handler.Unfollow)
 		routes.GET("get/articles-sources", middlewares.CheckAccessToken(), route.handler.GetArticleSourceFollowed)
+		routes.GET("get/new-update", middlewares.CheckAccessToken(), route.handler.GetNewestSourceUpdatedID)
+
 	}
 }

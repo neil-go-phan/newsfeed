@@ -5,6 +5,7 @@ import (
 	"server/entities"
 	"server/helpers"
 	"strings"
+	"time"
 
 	"gorm.io/gorm"
 )
@@ -18,12 +19,22 @@ type ArticlesSourcesRepository interface {
 	UpdateTopicOneSource(articlesSource entities.ArticlesSource, newTopicId uint) error
 	UpdateTopicAllSource(oldTopicId uint, newTopicId uint) error
 	IncreaseFollowByOne(articlesSource entities.ArticlesSource) error
-	DecreaseFollowByOne(articlesSource entities.ArticlesSource) error 
+	DecreaseFollowByOne(articlesSource entities.ArticlesSource) error
+
+	GetMostActiveSources() ([]MostActiveSource, error)
 }
 
 type ArticlesSourcesRepo struct {
 	DB *gorm.DB
 }
+
+type MostActiveSource struct {
+	entities.ArticlesSource
+	ArticlesPreviousWeek int `json:"articles_previous_week"`
+}
+
+const NEWEST_SOURCE_USER_DASHBOARD_DISPLAY = 3
+const NEWEST_ARTICLES_EACH_SOURCE_USER_DASHBOARD_DISPLAY = 4
 
 func NewArticlesSourcesRepo(db *gorm.DB) *ArticlesSourcesRepo {
 	return &ArticlesSourcesRepo{
@@ -80,7 +91,7 @@ func (repo *ArticlesSourcesRepo) UpdateTopicAllSource(oldTopicId uint, newTopicI
 
 func (repo *ArticlesSourcesRepo) SearchByTitleAndDescriptionPaginate(keyword string, page int, pageSize int) ([]entities.ArticlesSource, int64, error) {
 	articlesSources := make([]entities.ArticlesSource, 0)
-	searchKeyword := fmt.Sprint(strings.ToLower(keyword) + "%")
+	searchKeyword := fmt.Sprint("%" + strings.ToLower(keyword) + "%")
 	var found int64
 
 	err := repo.DB.
@@ -95,7 +106,7 @@ func (repo *ArticlesSourcesRepo) SearchByTitleAndDescriptionPaginate(keyword str
 }
 
 func (repo *ArticlesSourcesRepo) IncreaseFollowByOne(articlesSource entities.ArticlesSource) error {
-	err := repo.DB. 
+	err := repo.DB.
 		Model(&articlesSource).
 		Update("follower", gorm.Expr("follower + ?", 1)).Error
 	if err != nil {
@@ -105,7 +116,7 @@ func (repo *ArticlesSourcesRepo) IncreaseFollowByOne(articlesSource entities.Art
 }
 
 func (repo *ArticlesSourcesRepo) DecreaseFollowByOne(articlesSource entities.ArticlesSource) error {
-	err := repo.DB. 
+	err := repo.DB.
 		Model(&articlesSource).
 		Update("follower", gorm.Expr("follower - ?", 1)).Error
 	if err != nil {
@@ -114,3 +125,31 @@ func (repo *ArticlesSourcesRepo) DecreaseFollowByOne(articlesSource entities.Art
 	return nil
 }
 
+func (repo *ArticlesSourcesRepo) GetMostActiveSources() ([]MostActiveSource, error) {
+	articlesSource := make([]MostActiveSource, 0)
+	today := time.Now()
+	aWeekAgo := today.AddDate(0, 0, -7)
+	todayString := today.Format("2006-01-02")
+	aWeekAgoString := aWeekAgo.Format("2006-01-02")
+
+	PAGE := 1
+	PAGE_SIZE := 5
+
+	subQuery := repo.DB.
+		Model(&entities.Article{}).
+		Select("articles_source_id", "count(id) as articles_previous_week").
+		Where("created_at BETWEEN ? AND ?", aWeekAgoString+" 00:00:00", todayString+" 23:59:59").
+		Scopes(helpers.Paginate(PAGE, PAGE_SIZE)).
+		Group("articles_source_id")
+
+	err := repo.DB.
+		Model(&entities.ArticlesSource{}).
+		Distinct("id", "title", "description", "link", "follower", "image", "articles_previous_week", "feed_link").
+		Joins("JOIN (?) q on q.articles_source_id = articles_sources.id", subQuery).
+		Order("articles_previous_week desc").
+		Find(&articlesSource).Error
+	if err != nil {
+		return articlesSource, err
+	}
+	return articlesSource, nil
+}

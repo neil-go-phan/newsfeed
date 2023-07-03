@@ -14,15 +14,16 @@ import (
 type ArticleRepository interface {
 	SearchArticlesAcrossUserFollowedSources(username string, keyword string, page int, pageSize int) ([]entities.Article, int64, error)
 	GetArticlesPaginationByArticlesSourceID(articlesSourceID uint, page int, pageSize int) ([]entities.Article, error)
-	GetArticlesPaginationByUserFollowedSource(username string, page int, pageSize int) ([]ArticleLeftJoinRead, error) 
+	GetArticlesPaginationByUserFollowedSource(username string, page int, pageSize int) ([]ArticleLeftJoinRead, error)
 	GetArticlesPaginationByArticlesSourceIDWithReadStatus(username string, articlesSourceID uint, page int, pageSize int) ([]ArticleLeftJoinRead, error)
 	GetUnreadArticlesPaginationByArticlesSourceID(username string, articlesSourceID uint, page int, pageSize int) ([]ArticleLeftJoinRead, error)
 	GetReadLaterListPaginationByUserFollowedSource(username string, page int, pageSize int) ([]ArticleLeftJoinRead, error)
 	GetReadLaterListPaginationByArticlesSourceID(username string, articlesSourceID uint, page int, pageSize int) ([]ArticleLeftJoinRead, error)
 	GetUnreadArticlesByUserFollowedSource(username string, page int, pageSize int) ([]ArticleLeftJoinRead, error)
-	GetRecentlyReadArticle(username string, page int, pageSize int) ([]ArticleLeftJoinRead, error) 
-	CountArticleCreateAWeekAgoByArticlesSourceID(articlesSourceID uint) (int64, error)
+	GetRecentlyReadArticle(username string, page int, pageSize int) ([]ArticleLeftJoinRead, error)
+	GetTredingArticle(username string) ([]TredingArticle, error)
 
+	CountArticleCreateAWeekAgoByArticlesSourceID(articlesSourceID uint) (int64, error)
 	CreateIfNotExist(article *entities.Article) error
 }
 
@@ -32,8 +33,13 @@ type ArticleRepo struct {
 
 type ArticleLeftJoinRead struct {
 	entities.Article
-	IsRead  bool `json:"is_read"`
-	IsReadLater  bool `json:"is_read_later"`
+	IsRead      bool `json:"is_read"`
+	IsReadLater bool `json:"is_read_later"`
+}
+
+type TredingArticle struct {
+	ArticleLeftJoinRead
+	ArticlesSource entities.ArticlesSource `json:"articles_source" gorm:"foreignKey:ArticlesSourceID"`
 }
 
 func NewArticleRepo(db *gorm.DB) *ArticleRepo {
@@ -93,16 +99,15 @@ func (repo *ArticleRepo) GetArticlesPaginationByArticlesSourceIDWithReadStatus(u
 
 func (repo *ArticleRepo) GetArticlesPaginationByUserFollowedSource(username string, page int, pageSize int) ([]ArticleLeftJoinRead, error) {
 	articles := make([]ArticleLeftJoinRead, 0)
-		subQuery1 := repo.DB.
+	subQuery1 := repo.DB.
 		Model(&entities.Follow{}).
 		Select("articles_source_id").
 		Where("username = ?", username)
 
-		subQuery2 := repo.DB.
+	subQuery2 := repo.DB.
 		Model(&entities.ReadLater{}).
 		Select("username, article_id").
 		Where("username = ?", username)
-
 
 	err := repo.DB.
 		Model(&entities.Article{}).
@@ -150,12 +155,12 @@ func (repo *ArticleRepo) GetReadLaterListPaginationByArticlesSourceID(username s
 
 func (repo *ArticleRepo) GetReadLaterListPaginationByUserFollowedSource(username string, page int, pageSize int) ([]ArticleLeftJoinRead, error) {
 	articles := make([]ArticleLeftJoinRead, 0)
-		subQuery1 := repo.DB.
+	subQuery1 := repo.DB.
 		Model(&entities.Follow{}).
 		Select("articles_source_id").
 		Where("username = ?", username)
 
-		subQuery2 := repo.DB.
+	subQuery2 := repo.DB.
 		Model(&entities.ReadLater{}).
 		Select("username, article_id").
 		Where("username = ?", username)
@@ -200,7 +205,7 @@ func (repo *ArticleRepo) GetUnreadArticlesPaginationByArticlesSourceID(username 
 
 func (repo *ArticleRepo) GetUnreadArticlesByUserFollowedSource(username string, page int, pageSize int) ([]ArticleLeftJoinRead, error) {
 	articles := make([]ArticleLeftJoinRead, 0)
-		subQuery := repo.DB.
+	subQuery := repo.DB.
 		Model(&entities.Follow{}).
 		Select("articles_source_id").
 		Where("username = ?", username)
@@ -223,7 +228,7 @@ func (repo *ArticleRepo) GetUnreadArticlesByUserFollowedSource(username string, 
 
 func (repo *ArticleRepo) GetRecentlyReadArticle(username string, page int, pageSize int) ([]ArticleLeftJoinRead, error) {
 	articles := make([]ArticleLeftJoinRead, 0)
-		subQuery := repo.DB.
+	subQuery := repo.DB.
 		Model(&entities.Follow{}).
 		Select("articles_source_id").
 		Where("username = ?", username)
@@ -278,4 +283,36 @@ func (repo *ArticleRepo) SearchArticlesAcrossUserFollowedSources(username string
 		return articles, found, err
 	}
 	return articles, found, nil
+}
+
+func (repo *ArticleRepo) GetTredingArticle(username string) ([]TredingArticle, error) {
+	articles := make([]TredingArticle, 0)
+	AMOUNT_OF_ARTICLES := 10
+	today := time.Now()
+	todayString := today.Format("2006-01-02")
+	subQuery1 := repo.DB.
+		Model(&entities.Read{}).
+		Select("article_id", "count(article_id) as read").
+		Where("created_at between ? AND ?", todayString + " 00:00:00", todayString+" 23:59:59").
+		Group("article_id").
+		Order("read desc"). 
+		Limit(AMOUNT_OF_ARTICLES)
+
+	subQuery2 := repo.DB.
+		Model(&entities.ReadLater{}).
+		Select("*").
+		Where("username = ?", username)
+
+	err := repo.DB.
+		Model(&entities.Article{}).
+		Select("id", "title", "description", "link", "published", "authors", "articles.articles_source_id", "articles.created_at", "CASE WHEN rl.username IS NULL THEN false ELSE true END AS is_read_later").
+		Joins("JOIN (?) r on articles.id = r.article_id", subQuery1).
+		Joins("LEFT JOIN (?) rl on articles.id = rl.article_id ", subQuery2).
+		Preload("ArticlesSource").
+		Order("r.read desc").
+		Find(&articles).Error
+	if err != nil {
+		return articles, err
+	}
+	return articles, nil
 }

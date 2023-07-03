@@ -86,9 +86,23 @@ const ImgCard: React.FC<Props> = (props: Props) => {
         </IconButton>
         <IconButton aria-label="status" onClick={props.handleChangeReadStatus}>
           {props.readStatus ? (
-            <FontAwesomeIcon icon={faCircleCheck} />
+            <Popup
+              trigger={() => <FontAwesomeIcon icon={faCircleCheck} />}
+              position="bottom center"
+              closeOnDocumentClick
+              on={['hover', 'focus']}
+            >
+              <span>Mark article as unread</span>
+            </Popup>
           ) : (
-            <FontAwesomeIcon icon={faCircle} />
+            <Popup
+              trigger={() => <FontAwesomeIcon icon={faCircle} />}
+              position="bottom center"
+              closeOnDocumentClick
+              on={['hover', 'focus']}
+            >
+              <span>Mark article as read</span>
+            </Popup>
           )}
         </IconButton>
       </CardActions>

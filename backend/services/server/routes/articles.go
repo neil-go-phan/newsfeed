@@ -32,6 +32,9 @@ func (route *ArticleRoutes) Setup(r *gin.Engine) {
 
 		routes.GET("get/all/recently", middlewares.CheckAccessToken(), route.handler.GetRecentlyReadArticle)
 
+		routes.GET("get/all/treding", middlewares.CheckAccessToken(), route.handler.GetTredingArticle)
+
+
 		routes.GET("search/across-source", middlewares.CheckAccessToken(), route.handler.SearchArticlesAcrossUserFollowedSources)
 		routes.GET("count/previous-week", middlewares.CheckAccessToken(), route.handler.CountArticleCreateAWeekAgoByArticlesSourceID)
 

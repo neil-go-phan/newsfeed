@@ -7,6 +7,7 @@ import axiosProtectedAPI from '@/helpers/axiosProtectedAPI';
 import { Button } from 'react-bootstrap';
 import { alertSuccess } from '@/helpers/alert';
 import { _ROUTES } from '@/helpers/constants';
+import { useRouter } from 'next/router';
 type Props = {
   crawler: Crawler | undefined;
   articlesSources: ArticlesSource | undefined;
@@ -20,6 +21,7 @@ const ERROR_MESSAGE_WHEN_CREATE_FAIL = 'error occrus when create crawler';
 
 const ConfirmModal: React.FC<Props> = (props: Props) => {
   const [image, setImage] = useState<string>('');
+  const router = useRouter()
   const [errorMessage, setErrorMessage] = useState<string>('');
   const requestCreateCrawler = async (payload: CreateCrawlerPayload) => {
     try {
@@ -31,6 +33,7 @@ const ConfirmModal: React.FC<Props> = (props: Props) => {
         setErrorMessage('');
         props.handleIsConfirmModalClose();
         alertSuccess(ALERT_SUCCESS_MESSAGE);
+        router.push(_ROUTES.ADMIN_CRAWLER)
       }
       if (!res?.data.success) {
         throw res;

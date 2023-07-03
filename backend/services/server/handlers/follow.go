@@ -17,6 +17,7 @@ type FollowHandlerInterface interface {
 	Follow(c *gin.Context)
 	Unfollow(c *gin.Context)
 	GetArticleSourceFollowed(c *gin.Context)
+	GetNewestSourceUpdatedID(c *gin.Context) 
 }
 
 func NewFollowHandler(service services.FollowServices) *FollowHandler {
@@ -86,4 +87,21 @@ func (h *FollowHandler) GetArticleSourceFollowed(c *gin.Context) {
 		return
 	}
 	c.JSON(http.StatusOK, gin.H{"success": true, "articles_sources": articlesSourcesFollowed})
+}
+
+func (h *FollowHandler) GetNewestSourceUpdatedID(c *gin.Context) {
+	username, exsit := c.Get("username")
+	if !exsit {
+		log.Error("Not found username in token string")
+		c.JSON(http.StatusBadRequest, gin.H{"success": false, "message": "bad request"})
+		return
+	}
+
+	ids, err := h.service.GetNewestSourceUpdatedID(username.(string))
+	if err != nil {
+		log.Error("error occrus:", err)
+		c.JSON(http.StatusBadRequest, gin.H{"success": false, "message": err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"success": true, "articles_source_ids": ids})
 }

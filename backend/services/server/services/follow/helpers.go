@@ -23,3 +23,10 @@ func getArticlesSourcesFromArrayFollow(follows []entities.Follow) []services.Art
 	return articlesSources;
 }
 
+func getArticlesSourceID(follows []entities.Follow) []uint {
+	ids := make([]uint, 0)
+	for _,follow := range follows {
+		ids = append(ids, follow.ArticlesSourceID)
+	}
+	return ids
+}

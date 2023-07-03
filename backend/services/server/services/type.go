@@ -69,6 +69,18 @@ type ArticleForReadResponse struct {
 	IsReadLater      bool      `json:"is_read_later"`
 }
 
+type TredingArticleResponse struct {
+	ID               uint                    `json:"id"`
+	Title            string                  `json:"title"`
+	Description      string                  `json:"description"`
+	Link             string                  `json:"link"`
+	Published        time.Time               `json:"published"`
+	Authors          string                  `json:"authors"`
+	ArticlesSourceID uint                    `json:"articles_source_id"`
+	IsReadLater      bool                    `json:"is_read_later"`
+	ArticlesSource   entities.ArticlesSource `json:"articles_source" gorm:"foreignKey:ArticlesSourceID"`
+}
+
 type ArticlesSourceFromFrontend struct {
 	Title       string `json:"title"`
 	Description string `json:"description"`
@@ -144,6 +156,16 @@ type ArticlesSourceResponseRender struct {
 	Image       string `json:"image"` // base64 image
 	Follower    int    `json:"follower"`
 	TopicID     uint   `json:"topic_id"`
+}
+type ArticlesSourceRecommended struct {
+	ID                   uint   `json:"id"`
+	Title                string `json:"title"`
+	Description          string `json:"description"`
+	Link                 string `json:"link"`
+	Image                string `json:"image"`
+	Follower             int    `json:"follower"`
+	TopicID              uint   `json:"topic_id"`
+	ArticlesPreviousWeek int    `json:"articles_previous_week"`
 }
 
 type ArticlesSourceUserFollow struct {
