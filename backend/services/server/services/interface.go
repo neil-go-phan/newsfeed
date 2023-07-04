@@ -36,9 +36,13 @@ type ArticleServices interface {
 	GetReadLaterListPaginationByUserFollowedSource(username string, page int, pageSize int) ([]ArticleForReadResponse, error)
 
 	GetRecentlyReadArticle(username string, page int, pageSize int) ([]ArticleForReadResponse, error)
-	
+
 	GetTredingArticle(username string) ([]TredingArticleResponse, error)
 
+	ListAll(page int, pageSize int) ([]ArticleResponse, error)
+	Count() (int, error)
+	Delete(articleID uint) error
+	AdminSearchArticlesWithFilter(keyword string, page int, pageSize int, articlesSourceID uint) ([]ArticleResponse, int64, error)
 	CountArticleCreateAWeekAgoByArticlesSourceID(articlesSourceID uint) (int64, error)
 
 	CreateIfNotExist(article *entities.Article) error
@@ -47,7 +51,9 @@ type ArticleServices interface {
 type ArticlesSourceServices interface {
 	GetByTopicIDPaginate(topicID uint, page int, pageSize int) ([]ArticlesSourceResponseRender, int64, error)
 	SearchByTitleAndDescriptionPaginate(keyword string, page int, pageSize int) ([]ArticlesSourceResponseRender, int64, error)
-	GetMostActiveSources() ([]ArticlesSourceRecommended, error) 
+	GetMostActiveSources() ([]ArticlesSourceRecommended, error)
+	GetWithID(id uint) (ArticlesSourceResponseRender, error)
+	ListAll() ([]ArticlesSourceResponseRender, error)
 
 	CreateIfNotExist(articlesSource entities.ArticlesSource) (entities.ArticlesSource, error)
 	UpdateTopicOneSource(articlesSource entities.ArticlesSource, newTopicId uint) error

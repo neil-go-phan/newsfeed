@@ -11,7 +11,7 @@ type Props = {
   handleUpdateCategory: (id: number, oldName: string, newName: string) => void;
 };
 
-const AdminTopicsAction: React.FC<Props> = (props: Props) => {
+const AdminCategoriesAction: React.FC<Props> = (props: Props) => {
   return (
     <div className="action">
       <div className="d-flex">
@@ -33,4 +33,4 @@ const AdminTopicsAction: React.FC<Props> = (props: Props) => {
   );
 };
 
-export default AdminTopicsAction;
+export default AdminCategoriesAction;

@@ -13,7 +13,7 @@ import (
 
 type ArticleRepository interface {
 	SearchArticlesAcrossUserFollowedSources(username string, keyword string, page int, pageSize int) ([]entities.Article, int64, error)
-	GetArticlesPaginationByArticlesSourceID(articlesSourceID uint, page int, pageSize int) ([]entities.Article, error)
+	GetArticlesPaginationByArticlesSourceID(articlesSourceID uint, page int, pageSize int) ([]entities.Article, int64, error)
 	GetArticlesPaginationByUserFollowedSource(username string, page int, pageSize int) ([]ArticleLeftJoinRead, error)
 	GetArticlesPaginationByArticlesSourceIDWithReadStatus(username string, articlesSourceID uint, page int, pageSize int) ([]ArticleLeftJoinRead, error)
 	GetUnreadArticlesPaginationByArticlesSourceID(username string, articlesSourceID uint, page int, pageSize int) ([]ArticleLeftJoinRead, error)
@@ -23,6 +23,13 @@ type ArticleRepository interface {
 	GetRecentlyReadArticle(username string, page int, pageSize int) ([]ArticleLeftJoinRead, error)
 	GetTredingArticle(username string) ([]TredingArticle, error)
 
+	ListAll(page int, pageSize int) ([]entities.Article, error)
+	Count() (int, error)
+	Delete(article entities.Article) error
+
+	AdminSearchArticles(keyword string, page int, pageSize int) ([]entities.Article, int64, error)
+	AdminSearchArticlesWithFilter(keyword string, page int, pageSize int, articlesSourceID uint) ([]entities.Article, int64, error)
+	
 	CountArticleCreateAWeekAgoByArticlesSourceID(articlesSourceID uint) (int64, error)
 	CreateIfNotExist(article *entities.Article) error
 }
@@ -56,18 +63,20 @@ func (repo *ArticleRepo) CreateIfNotExist(article *entities.Article) error {
 	return nil
 }
 
-func (repo *ArticleRepo) GetArticlesPaginationByArticlesSourceID(articlesSourceID uint, page int, pageSize int) ([]entities.Article, error) {
+func (repo *ArticleRepo) GetArticlesPaginationByArticlesSourceID(articlesSourceID uint, page int, pageSize int) ([]entities.Article, int64, error) {
 	articles := make([]entities.Article, 0)
+	var found int64
 
 	err := repo.DB.
 		Where("articles_source_id = ?", articlesSourceID).
 		Scopes(helpers.Paginate(page, pageSize)).
 		Order("created_at desc").
-		Find(&articles).Error
+		Find(&articles).
+		Count(&found).Error
 	if err != nil {
-		return articles, err
+		return articles, found, err
 	}
-	return articles, nil
+	return articles, found, nil
 }
 
 func (repo *ArticleRepo) GetArticlesPaginationByArticlesSourceIDWithReadStatus(username string, articlesSourceID uint, page int, pageSize int) ([]ArticleLeftJoinRead, error) {
@@ -285,6 +294,44 @@ func (repo *ArticleRepo) SearchArticlesAcrossUserFollowedSources(username string
 	return articles, found, nil
 }
 
+func (repo *ArticleRepo) AdminSearchArticles(keyword string, page int, pageSize int) ([]entities.Article, int64, error) {
+	articles := make([]entities.Article, 0)
+	searchKeyword := fmt.Sprint("%" + strings.ToLower(keyword) + "%")
+
+	var found int64
+
+	err := repo.DB.
+		Distinct("title", "description", "link", "published", "authors", "articles_source_id", "created_at").
+		Where("LOWER(title) LIKE ? or LOWER(description) LIKE ?", searchKeyword, searchKeyword).
+		Scopes(helpers.Paginate(page, pageSize)).
+		Order("created_at desc").
+		Find(&articles).
+		Count(&found).Error
+	if err != nil {
+		return articles, found, err
+	}
+	return articles, found, nil
+}
+
+func (repo *ArticleRepo) AdminSearchArticlesWithFilter(keyword string, page int, pageSize int, articlesSourceID uint) ([]entities.Article, int64, error) {
+	articles := make([]entities.Article, 0)
+	searchKeyword := fmt.Sprint("%" + strings.ToLower(keyword) + "%")
+
+	var found int64
+
+	err := repo.DB.
+		Distinct("title", "description", "link", "published", "authors", "articles_source_id", "created_at").
+		Where("articles_source_id = ? AND (LOWER(title) LIKE ? or LOWER(description) LIKE ?)", articlesSourceID, searchKeyword, searchKeyword).
+		Scopes(helpers.Paginate(page, pageSize)).
+		Order("created_at desc").
+		Find(&articles).
+		Count(&found).Error
+	if err != nil {
+		return articles, found, err
+	}
+	return articles, found, nil
+}
+
 func (repo *ArticleRepo) GetTredingArticle(username string) ([]TredingArticle, error) {
 	articles := make([]TredingArticle, 0)
 	AMOUNT_OF_ARTICLES := 10
@@ -293,9 +340,9 @@ func (repo *ArticleRepo) GetTredingArticle(username string) ([]TredingArticle, e
 	subQuery1 := repo.DB.
 		Model(&entities.Read{}).
 		Select("article_id", "count(article_id) as read").
-		Where("created_at between ? AND ?", todayString + " 00:00:00", todayString+" 23:59:59").
+		Where("created_at between ? AND ?", todayString+" 00:00:00", todayString+" 23:59:59").
 		Group("article_id").
-		Order("read desc"). 
+		Order("read desc").
 		Limit(AMOUNT_OF_ARTICLES)
 
 	subQuery2 := repo.DB.
@@ -315,4 +362,36 @@ func (repo *ArticleRepo) GetTredingArticle(username string) ([]TredingArticle, e
 		return articles, err
 	}
 	return articles, nil
+}
+
+func (repo *ArticleRepo) ListAll(page int, pageSize int) ([]entities.Article, error) {
+	articles := make([]entities.Article, 0)
+	err := repo.DB.
+		Scopes(helpers.Paginate(page, pageSize)).
+		Order("created_at desc").
+		Find(&articles).Error
+	if err != nil {
+		return articles, err
+	}
+	return articles, nil
+}
+
+func (repo *ArticleRepo) Count() (int, error) {
+	var count int64
+	err := repo.DB.Table("articles").Count(&count).Error
+	if err != nil {
+		return 0, err
+	}
+	return int(count), nil
+}
+
+func (repo *ArticleRepo) Delete(article entities.Article) error {
+	err := repo.DB.
+		Where("id = ?", article.ID).
+		Unscoped().
+		Delete(&article).Error
+	if err != nil {
+		return err
+	}
+	return nil
 }

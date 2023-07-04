@@ -22,7 +22,7 @@ const DashboardFeeds: React.FC<Props> = (props: Props) => {
   useEffect(() => {
     setArticleSource(getArticlesSourceByID(props.sourceid));
     requestArticles(props.sourceid);
-  }, []);
+  }, [followedSources]);
 
   const requestArticles = async (articlesSourceID: number) => {
     try {

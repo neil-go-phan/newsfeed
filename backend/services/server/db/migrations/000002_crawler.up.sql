@@ -54,7 +54,7 @@ ADD
 ALTER TABLE
   articles
 ADD
-  CONSTRAINT fk_articles_articlesource_id FOREIGN KEY (articles_source_id) REFERENCES articles_sources(id);
+  CONSTRAINT fk_articles_articlesource_id FOREIGN KEY (articles_source_id) REFERENCES articles_sources(id) on delete cascade;
 
 
 CREATE UNIQUE INDEX idx_crawlers_id ON public.crawlers USING btree (id);

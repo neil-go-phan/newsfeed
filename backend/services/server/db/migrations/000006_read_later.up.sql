@@ -9,11 +9,11 @@ CREATE TABLE read_laters (
 ALTER TABLE
   read_laters
 ADD
-  CONSTRAINT fk_read_laters_article_id FOREIGN KEY (article_id) REFERENCES articles(id);
+  CONSTRAINT fk_read_laters_article_id FOREIGN KEY (article_id) REFERENCES articles(id) on delete cascade;
 
 ALTER TABLE
   read_laters
 ADD
-  CONSTRAINT fk_read_laters_username FOREIGN KEY (username) REFERENCES users(username);
+  CONSTRAINT fk_read_laters_username FOREIGN KEY (username) REFERENCES users(username) on delete cascade;
 
 CREATE INDEX idx_read_laters_username ON public.read_laters USING btree (username);

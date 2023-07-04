@@ -34,8 +34,13 @@ func (route *ArticleRoutes) Setup(r *gin.Engine) {
 
 		routes.GET("get/all/treding", middlewares.CheckAccessToken(), route.handler.GetTredingArticle)
 
+		routes.GET("list/all", middlewares.CheckAccessToken(), route.handler.ListAll)
+		routes.POST("delete/id", middlewares.CheckAccessToken(), route.handler.Delete)
 
 		routes.GET("search/across-source", middlewares.CheckAccessToken(), route.handler.SearchArticlesAcrossUserFollowedSources)
+		routes.GET("search/admin", middlewares.CheckAccessToken(), route.handler.AdminSearchArticlesWithFilter)
+
+		routes.GET("count/total", middlewares.CheckAccessToken(), route.handler.Count)
 		routes.GET("count/previous-week", middlewares.CheckAccessToken(), route.handler.CountArticleCreateAWeekAgoByArticlesSourceID)
 
 	}

@@ -49,7 +49,7 @@ const TestResult: React.FC<Props> = (props: Props) => {
 
   const requestTestCustomCrawler = async (crawler: Crawler) => {
     try {
-      const {data} = await axiosProtectedAPI.post('crawler/test/custom', {
+      const { data } = await axiosProtectedAPI.post('crawler/test/custom', {
         source_link: crawler.source_link,
         crawl_type: crawler.crawl_type,
         article_div: crawler.article_div,
@@ -171,7 +171,9 @@ const TestResult: React.FC<Props> = (props: Props) => {
                       {articles.map((article, index) => (
                         <tr key={`article_crawler_test_${article.title}`}>
                           <td>{index}</td>
-                          <td>{article.title}</td>
+                          <td>
+                            <p>{article.title}</p>
+                          </td>
                           <td>
                             <p>{article.description}</p>
                           </td>
@@ -180,8 +182,12 @@ const TestResult: React.FC<Props> = (props: Props) => {
                               {article.link}
                             </a>
                           </td>
-                          <td>{article.published}</td>
-                          <td>{article.authors}</td>
+                          <td>
+                            <p>{article.published}</p>
+                          </td>
+                          <td>
+                            <p>{article.authors}</p>
+                          </td>
                         </tr>
                       ))}
                     </tbody>

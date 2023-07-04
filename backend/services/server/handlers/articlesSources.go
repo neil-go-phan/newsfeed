@@ -16,6 +16,8 @@ type ArticlesSourceHandler struct {
 type ArticlesSourceHandlerInterface interface {
 	GetByTopicIDPaginate(c *gin.Context)
 	GetMostActiveSources(c *gin.Context) 
+	GetWithID(c *gin.Context) 
+	ListAll(c *gin.Context) 
 }
 
 func NewArticlesSourceHandler(service services.ArticlesSourceServices) *ArticlesSourceHandler {
@@ -62,4 +64,31 @@ func (h *ArticlesSourceHandler) GetMostActiveSources(c *gin.Context) {
 		return
 	}
 	c.JSON(http.StatusOK, gin.H{"success": true, "articles_sources": articlesSources})
+}
+
+func (h *ArticlesSourceHandler) ListAll(c *gin.Context) {
+	articlesSources, err := h.service.ListAll()
+	if err != nil {
+		log.Error("error occrus:", err)
+		c.JSON(http.StatusInternalServerError, gin.H{"success": false, "message": "internal server error"})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"success": true, "articles_sources": articlesSources})
+}
+
+func (h *ArticlesSourceHandler) GetWithID(c *gin.Context) {
+	id, err := strconv.Atoi(c.Query("id"))
+	if err != nil {
+		log.Error("error occrus:", err)
+		c.JSON(http.StatusBadRequest, gin.H{"success": false, "message": "bad request"})
+		return
+	}
+
+	articlesSource, err := h.service.GetWithID(uint(id))
+	if err != nil {
+		log.Error("error occrus:", err)
+		c.JSON(http.StatusInternalServerError, gin.H{"success": false, "message": "internal server error"})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"success": true, "articles_source": articlesSource})
 }

@@ -27,7 +27,6 @@ export default function AdminTopics() {
   const [total, setTotal] = useState<number>(0);
   const [isCreateTopicModalOpen, setIsCreateTopicModalOpen] =
     useState<boolean>(false);
-  const router = useRouter();
 
   const handleCreateTopic = (topicName: string, category_id: number) => {
     requestCreateTopic(topicName.trim(), category_id);
@@ -168,7 +167,7 @@ export default function AdminTopics() {
     requestListCategoriesNames();
     requestPageTopics(1, PAGE_SIZE);
     requestCountTopics();
-  }, [router.asPath]);
+  }, []);
 
   return (
     <div className="adminTopics">

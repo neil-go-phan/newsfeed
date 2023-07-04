@@ -18,27 +18,27 @@ CREATE TABLE reads (
 ALTER TABLE
   follows
 ADD
-  CONSTRAINT fk_follows_username FOREIGN KEY (username) REFERENCES users(username);
+  CONSTRAINT fk_follows_username FOREIGN KEY (username) REFERENCES users(username) on delete cascade;
 
 ALTER TABLE
   follows
 ADD
-  CONSTRAINT fk_follows_articles_sources_id FOREIGN KEY (articles_source_id) REFERENCES articles_sources(id);
+  CONSTRAINT fk_follows_articles_sources_id FOREIGN KEY (articles_source_id) REFERENCES articles_sources(id) on delete cascade;
 
 ALTER TABLE
   reads
 ADD
-  CONSTRAINT fk_reads_article_id FOREIGN KEY (article_id) REFERENCES articles(id);
+  CONSTRAINT fk_reads_article_id FOREIGN KEY (article_id) REFERENCES articles(id) on delete cascade;
 
 ALTER TABLE
   reads
 ADD
-  CONSTRAINT fk_reads_username FOREIGN KEY (username) REFERENCES users(username);
+  CONSTRAINT fk_reads_username FOREIGN KEY (username) REFERENCES users(username) on delete cascade;
 
 ALTER TABLE
   reads
 ADD
-  CONSTRAINT fk_reads_articles_source_id FOREIGN KEY (articles_source_id) REFERENCES articles_sources(id);
+  CONSTRAINT fk_reads_articles_source_id FOREIGN KEY (articles_source_id) REFERENCES articles_sources(id) on delete cascade;
 
 CREATE UNIQUE INDEX idx_follows ON public.follows USING btree (articles_source_id, username);
 

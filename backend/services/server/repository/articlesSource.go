@@ -12,7 +12,9 @@ import (
 
 type ArticlesSourcesRepository interface {
 	GetWithTopicPaginate(topicID uint, page int, pageSize int) ([]entities.ArticlesSource, int64, error)
-
+	ListAll() ([]entities.ArticlesSource,error)
+	GetWithID(id uint) (entities.ArticlesSource, error)
+	
 	SearchByTitleAndDescriptionPaginate(keyword string, page int, pageSize int) ([]entities.ArticlesSource, int64, error)
 
 	CreateIfNotExist(articlesSource entities.ArticlesSource) (entities.ArticlesSource, error)
@@ -148,6 +150,28 @@ func (repo *ArticlesSourcesRepo) GetMostActiveSources() ([]MostActiveSource, err
 		Joins("JOIN (?) q on q.articles_source_id = articles_sources.id", subQuery).
 		Order("articles_previous_week desc").
 		Find(&articlesSource).Error
+	if err != nil {
+		return articlesSource, err
+	}
+	return articlesSource, nil
+}
+
+func (repo *ArticlesSourcesRepo) ListAll() ([]entities.ArticlesSource,error) {
+	sources := make([]entities.ArticlesSource, 0)
+	err := repo.DB.
+		Find(&sources).Error
+	if err != nil {
+		return sources, err
+	}
+	return sources, nil
+}
+
+func (repo *ArticlesSourcesRepo) GetWithID(id uint) (entities.ArticlesSource, error) {
+	articlesSource := entities.ArticlesSource{}
+
+	err := repo.DB.
+		Where("id = ?", id).
+		First(&articlesSource).Error
 	if err != nil {
 		return articlesSource, err
 	}

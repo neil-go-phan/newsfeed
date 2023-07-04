@@ -90,7 +90,8 @@
       .articleFound {
         table {
           width: 100%;
-          p {
+          table-layout: fixed;
+          p, a {
             text-overflow: ellipsis;
             line-clamp: 2;
             -webkit-line-clamp: 2;

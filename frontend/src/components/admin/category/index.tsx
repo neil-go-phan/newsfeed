@@ -25,7 +25,6 @@ export default function AdminCategories() {
   const [total, setTotal] = useState<number>(0);
   const [isCreateCategoryModalOpen, setIsCreateCategoryModalOpen] =
     useState<boolean>(false);
-  const router = useRouter();
 
   const handleCreateCategory = (
     categoryName: string,
@@ -153,7 +152,7 @@ export default function AdminCategories() {
   useEffect(() => {
     requestPageCategories(1, PAGE_SIZE);
     requestCountCategories();
-  }, [router.asPath]);
+  }, []);
 
   return (
     <div className="adminCategories">
