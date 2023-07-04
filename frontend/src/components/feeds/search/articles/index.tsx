@@ -3,6 +3,7 @@ import React, { useContext, useEffect, useState } from 'react';
 import axiosProtectedAPI from '@/helpers/axiosProtectedAPI';
 import { ThreeDots } from 'react-loader-spinner';
 import InfiniteScroll from 'react-infinite-scroll-component';
+import ArticlesListFound from './articlesListFound';
 
 const SEARCH_FAIL_MESSAGE = 'search fail';
 const PAGE_SIZE = 10;
@@ -32,7 +33,7 @@ function SearchArticles() {
   const requestSearchFirstPage = async (keyword: string) => {
     try {
       const { data } = await axiosProtectedAPI.get(
-        'articles/search-articles-across-source',
+        'articles/search/across-source',
         {
           params: { q: keyword, page: FIRST_PAGE, page_size: PAGE_SIZE },
         }
@@ -64,7 +65,7 @@ function SearchArticles() {
   ) => {
     try {
       const { data } = await axiosProtectedAPI.get(
-        'articles/search-articles-across-source',
+        'articles/search/across-source',
         {
           params: { q: keyword, page: page, page_size: PAGE_SIZE },
         }
@@ -135,9 +136,7 @@ function SearchArticles() {
                     </div>
                   }
                 >
-                  {articles.map((article) => (
-                    <div>{article.title}</div>
-                  ))}
+                  <ArticlesListFound articles={articles}/>
                 </InfiniteScroll>
               </div>
             </div>

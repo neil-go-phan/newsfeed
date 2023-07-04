@@ -67,6 +67,29 @@
         display: flex;
         justify-content: space-around;
         align-items: center;
+        .sourceInfo {
+          width: 270px;
+          display: flex;
+          align-items: center;
+          .icon {
+            display: inline-block;
+            margin: 0 10px;
+            border-radius: 50%;
+          }
+          span {
+            display: inline-block;
+            width: 200px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            color: #1a2433;
+            line-height: 48px;
+            font-size: 16px;
+            font-weight: 500;
+            letter-spacing: -0.01rem;
+          
+          }
+        }
         .leftBtn {
           border: 1px solid #b6c5d8;
           color: #53585f;
@@ -168,7 +191,7 @@
     .item {
       line-height: 36px;
       padding: 2px 0;
-      position: relative;
+      // position: relative;
       .itemInner {
         margin: 0 12px;
         padding: 0 12px;
@@ -267,7 +290,6 @@
       position: absolute;
       top: 0px;
       left: 270px;
-      padding: 0 20px;
     }
     .pageContentWhenSidebarClose {
       left: 0;

@@ -28,7 +28,7 @@ const TestResult: React.FC<Props> = (props: Props) => {
 
   const requestTestCrawlerRSS = async (url: string) => {
     try {
-      const res = await axiosProtectedAPI.post('crawler/test-rss', {
+      const res = await axiosProtectedAPI.post('crawler/test/rss', {
         source_link: url,
       });
       if (res?.data.success) {
@@ -49,7 +49,7 @@ const TestResult: React.FC<Props> = (props: Props) => {
 
   const requestTestCustomCrawler = async (crawler: Crawler) => {
     try {
-      const res = await axiosProtectedAPI.post('crawler/test-custom', {
+      const { data } = await axiosProtectedAPI.post('crawler/test/custom', {
         source_link: crawler.source_link,
         crawl_type: crawler.crawl_type,
         article_div: crawler.article_div,
@@ -59,8 +59,8 @@ const TestResult: React.FC<Props> = (props: Props) => {
         article_published: crawler.article_published,
         article_authors: crawler.article_authors,
       });
-      setArticles(res.data.articles);
-      const articlesource: ArticlesSource = res.data.articles_source;
+      setArticles(data.articles);
+      const articlesource: ArticlesSource = data.articles_source;
       setArticlesSource({ ...articlesource, feed_link: articlesource.link });
       setIsloading(false);
     } catch (error: any) {
@@ -171,11 +171,23 @@ const TestResult: React.FC<Props> = (props: Props) => {
                       {articles.map((article, index) => (
                         <tr key={`article_crawler_test_${article.title}`}>
                           <td>{index}</td>
-                          <td>{article.title}</td>
-                          <td><p>{article.description}</p></td>
-                          <td><a href={article.link} target='_blank'>{article.link}</a></td>
-                          <td>{article.published}</td>
-                          <td>{article.authors}</td>
+                          <td>
+                            <p>{article.title}</p>
+                          </td>
+                          <td>
+                            <p>{article.description}</p>
+                          </td>
+                          <td>
+                            <a href={article.link} target="_blank">
+                              {article.link}
+                            </a>
+                          </td>
+                          <td>
+                            <p>{article.published}</p>
+                          </td>
+                          <td>
+                            <p>{article.authors}</p>
+                          </td>
                         </tr>
                       ))}
                     </tbody>
@@ -188,8 +200,7 @@ const TestResult: React.FC<Props> = (props: Props) => {
                       <Grid item key={article.title} xs={12} md={4}>
                         <ArticleCard
                           key={`${article.title}-card`}
-                          articleSourceTitle={articlesSource?.title}
-                          articleSourceLink={articlesSource?.link}
+                          articlesSource={articlesSource}
                           article={article}
                           isAdmin={true}
                         />
@@ -211,47 +222,3 @@ const TestResult: React.FC<Props> = (props: Props) => {
 };
 
 export default TestResult;
-
-{
-  /* <div className="table">
-<h3>List</h3>
-<Table striped bordered hover>
-  <thead>
-    <tr>
-      <th>#</th>
-      <th>Title</th>
-      <th>Description</th>
-      <th>Link</th>
-      <th>Published</th>
-      <th>Authors</th>
-    </tr>
-  </thead>
-  <tbody>
-    {articles.map((article, index) => (
-      <tr key={`article_crawler_test_${article.title}`}>
-        <td>{index}</td>
-        <td>{article.title}</td>
-        <td>{article.description}</td>
-        <td>{article.link}</td>
-      </tr>
-    ))}
-  </tbody>
-</Table>
-</div>
-<div className="preview">
-<h3>Preview</h3>
-<Grid container spacing={3}>
-  {articles.map((article) => (
-    <Grid item key={article.title} xs={12} md={4}>
-      <ArticleCard
-        key={`${article.title}-card`}
-        articleSourceTitle={articlesSource?.title}
-        articleSourceLink={articlesSource?.link}
-        article={article}
-        isAdmin={true}
-      />
-    </Grid>
-  ))}
-</Grid>
-</div> */
-}

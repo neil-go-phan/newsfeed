@@ -22,9 +22,9 @@ func (route *TopicRoutes) Setup(r *gin.Engine) {
 	routes := r.Group("topic")
 	{
 		routes.GET("list", middlewares.CheckAccessToken(), route.handler.List)
-		routes.GET("get-page", middlewares.CheckAccessToken(), route.handler.GetPagination)
-		routes.GET("get-by-category", middlewares.CheckAccessToken(), route.handler.GetByCategory)
-		routes.GET("search-topics-and-article-sources", middlewares.CheckAccessToken(), route.handler.SearchTopicAndArticlesSource)
+		routes.GET("get/page", middlewares.CheckAccessToken(), route.handler.GetPagination)
+		routes.GET("get/category", middlewares.CheckAccessToken(), route.handler.GetByCategory)
+		routes.GET("search/topics/sources", middlewares.CheckAccessToken(), route.handler.SearchTopicAndArticlesSource)
 		routes.GET("count", middlewares.CheckAccessToken(), route.handler.Count)
 		routes.POST("create", middlewares.CheckAccessToken(), route.handler.Create)
 		routes.POST("update", middlewares.CheckAccessToken(), route.handler.Update)

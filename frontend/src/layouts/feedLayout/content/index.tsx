@@ -8,8 +8,8 @@ type Props = {
   children: React.ReactNode;
 };
 
-const HEADER_HEIGHT = 48;
-const SIDEBAR_WIDTH = 270;
+export const HEADER_HEIGHT = 48;
+export const SIDEBAR_WIDTH = 270;
 
 const FeedsContent: React.FC<Props> = (props: Props) => {
   const { height, width } = useWindowDimensions();

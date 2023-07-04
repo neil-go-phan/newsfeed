@@ -11,7 +11,7 @@ import {
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Image from 'next/image';
 import Link from 'next/link';
-import React, { useContext, useState } from 'react';
+import React, { useContext } from 'react';
 
 type Props = {
   isOpenSidebar: boolean;
@@ -21,8 +21,21 @@ type Props = {
 const IMAGE_SIZE = 20;
 
 const FeedsSidebar: React.FC<Props> = (props: Props) => {
-  const [currentPage, setCurrentPage] = useState<string>('');
   const { followedSources } = useContext(FollowedSourcesContext);
+  const cacultateTotalUnreadArticle = (): number => {
+    let total = 0;
+    followedSources.forEach((followedSource) => {
+      total = total + followedSource.unread;
+    });
+    return total;
+  };
+
+  const unreadNumberToString = (unreadNumber : number):string => {
+    if (unreadNumber <= 100) {
+      return unreadNumber.toString()
+    }
+    return '100+'
+  }
   return (
     <div
       className={
@@ -34,7 +47,7 @@ const FeedsSidebar: React.FC<Props> = (props: Props) => {
     >
       <div className="subscriptionsNav">
         <div className="item">
-          <Link href={''} className="itemInner">
+          <Link href={_ROUTES.DASHBOARD_PAGE} className="itemInner">
             <div className="icon">
               <FontAwesomeIcon icon={faChartSimple} />
             </div>
@@ -44,9 +57,9 @@ const FeedsSidebar: React.FC<Props> = (props: Props) => {
           </Link>
         </div>
         <div className="item">
-          <Link href={''} className="itemInner">
+          <Link href={_ROUTES.FEEDS_LATER} className="itemInner">
             <div className="icon">
-              <FontAwesomeIcon icon={faStar} />{' '}
+              <FontAwesomeIcon icon={faStar} />
             </div>
             <div className="description">
               <span>Read later</span>
@@ -54,7 +67,7 @@ const FeedsSidebar: React.FC<Props> = (props: Props) => {
           </Link>
         </div>
         <div className="item">
-          <Link href={''} className="itemInner">
+          <Link href={_ROUTES.LIBRARY_PAGE} className="itemInner">
             <div className="icon">
               <FontAwesomeIcon icon={faBookOpen} />
             </div>
@@ -80,7 +93,7 @@ const FeedsSidebar: React.FC<Props> = (props: Props) => {
               <span>All articles</span>
             </div>
             <div className="unRead">
-              <span>100+</span>
+              <span>{unreadNumberToString(cacultateTotalUnreadArticle())}</span>
             </div>
           </Link>
         </div>
@@ -95,7 +108,7 @@ const FeedsSidebar: React.FC<Props> = (props: Props) => {
                   <span>{sourceFollowed.title}</span>
                 </div>
                 <div className="unRead">
-                  <span>100+</span>
+                  <span>{unreadNumberToString(sourceFollowed.unread)}</span>
                 </div>
               </Link>
             </div>

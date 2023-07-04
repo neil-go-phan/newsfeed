@@ -1,2 +1,5 @@
-DROP TABLE user_follow_sources;
-DROP TABLE user_read_articles;
+DROP TABLE follows;
+DROP TABLE reads;
+
+DROP TRIGGER IF EXISTS trg_decrease_unread;
+DROP TRIGGER IF EXISTS trg_increase_unread;

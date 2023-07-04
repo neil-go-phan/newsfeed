@@ -191,7 +191,7 @@ function NavbarComponent() {
                 <div className="newsfeedLink">
                   <Link
                     className="mx-md-3 mx-1 btn btn-sm btn-primary d-block px-3 text-nowrap"
-                    href={_ROUTES.FEEDS_SEARCH_WEBS}
+                    href={_ROUTES.DASHBOARD_PAGE}
                   >
                     <span>My newsfeed</span>
                   </Link>

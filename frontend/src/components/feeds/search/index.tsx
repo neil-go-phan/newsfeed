@@ -16,7 +16,8 @@ import SearchArticles from './articles';
 const LIST_CATEGORY_REQUEST_FAIL_MESSAGE = 'reqeust failed';
 const INPUT_PLACE_HOLDER_SEARCH_FEEDS =
   'Follow your favorite source and nerver miss a story';
-const INPUT_PLACE_HOLDER_SEARCH_ARTICLES = 'Search for any articles in your feeds';
+const INPUT_PLACE_HOLDER_SEARCH_ARTICLES =
+  'Search for any articles in your feeds';
 
 function SearchFeedsComponent() {
   const router = useRouter();
@@ -36,7 +37,7 @@ function SearchFeedsComponent() {
 
   const requestListCategory = async () => {
     try {
-      const { data } = await axiosProtectedAPI.get('category/list-all');
+      const { data } = await axiosProtectedAPI.get('category/list/all');
       if (!data.success) {
         if (data.message) {
           throw data.message;
@@ -87,7 +88,7 @@ function SearchFeedsComponent() {
       case _ROUTES.FEEDS_SEARCH_WEBS_CATEGORY:
         return pushToSearchWebResultPage(keyword);
       default:
-        return 
+        return;
     }
   };
 

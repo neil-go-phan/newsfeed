@@ -62,7 +62,7 @@ const Login: NextPage = () => {
         message: res.data.message,
       });
       logged?.setIsLogged(true);
-      router.push(_ROUTES.FEEDS_SEARCH_WEBS);
+      router.push(_ROUTES.DASHBOARD_PAGE);
     } catch (error: any) {
       setErrorMessage({
         trigger: true,

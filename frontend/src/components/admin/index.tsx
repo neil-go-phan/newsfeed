@@ -6,6 +6,7 @@ import CrawlerComponent from './crawler';
 import AddCustomCrawler from './crawler/addCrawler/addCustomCrawler';
 import AdminCategories from './category';
 import AdminTopics from './topic';
+import AdminArticles from './article';
 
 function AdminComponent() {
   const router = useRouter();
@@ -27,6 +28,8 @@ function AdminComponent() {
         return <AdminCategories />;
       case _ROUTES.ADMIN_TOPICS:
         return <AdminTopics />;
+      case _ROUTES.ADMIN_ARTICLES:
+        return <AdminArticles />
       default:
         return <CrawlerComponent />;
     }

@@ -3,7 +3,7 @@ import { Table } from 'react-bootstrap';
 import { Column, useTable } from 'react-table';
 import { ThreeDots } from 'react-loader-spinner';
 import Image from 'next/image';
-import AdminCategoriesAction from './action';
+import AdminCategoriesAction from '../category/action';
 import Popup from 'reactjs-popup';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCircleQuestion } from '@fortawesome/free-solid-svg-icons';
@@ -41,7 +41,9 @@ const CategoriseTable: React.FC<Props> = (props: Props) => {
               {row.values.name}
               {checkIsOrphanCategory(row.values.name) ? (
                 <Popup
-                  trigger={() => <FontAwesomeIcon className='mx-2' icon={faCircleQuestion} />}
+                  trigger={() => (
+                    <FontAwesomeIcon className="mx-2" icon={faCircleQuestion} />
+                  )}
                   position="right center"
                   closeOnDocumentClick
                   on={['hover', 'focus']}

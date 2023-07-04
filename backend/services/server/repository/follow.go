@@ -9,9 +9,10 @@ import (
 
 type FollowRepository interface {
 	GetByUsername(username string) ([]entities.Follow, error)
+	GetNewestFeedsUpdated(username string) ([]entities.Follow, error)
 
-	CreateIfNotExist(Follow entities.Follow) error
-	Delete(Follow entities.Follow) error
+	CreateIfNotExist(follow entities.Follow) error
+	Delete(follow entities.Follow) error
 }
 
 type FollowRepo struct {
@@ -55,6 +56,22 @@ func (repo *FollowRepo) GetByUsername(username string) ([]entities.Follow, error
 		Preload("ArticlesSource").
 		Find(&follows).
 		Error
+	if err != nil {
+		return follows, err
+	}
+	return follows, nil
+}
+
+func (repo *FollowRepo) GetNewestFeedsUpdated(username string) ([]entities.Follow, error) {
+	follows := make([]entities.Follow, 0)
+
+	err := repo.DB.
+		Model(&entities.Follow{}).
+		Select("articles_source_id").
+		Where("username = ? AND unread > 0", username).
+		Order("updated_at desc").
+		Limit(NEWEST_SOURCE_USER_DASHBOARD_DISPLAY).
+		Find(&follows).Error
 	if err != nil {
 		return follows, err
 	}

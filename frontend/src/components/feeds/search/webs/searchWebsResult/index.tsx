@@ -33,6 +33,7 @@ function SearchWebsResult() {
       requestGetFirstPageArticlesSourcesByTopicID(selectedTopicID);
       return;
     }
+
     requestSearchFirstPage(keyword);
   };
 
@@ -69,7 +70,7 @@ function SearchWebsResult() {
   const requestSearchFirstPage = async (keyword: string) => {
     try {
       const { data } = await axiosProtectedAPI.get(
-        'topic/search-topics-and-article-sources',
+        'topic/search/topics/sources',
         {
           signal: abortControllerRef.current.signal,
           params: { q: keyword, page: FIRST_PAGE, page_size: PAGE_SIZE },
@@ -102,7 +103,7 @@ function SearchWebsResult() {
   ) => {
     try {
       const { data } = await axiosProtectedAPI.get(
-        'topic/search-topics-and-article-sources',
+        'topic/search/topics/sources',
         {
           signal: abortControllerRef.current.signal,
           params: { q: keyword, page: page, page_size: PAGE_SIZE },
@@ -127,7 +128,7 @@ function SearchWebsResult() {
   ) => {
     try {
       const { data } = await axiosProtectedAPI.get(
-        'articles-sources/get-by-topicid',
+        'articles-sources/get/topicid',
         {
           params: { topic_id: topicID, page: FIRST_PAGE, page_size: PAGE_SIZE },
         }
@@ -138,7 +139,7 @@ function SearchWebsResult() {
         }
         throw REQUEST_GET_ARTICLES_SOURCES_BY_TOPIC_ID_FAIL_MESSAGE;
       }
-      setFound(data.found)
+      setFound(data.found);
       setArticlesSources(data.articles_sources);
     } catch (error: any) {}
   };
@@ -149,7 +150,7 @@ function SearchWebsResult() {
   ) => {
     try {
       const { data } = await axiosProtectedAPI.get(
-        'articles-sources/get-by-topicid',
+        'articles-sources/get/topicid',
         {
           params: { topic_id: topicID, page: page, page_size: PAGE_SIZE },
         }

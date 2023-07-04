@@ -2,6 +2,7 @@
   margin: auto;
   padding: 20px;
   width: 90%;
+  padding: 0 20px;
   &__title {
     padding-top: 20px;
     h1 {
@@ -15,8 +16,11 @@
       margin-bottom: 0;
     }
   }
+
+
   &__sticky {
     position: sticky;
+    z-index: 100;
     top: 0;
     background-color: #fff;
   }
@@ -52,6 +56,7 @@
 }
 
 .searchWebs {
+  padding: 0 20px;
   &__categories {
     margin-top: 30px;
     &--title {
@@ -86,6 +91,7 @@
 }
 
 .filterCategory {
+  padding: 0 20px;
   &__returnBtn {
     display: flex;
     align-items: center;
@@ -154,6 +160,7 @@
 }
 
 .searchWebsResult {
+  padding: 0 20px;
   &__topics {
     .title {
       font-size: 20px;
@@ -189,6 +196,7 @@
 
 .searchArticles {
   margin-top: 30px;
+  padding: 0 20px;
   &__noResult {
     p {
       font-size: 16px;
@@ -196,6 +204,8 @@
     }
   }
   &__result {
+    position: relative;
+    z-index: 99;
     margin-bottom: 20px;
     .title {
       font-size: 20px;
@@ -212,5 +222,72 @@
 
 .readFeeds {
   margin-top: 30px;
-  padding: 20px 5px;
+  padding: 20px 25px;
+  &__feeds {
+    &--allRead {
+      position: relative;
+      .warpper {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        .title {
+          font-size: 20px;
+          font-weight: bold;
+          color: #1a2433;
+          text-align: center;
+        }
+        .message {
+          color: #707d90;
+          font-size: 14px;
+          margin-bottom: 16px;
+          font-weight: normal;
+          margin-top: 8px;
+        }
+      }
+    }
+  }
+  &__sourceDetail {
+    .wrapper {
+      margin: 50px auto;
+      width: 70%;
+      .img {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-right: 40px;
+      }
+      .text {
+        .title {
+          a {
+            white-space: normal;
+            text-decoration: none;
+            color: #000;
+            font-weight: bold;
+            font-size: 24px;
+          }
+        }
+        .description {
+          margin: 0;
+          font-size: 16px;
+          line-height: 22px;
+        }
+        .stats {
+          font-size: 14px;
+          span {
+            margin-left: 10px;
+          }
+        }
+        .colorGray {
+          color: #707d90;
+        }
+      }
+      .action {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-left: 40px;
+      }
+    }
+  }
 }

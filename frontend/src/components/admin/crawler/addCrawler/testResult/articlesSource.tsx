@@ -63,7 +63,7 @@ const ArticlesSource: React.FC<Props> = (props: Props) => {
 
   const requestListCategoriesNames = async () => {
     try {
-      const { data } = await axiosProtectedAPI.get('category/list-name');
+      const { data } = await axiosProtectedAPI.get('category/list/name');
       if (!data.success) {
         throw GET_CATEGORIES_NAME_FAIL_MESSAGE;
       }
@@ -191,16 +191,18 @@ const ArticlesSource: React.FC<Props> = (props: Props) => {
     const listName: Array<string> = [];
     if (categories) {
       categories.forEach((category) => listName.push(category.name));
-      setSelectedCategory(listName[0])
+      setSelectedCategory(listName[0]);
     }
     setCategoryNames(listName);
   }, [categories]);
 
   useEffect(() => {
     const listName: Array<string> = [];
-    const categoryID = findCategoryByName(selectedCategory).id
+    const categoryID = findCategoryByName(selectedCategory).id;
     if (topics) {
-      const listTopicInCategory = topics.filter((topic) => topic.category_id === categoryID);
+      const listTopicInCategory = topics.filter(
+        (topic) => topic.category_id === categoryID
+      );
       listTopicInCategory.forEach((topic) => listName.push(topic.name));
     }
     setTopicsNames(listName);
@@ -339,22 +341,22 @@ const ArticlesSource: React.FC<Props> = (props: Props) => {
             </div>
             <label> Topic</label>
             <div className="col-6">
-            <InputGroup className="mb-3">
-              <Form.Select  {...register('topicName')}>
-                {topicsNames ? (
-                  topicsNames.map((name) => (
-                    <option
-                      key={`topic-create-article-source-option-${name}`}
-                      value={name}
-                    >
-                      {name}
-                    </option>
-                  ))
-                ) : (
-                  <option value="not found">not found</option>
-                )}
-              </Form.Select>
-            </InputGroup>
+              <InputGroup className="mb-3">
+                <Form.Select {...register('topicName')}>
+                  {topicsNames ? (
+                    topicsNames.map((name) => (
+                      <option
+                        key={`topic-create-article-source-option-${name}`}
+                        value={name}
+                      >
+                        {name}
+                      </option>
+                    ))
+                  ) : (
+                    <option value="not found">not found</option>
+                  )}
+                </Form.Select>
+              </InputGroup>
             </div>
             {errors.topicName && (
               <p className="errorMessage">{errors.topicName.message}</p>

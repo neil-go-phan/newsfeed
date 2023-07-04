@@ -70,3 +70,39 @@ func (s *ArticlesSourceService) UserUnfollow(articlesSourceID uint) error {
 	}
 	return s.repo.DecreaseFollowByOne(articlesSource)
 }
+
+func (s *ArticlesSourceService) GetMostActiveSources() ([]services.ArticlesSourceRecommended, error) {
+	articlesSourcesResponse := make([]services.ArticlesSourceRecommended, 0)
+	articlesSources, err := s.repo.GetMostActiveSources()
+	if err != nil {
+		return articlesSourcesResponse, err
+	}
+	for _, articlesSource := range articlesSources {
+		articlesSourcesResponse = append(articlesSourcesResponse, castArticlesSourceRecommended(articlesSource))
+
+	}
+	return articlesSourcesResponse, nil
+}
+
+func (s *ArticlesSourceService) ListAll() ([]services.ArticlesSourceResponseRender, error) {
+	articlesSourcesResponse := make([]services.ArticlesSourceResponseRender, 0)
+	articlesSources, err := s.repo.ListAll()
+	if err != nil {
+		return articlesSourcesResponse, err
+	}
+	for _, articlesSource := range articlesSources {
+		articlesSourcesResponse = append(articlesSourcesResponse, castEntityArticlesSourceToReponse(articlesSource))
+
+	}
+	return articlesSourcesResponse, nil
+}
+
+func (s *ArticlesSourceService) GetWithID(id uint) (services.ArticlesSourceResponseRender, error) {
+	articlesSourcesResponse := services.ArticlesSourceResponseRender{}
+	articlesSource, err := s.repo.GetWithID(id)
+	if err != nil {
+		return articlesSourcesResponse, err
+	}
+	articlesSourcesResponse = castEntityArticlesSourceToReponse(articlesSource)
+	return articlesSourcesResponse, nil
+}

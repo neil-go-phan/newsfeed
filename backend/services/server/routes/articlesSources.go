@@ -21,6 +21,10 @@ func NewArticlesSourceRoutes(handler handlers.ArticlesSourceHandlerInterface) *A
 func (route *ArticlesSourceRoutes) Setup(r *gin.Engine) {
 	routes := r.Group("articles-sources")
 	{
-		routes.GET("get-by-topicid", middlewares.CheckAccessToken(), route.handler.GetByTopicIDPaginate)
+		routes.GET("get/topicid", middlewares.CheckAccessToken(), route.handler.GetByTopicIDPaginate)
+		routes.GET("get/id", middlewares.CheckAccessToken(), route.handler.GetWithID)
+		routes.GET("get/most-active", middlewares.CheckAccessToken(), route.handler.GetMostActiveSources)
+		routes.GET("list/all", middlewares.CheckAccessToken(), route.handler.ListAll)
+
 	}
 }

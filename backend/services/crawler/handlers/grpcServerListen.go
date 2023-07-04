@@ -69,7 +69,7 @@ func (gRPC *GRPCServer) TestCustomCrawler(ctx context.Context, pbCrawler *pb.Cra
 }
 
 func (gRPC *GRPCServer) Crawl(ctx context.Context, pbCrawler *pb.Crawler) (*pb.NewArticlesCount, error) {
-	log.Println("Start crawl")
+	log.Println("Start crawl",pbCrawler.SourceLink)
 	entityCrawler := helpers.CastPbCrawlerToEntityCrawler(pbCrawler)
 
 	newArticlesCount, err := gRPC.crawlerService.Crawl(entityCrawler)

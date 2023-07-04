@@ -27,12 +27,8 @@ export default function AdminTopics() {
   const [total, setTotal] = useState<number>(0);
   const [isCreateTopicModalOpen, setIsCreateTopicModalOpen] =
     useState<boolean>(false);
-  const router = useRouter();
 
-  const handleCreateTopic = (
-    topicName: string,
-    category_id: number
-  ) => {
+  const handleCreateTopic = (topicName: string, category_id: number) => {
     requestCreateTopic(topicName.trim(), category_id);
     handleIsCreateTopicModalClose();
   };
@@ -58,7 +54,11 @@ export default function AdminTopics() {
     requestPageTopics(currentPage, PAGE_SIZE);
   };
 
-  const requestDeleteTopic = async (id: number, name: string, category_id: number) => {
+  const requestDeleteTopic = async (
+    id: number,
+    name: string,
+    category_id: number
+  ) => {
     try {
       const { data } = await axiosProtectedAPI.post('topic/delete', {
         name: name,
@@ -67,7 +67,7 @@ export default function AdminTopics() {
       });
       if (!data.success) {
         if (data.message) {
-          throw data.message
+          throw data.message;
         }
         throw DELETE_TOPIC_FAIL_MESSAGE;
       }
@@ -88,11 +88,11 @@ export default function AdminTopics() {
       const { data } = await axiosProtectedAPI.post('topic/update', {
         id: id,
         name: newName,
-        category_id: newCategoryID
+        category_id: newCategoryID,
       });
       if (!data.success) {
         if (data.message) {
-          throw data.message
+          throw data.message;
         }
         throw UPDATE_TOPIC_FAIL_MESSAGE;
       }
@@ -107,7 +107,7 @@ export default function AdminTopics() {
 
   const requestListCategoriesNames = async () => {
     try {
-      const { data } = await axiosProtectedAPI.get('category/list-name');
+      const { data } = await axiosProtectedAPI.get('category/list/name');
       if (!data.success) {
         throw 'get categories names fail';
       }
@@ -116,7 +116,7 @@ export default function AdminTopics() {
       alertError(GET_CATEGORIES_NAME_FAIL_MESSAGE);
     }
   };
-  
+
   const requestCreateTopic = async (name: string, categoryID: number) => {
     try {
       const { data } = await axiosProtectedAPI.post('topic/create', {
@@ -125,7 +125,7 @@ export default function AdminTopics() {
       });
       if (!data.success) {
         if (data.message) {
-          throw data.message
+          throw data.message;
         }
         throw CREATE_TOPIC_FAIL_MESSAGE;
       }
@@ -139,7 +139,7 @@ export default function AdminTopics() {
 
   const requestPageTopics = async (page: number, pageSize: number) => {
     try {
-      const { data } = await axiosProtectedAPI.get('topic/get-page', {
+      const { data } = await axiosProtectedAPI.get('topic/get/page', {
         params: { page: page, page_size: pageSize },
       });
       if (!data.success) {
@@ -164,10 +164,10 @@ export default function AdminTopics() {
   };
 
   useEffect(() => {
-    requestListCategoriesNames()
+    requestListCategoriesNames();
     requestPageTopics(1, PAGE_SIZE);
     requestCountTopics();
-  }, [router.asPath]);
+  }, []);
 
   return (
     <div className="adminTopics">
@@ -196,7 +196,7 @@ export default function AdminTopics() {
               onClose={handleIsCreateTopicModalClose}
             >
               <CreateTopicModal
-              categories={categories}
+                categories={categories}
                 handleCreateTopic={handleCreateTopic}
               />
             </Popup>

@@ -57,6 +57,9 @@ export default function SidebarNav() {
       <SidebarNavItem icon={faListCheck} href={_ROUTES.ADMIN_CRONJOB}>
         Cronjob
       </SidebarNavItem>
+      <SidebarNavItem icon={faNewspaper} href={_ROUTES.ADMIN_ARTICLES}>
+        Article
+      </SidebarNavItem>
     </ul>
   );
 }

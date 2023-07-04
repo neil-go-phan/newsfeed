@@ -4,42 +4,52 @@ import FeedsHeader from './header';
 import FeedsContent from './content';
 import { FollowedSourcesContext } from '@/common/contexts/followedSources';
 import axiosProtectedAPI from '@/helpers/axiosProtectedAPI';
+import { TriggerRefreshContext } from '@/common/contexts/triggerRefreshContext';
+import { ActiveSectionContext, SECTION_ALL_ARTICLES } from '@/common/contexts/activeArticlesSectionContext';
 
-const GET_FOLLOWED_ARTICLES_SOURCES_FAIL_MESSAGE = 'get followed articles sources fail'
+const GET_FOLLOWED_ARTICLES_SOURCES_FAIL_MESSAGE =
+  'get followed articles sources fail';
 
 function FeedsLayout({ children }: PropsWithChildren) {
   const [isOpenSidebar, setIsOpenSidebar] = useState<boolean>(true);
   const [followedSources, setFollowedSources] = useState<ArticlesSourceInfoes>(
     []
   );
+  const [triggerRefresh, setTriggerRefresh] = useState<boolean>(true);
+  const [activeSection, setActiveSection] = useState<string>(SECTION_ALL_ARTICLES);
+
   const handleToggleSidebar = () => {
     setIsOpenSidebar(!isOpenSidebar);
   };
 
   const callAPIGetFollow = () => {
-    requestGetFollowedSources()
-  }
+    requestGetFollowedSources();
+  };
 
   const requestGetFollowedSources = async () => {
     try {
       const { data } = await axiosProtectedAPI.get(
-        'follow/get-followed-articles-sources');
+        'follow/get/articles-sources'
+      );
       if (!data.success) {
         if (data.message) {
           throw data.message;
         }
         throw GET_FOLLOWED_ARTICLES_SOURCES_FAIL_MESSAGE;
       }
-      setFollowedSources(data.articles_sources)
+      setFollowedSources([...data.articles_sources]);      
     } catch (error: any) {
-      setFollowedSources([])
+      setFollowedSources([]);
     }
-  }
+  };
 
   useEffect(() => {
-    requestGetFollowedSources()
-  }, [])
-  
+    requestGetFollowedSources();
+  }, []);
+
+  useEffect(() => {
+    requestGetFollowedSources();
+  }, [triggerRefresh]);
 
   return (
     <>
@@ -50,17 +60,26 @@ function FeedsLayout({ children }: PropsWithChildren) {
         <link rel="icon" href="/feed_black_48dp.svg" />
       </Head>
       <div className="wrapper">
-        <FollowedSourcesContext.Provider
-          value={{ followedSources, callAPIGetFollow }}
-        >
-          <div className="feeds">
-            <FeedsHeader
-              isOpenSidebar={isOpenSidebar}
-              handleToggleSidebar={handleToggleSidebar}
-            />
-            <FeedsContent isOpenSidebar={isOpenSidebar} children={children} />
-          </div>
-        </FollowedSourcesContext.Provider>
+        <ActiveSectionContext.Provider value={{ activeSection, setActiveSection }}>
+          <TriggerRefreshContext.Provider
+            value={{ triggerRefresh, setTriggerRefresh }}
+          >
+            <FollowedSourcesContext.Provider
+              value={{ followedSources, callAPIGetFollow }}
+            >
+              <div className="feeds">
+                <FeedsHeader
+                  isOpenSidebar={isOpenSidebar}
+                  handleToggleSidebar={handleToggleSidebar}
+                />
+                <FeedsContent
+                  isOpenSidebar={isOpenSidebar}
+                  children={children}
+                />
+              </div>
+            </FollowedSourcesContext.Provider>
+          </TriggerRefreshContext.Provider>
+        </ActiveSectionContext.Provider>
       </div>
     </>
   );

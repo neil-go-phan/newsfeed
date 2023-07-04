@@ -24,9 +24,26 @@ type RoleServices interface {
 }
 
 type ArticleServices interface {
-	SearchArticlesAcrossSources(keyword string, page int, pageSize int) ([]ArticleResponse, int64, error)
-	GetPaginationByUserFollowedSource(username string, page int, pageSize int) ([]ArticleResponse, error)
-	GetPaginationByArticlesSourceID(articlesSourceID uint, page int, pageSize int) ([]ArticleResponse, error)
+	SearchArticlesAcrossUserFollowedSources(username string, keyword string, page int, pageSize int) ([]ArticleResponse, int64, error)
+
+	GetArticlesPaginationByUserFollowedSource(username string, page int, pageSize int) ([]ArticleForReadResponse, error)
+	GetArticlesPaginationByArticlesSourceID(username string, articlesSourceID uint, page int, pageSize int) ([]ArticleForReadResponse, error)
+
+	GetUnreadArticlesPaginationByArticlesSourceID(username string, articlesSourceID uint, page int, pageSize int) ([]ArticleForReadResponse, error)
+	GetUnreadArticlesByUserFollowedSource(username string, page int, pageSize int) ([]ArticleForReadResponse, error)
+
+	GetReadLaterListPaginationByArticlesSourceID(username string, articlesSourceID uint, page int, pageSize int) ([]ArticleForReadResponse, error)
+	GetReadLaterListPaginationByUserFollowedSource(username string, page int, pageSize int) ([]ArticleForReadResponse, error)
+
+	GetRecentlyReadArticle(username string, page int, pageSize int) ([]ArticleForReadResponse, error)
+
+	GetTredingArticle(username string) ([]TredingArticleResponse, error)
+
+	ListAll(page int, pageSize int) ([]ArticleResponse, error)
+	Count() (int, error)
+	Delete(articleID uint) error
+	AdminSearchArticlesWithFilter(keyword string, page int, pageSize int, articlesSourceID uint) ([]ArticleResponse, int64, error)
+	CountArticleCreateAWeekAgoByArticlesSourceID(articlesSourceID uint) (int64, error)
 
 	CreateIfNotExist(article *entities.Article) error
 }
@@ -34,12 +51,15 @@ type ArticleServices interface {
 type ArticlesSourceServices interface {
 	GetByTopicIDPaginate(topicID uint, page int, pageSize int) ([]ArticlesSourceResponseRender, int64, error)
 	SearchByTitleAndDescriptionPaginate(keyword string, page int, pageSize int) ([]ArticlesSourceResponseRender, int64, error)
+	GetMostActiveSources() ([]ArticlesSourceRecommended, error)
+	GetWithID(id uint) (ArticlesSourceResponseRender, error)
+	ListAll() ([]ArticlesSourceResponseRender, error)
 
 	CreateIfNotExist(articlesSource entities.ArticlesSource) (entities.ArticlesSource, error)
 	UpdateTopicOneSource(articlesSource entities.ArticlesSource, newTopicId uint) error
 	UpdateTopicAllSource(oldTopicId uint, newTopicId uint) error
-	UserFollow(articlesSourceID uint) error 
-	UserUnfollow(articlesSourceID uint) error 
+	UserFollow(articlesSourceID uint) error
+	UserUnfollow(articlesSourceID uint) error
 }
 
 type CrawlerServices interface {
@@ -88,5 +108,18 @@ type TopicServices interface {
 type FollowServices interface {
 	Follow(username string, articlesSourceID uint) error
 	Unfollow(username string, articlesSourceID uint) error
-	GetUserFollowedSources(username string) ([]ArticlesSourceResponseRender, error)
+	GetUserFollowedSources(username string) ([]ArticlesSourceUserFollow, error)
+	GetNewestSourceUpdatedID(username string) ([]uint, error)
+}
+
+type ReadServices interface {
+	MarkAllAsReadBySourceID(username string, articlesSourceID uint) error
+	MarkAllAsReadByUserFollowedSource(username string) error
+	MarkArticleAsRead(username string, articleID uint, articlesSourceID uint) error
+	MarkArticleAsUnRead(username string, articleID uint, articlesSourceID uint) error
+}
+
+type ReadLaterServices interface {
+	AddToReadLaterList(username string, articleID uint) error
+	RemoveFromReadLaterList(username string, articleID uint) error
 }

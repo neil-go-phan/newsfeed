@@ -15,4 +15,3 @@ type Article struct {
 	Authors          string    `json:"authors"`
 	ArticlesSourceID uint      `json:"articles_source_id" gorm:"foreignKey:ArticlesSourceID"`
 }
-

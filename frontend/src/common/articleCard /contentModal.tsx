@@ -3,8 +3,7 @@ import React, { useEffect, useState } from 'react';
 
 type Props = {
   article: Article;
-  sourceTitle: string | undefined;
-  sourceLink: string | undefined;
+  articlesSource: ArticlesSourceInfo | ArticlesSource | undefined;
 
   handleContentModalClose: () => void;
   doc: any;
@@ -44,9 +43,9 @@ const ContentModal: React.FC<Props> = (props: Props) => {
     if (props.article.link) {
       window.open(props.article.link, '_blank');
     } else {
-      alertNotFoundLink('Not found link to article')
+      alertNotFoundLink('Not found link to article');
     }
-  }
+  };
 
   useEffect(() => {
     if (props.doc) {
@@ -71,15 +70,15 @@ const ContentModal: React.FC<Props> = (props: Props) => {
   return (
     <div className="articleCard__contentModal">
       <div className="title">
-          <p onClick={handleOpenUrl}>
-            {props.article.title}
-          </p>
+        <p onClick={handleOpenUrl}>{props.article.title}</p>
       </div>
       <div className="info">
-        <a href={props.sourceLink} target="_blank" className="source">
-          {`${props.sourceTitle}, `}
+        <a href={props.articlesSource?.link} target="_blank" className="source">
+          {props.articlesSource?.title ? `${props.articlesSource.title}, ` : ''}
         </a>
-        <span className="authors">{`by ${props.article.authors}, `}</span>
+        <span className="authors">
+          {props.article?.authors ? `by ${props.article.authors}, ` : ''}
+        </span>
         <span className="published">{str}</span>
       </div>
       {isCustomCrawler ? (

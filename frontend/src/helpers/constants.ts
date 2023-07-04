@@ -15,6 +15,7 @@ export const _ROUTES = {
   ADD_CUSTOM_CRAWLER :'/admin/crawler/add/custom',
   ADMIN_CRONJOB: '/admin/cronjob',
   FEEDS: '/feeds',
+  FEEDS_LATER: '/feeds/later',
   FEEDS_SEARCH: '/feeds/search',
   FEEDS_SEARCH_WEBS: '/feeds/search/webs',
   FEEDS_SEARCH_WEBS_RESULT: '/feeds/search/webs/results',
@@ -23,6 +24,10 @@ export const _ROUTES = {
   READ_FEEDS: '/feeds/read/',
   READ_FEEDS_ALL_ARTICLES: '/feeds/read/all_articles',
   READ_FEEDS_ARTICLES_SOURCE: '/feeds/read/articles_source',
+  LIBRARY_PAGE: '/library',
+  DASHBOARD_PAGE: '/dashboard',
+  SOURCE_DETAIL_PAGE: '/source',
+  RECENTLY_READ_PAGE: '/recently'
 }
 
 export const _REGEX = {

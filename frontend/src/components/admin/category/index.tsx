@@ -25,7 +25,6 @@ export default function AdminCategories() {
   const [total, setTotal] = useState<number>(0);
   const [isCreateCategoryModalOpen, setIsCreateCategoryModalOpen] =
     useState<boolean>(false);
-  const router = useRouter();
 
   const handleCreateCategory = (
     categoryName: string,
@@ -64,7 +63,7 @@ export default function AdminCategories() {
       });
       if (!data.success) {
         if (data.message) {
-          throw data.message
+          throw data.message;
         }
         throw DELETE_CATEGORY_FAIL_MESSAGE;
       }
@@ -82,7 +81,7 @@ export default function AdminCategories() {
     newName: string
   ) => {
     try {
-      const { data } = await axiosProtectedAPI.post('category/update-name', {
+      const { data } = await axiosProtectedAPI.post('category/update/name', {
         new_name: newName,
         category: {
           name: name,
@@ -91,7 +90,7 @@ export default function AdminCategories() {
       });
       if (!data.success) {
         if (data.message) {
-          throw data.message
+          throw data.message;
         }
         throw UPDATE_CATEGORY_FAIL_MESSAGE;
       }
@@ -112,7 +111,7 @@ export default function AdminCategories() {
       });
       if (!data.success) {
         if (data.message) {
-          throw data.message
+          throw data.message;
         }
         throw CREATE_CATEGORY_FAIL_MESSAGE;
       }
@@ -126,7 +125,7 @@ export default function AdminCategories() {
 
   const requestPageCategories = async (page: number, pageSize: number) => {
     try {
-      const { data } = await axiosProtectedAPI.get('category/get-page', {
+      const { data } = await axiosProtectedAPI.get('category/get/page', {
         params: { page: page, page_size: pageSize },
       });
       if (!data.success) {
@@ -153,7 +152,7 @@ export default function AdminCategories() {
   useEffect(() => {
     requestPageCategories(1, PAGE_SIZE);
     requestCountCategories();
-  }, [router.asPath]);
+  }, []);
 
   return (
     <div className="adminCategories">

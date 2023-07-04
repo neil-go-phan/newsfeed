@@ -14,16 +14,13 @@ const ArticlesListFilterBySource: React.FC<Props> = (props: Props) => {
         {props.articles.map((article) => (
           <Grid
             item
-            key={`article read feed card ${article.title}-${
-              props.articlesSource!.link
-            }`}
+            key={`article grid item from read feed ${article.title}`}
             xs={12}
             md={4}
           >
             <ArticleCard
-              key={`articles from read feed ${article.title}`}
-              articleSourceTitle={props.articlesSource?.title}
-              articleSourceLink={props.articlesSource?.link}
+              key={`articles card from read feed ${article.title}`}
+              articlesSource={props.articlesSource}
               article={article}
               isAdmin={false}
             />
