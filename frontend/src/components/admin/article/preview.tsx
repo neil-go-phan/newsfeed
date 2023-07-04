@@ -45,6 +45,7 @@ const PreviewBtn: React.FC<Props> = (props: Props) => {
         throw GET_ARTICLES_SOURCE_FAIL_MESSAGE;
       }
       setArticlesSource(data.articles_source);
+      createDoc()
     } catch (error: any) {
       alertError(error);
     }
@@ -54,17 +55,15 @@ const PreviewBtn: React.FC<Props> = (props: Props) => {
     requestArticlesSource(props.article.articles_source_id);
   };
 
-  useEffect(() => {
+  const createDoc = () => {
     if (props.article.description !== '') {
       const newdom = htmlparser2.parseDocument(props.article.description);
       addTargetBlankToLinkTag(newdom.childNodes);
       setDoc(newdom);
+      handleModal()
     }
-  }, [articlesSource]);
+  }
 
-  useEffect(() => {
-    handleModal()
-  }, [doc]);
 
   return (
     <>

@@ -14,7 +14,7 @@ type Props = {
 const SEARCH_RESULT_EMPTY = 'Not found article source match keyword';
 
 const NOT_FILTER: SelectSearchOption = {
-  name: "All",
+  name: 'All',
   value: 0,
 };
 
