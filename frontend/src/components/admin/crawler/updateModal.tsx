@@ -61,22 +61,22 @@ const EditScheduleModal: React.FC<Props> = (props: Props) => {
     if (scheduleType === SCHEDULE_TYPE_CRONTAB) {
       let newCrontab = '';
       if (crontabMin >= 0 && crontabMin <= 59) {
-        newCrontab += crontabMin + ' ';
+        newCrontab += `${crontabMin} `;
       } else {
         newCrontab += '* ';
       }
       if (crontabHour >= 0 && crontabHour <= 23) {
-        newCrontab += crontabHour + ' ';
+        newCrontab += `${crontabHour} `;
       } else {
         newCrontab += '* ';
       }
       if (crontabDayOfMonth >= 1 && crontabDayOfMonth <= 31) {
-        newCrontab += crontabDayOfMonth + ' ';
+        newCrontab += `${crontabDayOfMonth} `;
       } else {
         newCrontab += '* ';
       }
       if (crontabMonth >= 1 && crontabMonth <= 12) {
-        newCrontab += crontabMonth + ' ';
+        newCrontab += `${crontabMonth} `;
       } else {
         newCrontab += '* ';
       }
@@ -98,7 +98,6 @@ const EditScheduleModal: React.FC<Props> = (props: Props) => {
     resolver: yupResolver(schema),
   });
   const onSubmit: SubmitHandler<EditScheduleYupValidateProp> = async (data) => {
-    console.log(data);
     requestUpdateSchedule(props.id, data.schedule)
   };
 

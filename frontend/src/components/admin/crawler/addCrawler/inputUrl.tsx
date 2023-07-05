@@ -15,7 +15,7 @@ type Props = {
 };
 
 const InputUrl: React.FC<Props> = (props: Props) => {
-  const router = useRouter()
+  const router = useRouter();
   const [crawlerID, setCrawlerID] = useState<number>();
 
   const schema = yup.object().shape({
@@ -30,37 +30,37 @@ const InputUrl: React.FC<Props> = (props: Props) => {
     setValue,
     formState: { errors },
   } = useForm<UrlFormProperty>({
-    resolver: yupResolver(schema)
+    resolver: yupResolver(schema),
   });
   const onSubmit: SubmitHandler<UrlFormProperty> = async (data) => {
     let { url } = data;
     props.handleInputUrl(url);
   };
-  const onCreateCusomCrawler:SubmitHandler<UrlFormProperty> = async (data) => {
+  const onCreateCusomCrawler: SubmitHandler<UrlFormProperty> = async (data) => {
     let { url } = data;
     router.push({
       pathname: _ROUTES.ADD_CUSTOM_CRAWLER,
-      query: { url: url},
+      query: { url: url },
     });
   };
 
-  const onUpdateCusomCrawler:SubmitHandler<UrlFormProperty> = async (data) => {
+  const onUpdateCusomCrawler: SubmitHandler<UrlFormProperty> = async (data) => {
     let { url } = data;
     router.push({
       pathname: _ROUTES.ADD_CUSTOM_CRAWLER,
-      query: { url: url, id: crawlerID},
+      query: { url: url, id: crawlerID },
     });
   };
 
   useEffect(() => {
     if (router.query.source_link) {
-      const url = router.query.source_link as string
-      setValue("url", url)
+      const url = router.query.source_link as string;
+      setValue('url', url);
     }
     if (router.query.id) {
-      setCrawlerID(+router.query.id)
+      setCrawlerID(+router.query.id);
     }
-  }, [])
+  }, []);
 
   return (
     <div className="addCrawler__inputUrl">
@@ -86,9 +86,17 @@ const InputUrl: React.FC<Props> = (props: Props) => {
         <Button className="px-4 mx-3" variant="success" type="submit">
           Scan RSS
         </Button>
-          <Button className="px-4" variant="warning" onClick={props.isUpdate ? handleSubmit(onUpdateCusomCrawler) : handleSubmit(onCreateCusomCrawler)}>
-            Custom crawler
-          </Button>
+        <Button
+          className="px-4"
+          variant="warning"
+          onClick={
+            props.isUpdate
+              ? handleSubmit(onUpdateCusomCrawler)
+              : handleSubmit(onCreateCusomCrawler)
+          }
+        >
+          Custom crawler
+        </Button>
       </form>
       <div className="addCrawler__inputUrl--line" />
     </div>

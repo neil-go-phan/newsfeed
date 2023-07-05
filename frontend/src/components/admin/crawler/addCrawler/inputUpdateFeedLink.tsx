@@ -13,13 +13,13 @@ type Props = {
   handleSubmitNewFeedLink: (url: string) => void;
   handleTestCrawler: () => void;
   isUpdate: boolean;
-  feedLink:string |undefined;
+  feedLink: string | undefined;
 };
 
 const InputUpdateFeedLink: React.FC<Props> = (props: Props) => {
   const router = useRouter();
   const [crawlerID, setCrawlerID] = useState<number>();
-  const [sourceLink, setSourceLink] = useState<string>('')
+  const [sourceLink, setSourceLink] = useState<string>('');
 
   const schema = yup.object().shape({
     url: yup
@@ -51,7 +51,7 @@ const InputUpdateFeedLink: React.FC<Props> = (props: Props) => {
   useEffect(() => {
     if (router.query.source_link) {
       const url = router.query.source_link as string;
-      setSourceLink(url)
+      setSourceLink(url);
     }
     if (router.query.id) {
       setCrawlerID(+router.query.id);
@@ -60,10 +60,9 @@ const InputUpdateFeedLink: React.FC<Props> = (props: Props) => {
 
   useEffect(() => {
     if (props.feedLink) {
-      setValue("url", props.feedLink)
+      setValue('url', props.feedLink);
     }
-  }, [props.feedLink])
-  
+  }, [props.feedLink]);
 
   return (
     <div className="addCrawler__inputUrl">
