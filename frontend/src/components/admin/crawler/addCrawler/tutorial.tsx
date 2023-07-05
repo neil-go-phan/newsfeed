@@ -22,7 +22,7 @@ function Tutorial() {
           <strong> enter the RSS link</strong>. In case you can not find it then
           enter the site url
         </p>
-        <p><strong>Step 3:</strong> Wait a moment to receive test results</p>
+        <p><strong>Step 3:</strong>Click <strong>Scan RSS</strong> and Wait a moment to receive test results</p>
         <i>
           (The test results will include articles source (information about the
           website you want to crawl) and the articles found)

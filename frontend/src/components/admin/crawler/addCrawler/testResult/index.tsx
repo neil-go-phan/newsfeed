@@ -6,16 +6,19 @@ import ArticlesSource from './articlesSource';
 import ArticleCard from '@/common/articleCard ';
 import Grid from '@mui/material/Grid';
 import { CRAWLER_FEED_TYPE } from '..';
-import { Table } from 'react-bootstrap';
+import { Button, Table } from 'react-bootstrap';
 
 type Props = {
   url: string;
   testType: string;
   crawler: Crawler | undefined;
+  isUpdate: boolean;
+  triggerTestUpdate: boolean;
   handleSubmitArticleSource: (
     articlesSource: ArticlesSource,
     topicName: string
   ) => void;
+  handleUpdate: () => void;
 };
 
 const ERROR_MESSAGE_WHEN_TEST_FAIL = 'Test fail';
@@ -56,7 +59,6 @@ const TestResult: React.FC<Props> = (props: Props) => {
         article_title: crawler.article_title,
         article_description: crawler.article_description,
         article_link: crawler.article_link,
-        article_published: crawler.article_published,
         article_authors: crawler.article_authors,
       });
       setArticles(data.articles);
@@ -78,7 +80,7 @@ const TestResult: React.FC<Props> = (props: Props) => {
   };
 
   useEffect(() => {
-    if (props.url) {
+    if (props.url && props.isUpdate === false) {
       setArticles(undefined);
       setArticlesSource(undefined);
       setErrorMessage('');
@@ -90,7 +92,7 @@ const TestResult: React.FC<Props> = (props: Props) => {
   }, [props.url]);
 
   useEffect(() => {
-    if (props.crawler) {
+    if (props.crawler && props.isUpdate === false) {
       setArticles(undefined);
       setArticlesSource(undefined);
       setErrorMessage('');
@@ -98,6 +100,20 @@ const TestResult: React.FC<Props> = (props: Props) => {
       requestTestCustomCrawler(props.crawler);
     }
   }, [props.crawler]);
+
+  useEffect(() => {
+    if (props.crawler && props.isUpdate === true) {
+      setArticles(undefined);
+      setArticlesSource(undefined);
+      setErrorMessage('');
+      setIsloading(true);
+      if (props.crawler.crawl_type === CRAWLER_FEED_TYPE) {
+        requestTestCrawlerRSS(props.crawler.feed_link);
+      } else {
+        requestTestCustomCrawler(props.crawler);
+      }
+    }
+  }, [props.triggerTestUpdate]);
 
   return (
     <div className="addCrawler__testResult">
@@ -131,7 +147,13 @@ const TestResult: React.FC<Props> = (props: Props) => {
               <p>{errorMessage}</p>
             </div>
           </div>
-          <div className="addCrawler__testResult--articles_source">
+          <div
+            className={
+              props.isUpdate
+                ? 'd-none'
+                : 'addCrawler__testResult--articles_source'
+            }
+          >
             <div className="title">
               <h3>Articles source</h3>
             </div>
@@ -152,6 +174,17 @@ const TestResult: React.FC<Props> = (props: Props) => {
             <div className="title">
               <h3>Articles</h3>
             </div>
+            {props.isUpdate ? (
+              <Button
+                variant="primary"
+                className="my-3"
+                onClick={props.handleUpdate}
+              >
+                Submit change
+              </Button>
+            ) : (
+              <></>
+            )}
             {articles ? (
               <div className="articleFound">
                 <div className="table">

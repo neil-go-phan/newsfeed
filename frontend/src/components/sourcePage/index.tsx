@@ -42,10 +42,10 @@ function SourceComponent() {
       const articlesSourceID: number = +articlesSourceIDString;
       setSourceID(articlesSourceID);
     }
-  }, []);
+  }, [router.query.sourceid]);
 
   useEffect(() => {
-    setArticlesSource(getArticlesSourceByID(sourceID));
+    requestGetArticleSource(sourceID);
     requestCountArticlePreviousWeek(sourceID);
     requestGetFirstPage();
   }, [sourceID]);
@@ -72,6 +72,28 @@ function SourceComponent() {
       (articlesSource) => articlesSource.id === articlesSourceID
     );
     return source;
+  };
+
+  const requestGetArticleSource = async (sourceID: number) => {
+    try {
+      const { data } = await axiosProtectedAPI.get(
+        '/articles-sources/get/id',
+        {
+          params: {
+            id: sourceID
+          },
+        }
+      );
+      if (!data.success) {
+        if (data.message) {
+          throw data.message;
+        }
+        throw REQUEST_COUNT_FAIL_MESSAGE;
+      }
+      setArticlesSource(data.articles_source);
+    } catch (error: any) {
+      // setCountArticlePreviousWeek(0);
+    }
   };
 
   const requestCountArticlePreviousWeek = async (articlesSourceID: number) => {

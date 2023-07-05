@@ -44,12 +44,12 @@ CREATE TABLE articles (
 ALTER TABLE
   crawlers
 ADD
-  CONSTRAINT fk_crawlers_articlesource_source_link FOREIGN KEY (source_link) REFERENCES articles_sources(link);
+  CONSTRAINT fk_crawlers_articlesource_source_link FOREIGN KEY (source_link) REFERENCES articles_sources(link) ON DELETE CASCADE;
 
 ALTER TABLE
   crawlers
 ADD
-  CONSTRAINT fk_crawlers_articlesource_id FOREIGN KEY (articles_source_id) REFERENCES articles_sources(id);
+  CONSTRAINT fk_crawlers_articlesource_id FOREIGN KEY (articles_source_id) REFERENCES articles_sources(id) ON DELETE CASCADE;
 
 ALTER TABLE
   articles

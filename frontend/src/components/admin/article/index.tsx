@@ -18,6 +18,7 @@ const GET_PAGE_ARTICLES_FAIL_MESSAGE = 'request list fail';
 
 function AdminArticles() {
   const [articles, setArticles] = useState<Articles>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(true)
   const [currentPage, setCurrentPage] = useState<number>(FIRST_PAGE);
   const [keyword, setKeyword] = useState<string>('');
   const [sourceID, setSourceID] = useState<number>(0);
@@ -35,6 +36,7 @@ function AdminArticles() {
 
   const pageChangeHandler = (newCurrentPage: number) => {
     setCurrentPage(newCurrentPage);
+    setIsLoading(true)
     if (keyword === '' && sourceID === 0) {
       requestListAll(newCurrentPage, PAGE_SIZE);
       setFound(total)
@@ -51,6 +53,7 @@ function AdminArticles() {
 
   const handleSearchArticle = () => {
     setCurrentPage(FIRST_PAGE)
+    setIsLoading(true)
     if (keyword === '' && sourceID === 0) {
       requestListAll(FIRST_PAGE, PAGE_SIZE);
       setFound(total)
@@ -72,8 +75,10 @@ function AdminArticles() {
       }
       setArticles(data.articles);
       setFound(data.found)
+      setIsLoading(false)
     } catch (error: any) {
       alertError(error);
+      setIsLoading(false)
     }
   };
 
@@ -89,8 +94,10 @@ function AdminArticles() {
         throw GET_PAGE_ARTICLES_FAIL_MESSAGE;
       }
       setArticles(data.articles);
+      setIsLoading(false)
     } catch (error: any) {
       alertError(error);
+      setIsLoading(false)
     }
   };
 
@@ -125,8 +132,10 @@ function AdminArticles() {
         throw GET_PAGE_ARTICLES_FAIL_MESSAGE;
       }
       setArticles(data.articles);
+      setIsLoading(false)
     } catch (error: any) {
       alertError(error);
+      setIsLoading(false)
     }
   };
 
@@ -150,11 +159,11 @@ function AdminArticles() {
 
   return (
     <div className="adminArticles">
-      <h1 className="adminArticles__title">Manage Articles</h1>
+      <h1 className="adminArticles__title">Manage articles</h1>
       <div className="adminArticles__overview">
         <div className="adminArticles__overview--item">
           <p>
-            Total Articles: <span>{total}</span>
+            Total articles: <span>{total}</span>
           </p>
         </div>
       </div>
@@ -167,7 +176,6 @@ function AdminArticles() {
                 <Form.Control
                   placeholder="Search article..."
                   type="text"
-                  required
                   value={keyword}
                   onChange={(event) => setKeyword(event.target.value)}
                 />
@@ -192,13 +200,13 @@ function AdminArticles() {
             <Button variant='primary' onClick={handleSearchArticle}>Search</Button>
           </div>
         </div>
-        {articles ? (
+        {!isLoading ? 
           <ArticlesTable
             articles={articles}
             currentPage={currentPage!}
             handleDeleteArticle={handleDeleteArticle}
           />
-        ) : (
+         : (
           <div className="threeDotLoading">
             <ThreeDots
               height="50"

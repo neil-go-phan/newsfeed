@@ -8,7 +8,6 @@ import {
   faInfo,
   faLink,
   faTag,
-  faUpload,
   faUser,
 } from '@fortawesome/free-solid-svg-icons';
 import { _ROUTES } from '@/helpers/constants';
@@ -90,10 +89,10 @@ const ChooseHtmlClassForm: React.FC<Props> = (props: Props) =>{
         article_title: titleClass,
         article_link: linkClass,
         article_description: descriptionClass,
-        article_published: '',
         article_authors: authorsClass,
         feed_link: '',
         schedule: '',
+        articles_source_id: 0,
       }
       props.requestCustomCrawlerTest(crawler);
       setErrorMessage({

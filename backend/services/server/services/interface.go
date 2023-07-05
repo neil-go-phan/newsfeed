@@ -50,16 +50,22 @@ type ArticleServices interface {
 
 type ArticlesSourceServices interface {
 	GetByTopicIDPaginate(topicID uint, page int, pageSize int) ([]ArticlesSourceResponseRender, int64, error)
-	SearchByTitleAndDescriptionPaginate(keyword string, page int, pageSize int) ([]ArticlesSourceResponseRender, int64, error)
+	Search(keyword string, page int, pageSize int) ([]ArticlesSourceResponseRender, int64, error)
 	GetMostActiveSources() ([]ArticlesSourceRecommended, error)
 	GetWithID(id uint) (ArticlesSourceResponseRender, error)
 	ListAll() ([]ArticlesSourceResponseRender, error)
+	SearchWithFilter(keyword string, page int, pageSize int, topicID uint) ([]ArticlesSourceResponseRender, int64, error)
 
 	CreateIfNotExist(articlesSource entities.ArticlesSource) (entities.ArticlesSource, error)
 	UpdateTopicOneSource(articlesSource entities.ArticlesSource, newTopicId uint) error
 	UpdateTopicAllSource(oldTopicId uint, newTopicId uint) error
 	UserFollow(articlesSourceID uint) error
 	UserUnfollow(articlesSourceID uint) error
+
+	Count() (int, error)
+	ListAllPaging(page int, pageSize int) ([]ArticlesSourceResponseRender, error)
+	Delete(sourceID uint) error
+	Update(articlesSource entities.ArticlesSource) error
 }
 
 type CrawlerServices interface {
@@ -68,12 +74,17 @@ type CrawlerServices interface {
 
 	CreateCrawlerWithCorrespondingArticlesSource(payload CreateCrawlerPayload) error
 	GetHtmlPage(url *url.URL) error
+	Get(id uint) (*entities.Crawler, error)
 
 	CreateCrawlerCronjobFromDB() error
+	UpdateSchedule(id uint, newSchedule string) error
+	Update(crawler entities.Crawler) error
+	ListAllPaging(page int, pageSize int) ([]CrawlerResponse, int64, error)
 }
 
 type CronjobServices interface {
 	CreateCrawlerCronjob(crawler entities.Crawler)
+	RemoveCronjob(crawler entities.Crawler) error
 
 	GetCronjobRuntime() []CronjobResponse
 	CronjobOnHour(timeString string) (*[60]ChartHour, error)

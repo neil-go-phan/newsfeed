@@ -117,7 +117,7 @@ func (s *TopicService) SearchTopicAndArticlesSourcePaginate(keyword string, page
 		return []services.TopicResponse{}, []services.ArticlesSourceResponseRender{}, 0, err
 	}
 
-	articlesSources, articleSourcesFound, err := s.articlesSourcesServices.SearchByTitleAndDescriptionPaginate(keyword, page, pageSize)
+	articlesSources, articleSourcesFound, err := s.articlesSourcesServices.Search(keyword, page, pageSize)
 	if err != nil {
 		return []services.TopicResponse{}, []services.ArticlesSourceResponseRender{}, articleSourcesFound, err
 	}

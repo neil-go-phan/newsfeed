@@ -7,6 +7,7 @@ import {
   faFolder,
   faGauge,
   faListCheck,
+  faRss,
   faShapes,
   faSpider,
 } from '@fortawesome/free-solid-svg-icons';
@@ -54,9 +55,12 @@ export default function SidebarNav() {
       <SidebarNavItem icon={faSpider} href={_ROUTES.ADMIN_CRAWLER}>
         Crawler
       </SidebarNavItem>
-      <SidebarNavItem icon={faListCheck} href={_ROUTES.ADMIN_CRONJOB}>
-        Cronjob
+      <SidebarNavItem icon={faRss} href={_ROUTES.ADMIN_ARTICLES_SOURCE}>
+        Article Source
       </SidebarNavItem>
+      {/* <SidebarNavItem icon={faListCheck} href={_ROUTES.ADMIN_CRONJOB}>
+        Cronjob
+      </SidebarNavItem> */}
       <SidebarNavItem icon={faNewspaper} href={_ROUTES.ADMIN_ARTICLES}>
         Article
       </SidebarNavItem>

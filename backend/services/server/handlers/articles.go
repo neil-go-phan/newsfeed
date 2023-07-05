@@ -36,7 +36,7 @@ type ArticleHandlerInterface interface {
 	Delete(c *gin.Context)
 }
 
-type deletePayload struct {
+type deleteArticlePayload struct {
 	ArticleID uint `json:"id"`
 }
 
@@ -365,7 +365,7 @@ func (h *ArticleHandler) Count(c *gin.Context) {
 }
 
 func (h *ArticleHandler) Delete(c *gin.Context) {
-	var payload deletePayload
+	var payload deleteArticlePayload
 	err := c.BindJSON(&payload)
 	if err != nil {
 		log.Error("error occrus:", err)

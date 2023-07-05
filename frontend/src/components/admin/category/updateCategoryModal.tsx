@@ -79,7 +79,7 @@ const UpdateCategoryModal: React.FC<Props> = (props: Props) => {
   
 
   return (
-    <div className="adminCategories__modal">
+    <div className="adminCategories__modal ">
       <form onSubmit={handleSubmit(onSubmit)}>
         <h2 className="adminCategories__modal--title">Update category</h2>
         <div className="adminCategories__modal--line" />

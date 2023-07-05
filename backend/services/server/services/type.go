@@ -156,6 +156,7 @@ type ArticlesSourceResponseRender struct {
 	Image       string `json:"image"` // base64 image
 	Follower    int    `json:"follower"`
 	TopicID     uint   `json:"topic_id"`
+	FeedLink    string `json:"feed_link"`
 }
 type ArticlesSourceRecommended struct {
 	ID                   uint   `json:"id"`
@@ -177,4 +178,13 @@ type ArticlesSourceUserFollow struct {
 	Follower    int    `json:"follower"`
 	TopicID     uint   `json:"topic_id"`
 	Unread      int    `json:"unread"`
+}
+
+type CrawlerResponse struct {
+	ID               uint   `json:"id"`
+	SourceLink       string `json:"source_link"`
+	FeedLink         string `json:"feed_link"`
+	CrawlType        string `json:"crawl_type"`
+	Schedule         string `json:"schedule"`
+	ArticlesSourceID uint   `json:"articles_source_id"`
 }

@@ -12,17 +12,22 @@ type Props = {
   crawler: Crawler | undefined;
   articlesSources: ArticlesSource | undefined;
   topicName: string;
+  isUpdate: boolean;
+  crawlerID: number;
   handleIsConfirmModalClose: () => void;
 };
 
 const ALERT_SUCCESS_MESSAGE = 'Create crawler success';
+const ALERT_UPDATE_SUCCESS_MESSAGE = 'Update crawler success';
 const IMAGE_SIZE_PIXEL = 50;
 const ERROR_MESSAGE_WHEN_CREATE_FAIL = 'error occrus when create crawler';
+const FAIL_MESSAGE = 'faillllllllllllll'
 
 const ConfirmModal: React.FC<Props> = (props: Props) => {
   const [image, setImage] = useState<string>('');
-  const router = useRouter()
+  const router = useRouter();
   const [errorMessage, setErrorMessage] = useState<string>('');
+
   const requestCreateCrawler = async (payload: CreateCrawlerPayload) => {
     try {
       const res = await axiosProtectedAPI.post('crawler/create', {
@@ -33,13 +38,36 @@ const ConfirmModal: React.FC<Props> = (props: Props) => {
         setErrorMessage('');
         props.handleIsConfirmModalClose();
         alertSuccess(ALERT_SUCCESS_MESSAGE);
-        router.push(_ROUTES.ADMIN_CRAWLER)
+        
       }
       if (!res?.data.success) {
         throw res;
       }
     } catch (error: any) {
       setErrorMessage(error.data.message || ERROR_MESSAGE_WHEN_CREATE_FAIL);
+    }
+  };
+
+  const requestUpdate = async (id: number, crawler: Crawler) => {
+    try {
+      const { data } = await axiosProtectedAPI.post(
+        '/crawler/update',
+        {
+          id: id,
+          crawler: crawler,
+        }
+      );
+      if (!data.success) {
+        if (data.message) {
+          throw data.message;
+        }
+        throw FAIL_MESSAGE;
+      }
+      props.handleIsConfirmModalClose();
+      alertSuccess(ALERT_UPDATE_SUCCESS_MESSAGE);
+      
+    } catch (error: any) {
+      setErrorMessage(error);
     }
   };
 
@@ -50,6 +78,12 @@ const ConfirmModal: React.FC<Props> = (props: Props) => {
         crawler: props.crawler,
       };
       requestCreateCrawler(payload);
+    }
+  };
+
+  const handleSubmitUpdateCrawler = () => {
+    if (props.crawler && props.crawlerID) {
+      requestUpdate(props.crawlerID, props.crawler);
     }
   };
 
@@ -67,51 +101,56 @@ const ConfirmModal: React.FC<Props> = (props: Props) => {
           <div className="line"></div>
         </div>
       </div>
-      <div className="articlesSource">
-        <h4>Articles source</h4>
-        <Table striped bordered hover>
-          <thead>
-            <tr>
-              <th>Field</th>
-              <th>Value</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>title</td>
-              <td>{props.articlesSources?.title}</td>
-            </tr>
-            <tr>
-              <td>description</td>
-              <td>{props.articlesSources?.description}</td>
-            </tr>
-            <tr>
-              <td>link</td>
-              <td>{props.articlesSources?.link}</td>
-            </tr>
-            <tr>
-              <td>feed link</td>
-              <td>{props.articlesSources?.feed_link}</td>
-            </tr>
-            <tr>
-              <td>topic</td>
-              <td>{props.topicName}</td>
-            </tr>
-            <tr>
-              <td>image</td>
-              <td>
-                <Image
-                  alt="article source logo"
-                  src={image}
-                  width={IMAGE_SIZE_PIXEL}
-                  height="0"
-                  style={{ height: 'auto' }}
-                />
-              </td>
-            </tr>
-          </tbody>
-        </Table>
-      </div>
+      {props.isUpdate ? (
+        <></>
+      ) : (
+        <div className="articlesSource">
+          <h4>Articles source</h4>
+          <Table striped bordered hover>
+            <thead>
+              <tr>
+                <th>Field</th>
+                <th>Value</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>title</td>
+                <td>{props.articlesSources?.title}</td>
+              </tr>
+              <tr>
+                <td>description</td>
+                <td>{props.articlesSources?.description}</td>
+              </tr>
+              <tr>
+                <td>link</td>
+                <td>{props.articlesSources?.link}</td>
+              </tr>
+              <tr>
+                <td>feed link</td>
+                <td>{props.articlesSources?.feed_link}</td>
+              </tr>
+              <tr>
+                <td>topic</td>
+                <td>{props.topicName}</td>
+              </tr>
+              <tr>
+                <td>image</td>
+                <td>
+                  <Image
+                    alt="article source logo"
+                    src={image}
+                    width={IMAGE_SIZE_PIXEL}
+                    height="0"
+                    style={{ height: 'auto' }}
+                  />
+                </td>
+              </tr>
+            </tbody>
+          </Table>
+        </div>
+      )}
+
       <div className="crawler">
         <div className="questionMark">
           <h4>Crawler</h4>
@@ -170,13 +209,23 @@ const ConfirmModal: React.FC<Props> = (props: Props) => {
           </tbody>
         </Table>
       </div>
-      <Button
-        className="px-4 m-3"
-        variant="primary"
-        onClick={handleSubmitCreateCrawler}
-      >
-        Create crawler
-      </Button>
+      {props.isUpdate ? (
+        <Button
+          className="px-4 m-3"
+          variant="primary"
+          onClick={handleSubmitUpdateCrawler}
+        >
+          Update crawler
+        </Button>
+      ) : (
+        <Button
+          className="px-4 m-3"
+          variant="primary"
+          onClick={handleSubmitCreateCrawler}
+        >
+          Create crawler
+        </Button>
+      )}
       {errorMessage !== '' && <p className="errorMessage">{errorMessage}</p>}
     </div>
   );

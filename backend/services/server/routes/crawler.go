@@ -24,7 +24,13 @@ func (crawlerRoutes *CrawlerRoutes) Setup(r *gin.Engine) {
 		route.POST("test/rss", middlewares.CheckAccessToken(), crawlerRoutes.handler.TestRSSCrawler)
 		route.POST("test/custom", middlewares.CheckAccessToken(), crawlerRoutes.handler.TestCustomCrawler)
 		route.POST("create", middlewares.CheckAccessToken(), crawlerRoutes.handler.CreateCrawler)
+		route.POST("update/schedule", middlewares.CheckAccessToken(), crawlerRoutes.handler.UpdateSchedule)
+		route.POST("update", middlewares.CheckAccessToken(), crawlerRoutes.handler.Update)
+
 		route.GET("get/html-page", middlewares.CheckAccessToken(), crawlerRoutes.handler.GetHtmlPage)
+		route.GET("get/id", middlewares.CheckAccessToken(), crawlerRoutes.handler.Get)
+		route.GET("list/all", middlewares.CheckAccessToken(), crawlerRoutes.handler.ListAllPaging)
+
 	}
 }
 

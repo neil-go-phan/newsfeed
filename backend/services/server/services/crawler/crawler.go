@@ -24,7 +24,7 @@ type CrawlerService struct {
 	grpcClient             pb.CrawlerServiceClient
 }
 
-const DEFAULT_SCHEDULE =  "@every 0h5m"
+const DEFAULT_SCHEDULE = "@every 0h5m"
 
 func NewCrawlerService(repo repository.CrawlerRepository, articleService services.ArticleServices, articlesSourceServices services.ArticlesSourceServices, cronjobService services.CronjobServices, grpcClient pb.CrawlerServiceClient) *CrawlerService {
 	crawlerService := &CrawlerService{
@@ -128,4 +128,49 @@ func (s *CrawlerService) CreateCrawlerCronjobFromDB() error {
 		s.cronjobService.CreateCrawlerCronjob(crawler)
 	}
 	return nil
+}
+
+func (s *CrawlerService) ListAllPaging(page int, pageSize int) ([]services.CrawlerResponse, int64, error) {
+	crawlerResponse := make([]services.CrawlerResponse, 0)
+	crawlers, found, err := s.repo.ListAllPaging(page, pageSize)
+	if err != nil {
+		return crawlerResponse, found, err
+	}
+	for _, crawler := range crawlers {
+		crawlerResponse = append(crawlerResponse, castCrawlerToResponse(crawler))
+	}
+	return crawlerResponse, found, nil
+}
+
+func (s *CrawlerService) UpdateSchedule(id uint, newSchedule string) error {
+	crawler, err := s.repo.Get(id)
+	if err != nil {
+		return err
+	}
+
+	fmt.Println(crawler)
+
+	err = s.cronjobService.RemoveCronjob(*crawler)
+	if err != nil {
+		return err
+	}
+
+	crawler.Schedule = newSchedule
+
+	s.cronjobService.CreateCrawlerCronjob(*crawler)
+
+	err = s.repo.UpdateSchedule(id, newSchedule)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (s *CrawlerService) Get(id uint) (*entities.Crawler, error) {
+	return s.repo.Get(id)
+}
+
+func (s *CrawlerService) Update(crawler entities.Crawler) error {
+	return s.repo.Update(crawler)
 }

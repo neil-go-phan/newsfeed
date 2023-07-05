@@ -69,9 +69,7 @@ func (s *CronjobService) createCronjobCrawlerDB(crawler entities.Crawler, cronjo
 	cronjobDB := &entities.Cronjob{
 		StartedAt:     time.Now(),
 		CrawlerID:   crawler.ID,
-		Crawler:     crawler,
 		Name:        cronjobName,
-		
 	}
 
 	cronjobDB, err := s.repo.Create(cronjobDB)
@@ -122,6 +120,17 @@ func (s *CronjobService) CronjobOnDay(timeString string) (*[24]services.ChartDay
 
 	chartsData = fillDayChartData(*cronjobs, chartsData)
 
-
 	return &chartsData, nil
+}
+
+func (s *CronjobService) RemoveCronjob(crawler entities.Crawler) error {
+	mapKey := newMapKey(crawler.SourceLink, crawler.Schedule)
+	entryID, found := s.jobIDMap[mapKey]
+	if !found {
+		return fmt.Errorf("invalid request, not found cronjob")
+	}
+	log.Println("remove cronjob", mapKey)
+	s.cron.Remove(entryID)
+	delete(s.jobIDMap, mapKey)
+	return nil
 }

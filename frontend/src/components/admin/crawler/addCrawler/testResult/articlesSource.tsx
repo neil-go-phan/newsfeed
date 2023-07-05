@@ -396,7 +396,7 @@ const ArticlesSource: React.FC<Props> = (props: Props) => {
           </div>
 
           <Button className="px-4 m-3" variant="primary" type="submit">
-            Create crawler
+            Create
           </Button>
         </form>
       </div>
