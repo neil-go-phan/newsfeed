@@ -19,6 +19,7 @@ import (
 	"server/services/crawler"
 	"server/services/cronjob"
 	"server/services/follow"
+	"server/services/permission"
 	"server/services/read"
 	"server/services/readLater"
 	"server/services/role"
@@ -41,12 +42,14 @@ func InitizeUser(db *gorm.DB) *routes.UserRoutes {
 func InitizeCrawler(db *gorm.DB, grpcClient serverproto.CrawlerServiceClient, cronjob *cron.Cron, jobIDMap map[string]cron.EntryID) *routes.CrawlerRoutes {
 	crawlerRepo := repository.NewCrawlerRepo(db)
 	articleRepo := repository.NewArticleRepo(db)
-	articleService := articleservices.NewArticleService(articleRepo)
+	roleRepo := repository.NewRoleRepo(db)
+	roleService := roleservice.NewRoleService(roleRepo)
+	articleService := articleservices.NewArticleService(articleRepo, roleService)
 	articlesSourcesRepo := repository.NewArticlesSourcesRepo(db)
-	articlesSourceService := articlessourceservices.NewArticlesSourceService(articlesSourcesRepo)
+	articlesSourceService := articlessourceservices.NewArticlesSourceService(articlesSourcesRepo, roleService)
 	cronjobRepo := repository.NewCronjobRepo(db)
 	cronjobService := cronjobservices.NewCronjobService(cronjobRepo, cronjob, grpcClient, jobIDMap)
-	crawlerService := crawlerservices.NewCrawlerService(crawlerRepo, articleService, articlesSourceService, cronjobService, grpcClient)
+	crawlerService := crawlerservices.NewCrawlerService(crawlerRepo, articleService, articlesSourceService, cronjobService, grpcClient, roleService)
 	crawlerHandler := handlers.NewCrawlerHandler(crawlerService)
 	crawlerRoutes := routes.NewCrawlerRoutes(crawlerHandler)
 	return crawlerRoutes
@@ -55,8 +58,10 @@ func InitizeCrawler(db *gorm.DB, grpcClient serverproto.CrawlerServiceClient, cr
 func InitizeTopic(db *gorm.DB) *routes.TopicRoutes {
 	topicRepo := repository.NewTopic(db)
 	articlesSourcesRepo := repository.NewArticlesSourcesRepo(db)
-	articlesSourceService := articlessourceservices.NewArticlesSourceService(articlesSourcesRepo)
-	topicService := topicservices.NewTopicService(topicRepo, articlesSourceService)
+	roleRepo := repository.NewRoleRepo(db)
+	roleService := roleservice.NewRoleService(roleRepo)
+	articlesSourceService := articlessourceservices.NewArticlesSourceService(articlesSourcesRepo, roleService)
+	topicService := topicservices.NewTopicService(topicRepo, articlesSourceService, roleService)
 	topicHandler := handlers.NewTopicHandler(topicService)
 	topicRoutes := routes.NewTopicRoutes(topicHandler)
 	return topicRoutes
@@ -66,9 +71,11 @@ func InitizeCategory(db *gorm.DB) *routes.CategoryRoutes {
 	categoryRepo := repository.NewCategory(db)
 	topicRepo := repository.NewTopic(db)
 	articlesSourcesRepo := repository.NewArticlesSourcesRepo(db)
-	articlesSourceService := articlessourceservices.NewArticlesSourceService(articlesSourcesRepo)
-	topicService := topicservices.NewTopicService(topicRepo, articlesSourceService)
-	categoryService := categoryservices.NewCategoryService(categoryRepo, topicService)
+	roleRepo := repository.NewRoleRepo(db)
+	roleService := roleservice.NewRoleService(roleRepo)
+	articlesSourceService := articlessourceservices.NewArticlesSourceService(articlesSourcesRepo, roleService)
+	topicService := topicservices.NewTopicService(topicRepo, articlesSourceService, roleService)
+	categoryService := categoryservices.NewCategoryService(categoryRepo, topicService, roleService)
 	categoryHandler := handlers.NewCategoryHandler(categoryService)
 	categoryRoutes := routes.NewCategoryRoutes(categoryHandler)
 	return categoryRoutes
@@ -76,7 +83,9 @@ func InitizeCategory(db *gorm.DB) *routes.CategoryRoutes {
 
 func InitizeArticlesSources(db *gorm.DB) *routes.ArticlesSourceRoutes {
 	articlesSourcesRepo := repository.NewArticlesSourcesRepo(db)
-	articlesSourceService := articlessourceservices.NewArticlesSourceService(articlesSourcesRepo)
+	roleRepo := repository.NewRoleRepo(db)
+	roleService := roleservice.NewRoleService(roleRepo)
+	articlesSourceService := articlessourceservices.NewArticlesSourceService(articlesSourcesRepo, roleService)
 	articlesSourceHandler := handlers.NewArticlesSourceHandler(articlesSourceService)
 	articlesSourceRoutes := routes.NewArticlesSourceRoutes(articlesSourceHandler)
 	return articlesSourceRoutes
@@ -84,7 +93,9 @@ func InitizeArticlesSources(db *gorm.DB) *routes.ArticlesSourceRoutes {
 
 func InitizeArticles(db *gorm.DB) *routes.ArticleRoutes {
 	articleRepo := repository.NewArticleRepo(db)
-	articleService := articleservices.NewArticleService(articleRepo)
+	roleRepo := repository.NewRoleRepo(db)
+	roleService := roleservice.NewRoleService(roleRepo)
+	articleService := articleservices.NewArticleService(articleRepo, roleService)
 	articleHandler := handlers.NewArticlesHandler(articleService)
 	articleRoutes := routes.NewArticleRoutes(articleHandler)
 	return articleRoutes
@@ -93,7 +104,9 @@ func InitizeArticles(db *gorm.DB) *routes.ArticleRoutes {
 func InitizeFollow(db *gorm.DB) *routes.FollowRoutes {
 	followRepo := repository.NewFollow(db)
 	articlesSourcesRepo := repository.NewArticlesSourcesRepo(db)
-	articlesSourceService := articlessourceservices.NewArticlesSourceService(articlesSourcesRepo)
+	roleRepo := repository.NewRoleRepo(db)
+	roleService := roleservice.NewRoleService(roleRepo)
+	articlesSourceService := articlessourceservices.NewArticlesSourceService(articlesSourcesRepo, roleService)
 	followService := followservices.NewFollowService(followRepo, articlesSourceService)
 	followHandler := handlers.NewFollowHandler(followService)
 	followRoutes := routes.NewFollowRoutes(followHandler)
@@ -108,9 +121,27 @@ func InitizeRead(db *gorm.DB) *routes.ReadRoutes {
 	return readRoutes
 }
 
+func InitizeRole(db *gorm.DB) *routes.RoleRoutes {
+	roleRepo := repository.NewRoleRepo(db)
+	roleService := roleservice.NewRoleService(roleRepo)
+	roleHandler := handlers.NewRoleHandler(roleService)
+	roleRoutes := routes.NewRoleRoutes(roleHandler)
+	return roleRoutes
+}
+
+func InitizePermission(db *gorm.DB) *routes.PermissionRoutes {
+	permissionRepo := repository.NewPermission(db)
+	permissionService := permissionservice.NewPermissionService(permissionRepo)
+	permissionHandler := handlers.NewPermissionHandler(permissionService)
+	permissionRoutes := routes.NewPermissionRoutes(permissionHandler)
+	return permissionRoutes
+}
+
 func InitizeReadLater(db *gorm.DB) *routes.ReadLaterRoutes {
 	readLaterRepo := repository.NewReadLater(db)
-	readLaterService := readlaterservices.NewReadLaterService(readLaterRepo)
+	roleRepo := repository.NewRoleRepo(db)
+	roleService := roleservice.NewRoleService(roleRepo)
+	readLaterService := readlaterservices.NewReadLaterService(readLaterRepo, roleService)
 	readLaterHandler := handlers.NewReadLaterHandler(readLaterService)
 	readLaterRoutes := routes.NewReadLaterRoutes(readLaterHandler)
 	return readLaterRoutes

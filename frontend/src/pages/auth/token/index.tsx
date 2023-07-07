@@ -14,7 +14,11 @@ function Token() {
       const token = route.query.refresh_token
       setCookie('refresh_token', token)
     }
-    route.push(_ROUTES.DASHBOARD_PAGE)
+    if (route.query.redirectTo) {
+      route.push(_ROUTES.FEEDS_PLAN)
+    } else {
+      route.push(_ROUTES.DASHBOARD_PAGE)
+    }
   })
   return (
     <div></div>

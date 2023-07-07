@@ -30,6 +30,8 @@ type CrawlerHandlerInterface interface {
 	UpdateSchedule(c *gin.Context)
 	Update(c *gin.Context)
 	Get(c *gin.Context)
+	GetCronjobOnHour(c *gin.Context) 
+	GetCronjobOnDay(c *gin.Context)
 }
 
 type updateSchedulePayload struct {
@@ -50,6 +52,17 @@ type crawlerUpdate struct {
 	ArticleDescription string `json:"article_description"`
 	ArticleLink        string `json:"article_link"`
 	ArticleAuthors     string `json:"article_authors"`
+}
+
+type chartDayResponse struct {
+	Hour        int               `json:"hour"`
+	AmountOfJob int               `json:"amount_of_jobs"`
+	Cronjobs    []cronjobRunTimes `json:"cronjobs"`
+}
+
+type cronjobRunTimes struct {
+	Name  string `json:"name"`
+	Times int    `json:"times"`
 }
 
 func NewCrawlerHandler(service services.CrawlerServices) *CrawlerHandler {
@@ -104,8 +117,13 @@ func (h *CrawlerHandler) CreateCrawler(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"success": false, "message": "input invalid"})
 		return
 	}
-
-	err = h.service.CreateCrawlerWithCorrespondingArticlesSource(payload)
+	role, exsit := c.Get("role")
+	if !exsit {
+		log.Error("Not found role in token string")
+		c.JSON(http.StatusBadRequest, gin.H{"success": false, "message": "bad request"})
+		return
+	}
+	err = h.service.CreateCrawlerWithCorrespondingArticlesSource(role.(string),payload)
 	if err != nil {
 		log.Error("error occrus:", err)
 		if strings.Contains(err.Error(), "validate") {
@@ -193,8 +211,13 @@ func (h *CrawlerHandler) UpdateSchedule(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"success": false, "message": "input invalid"})
 		return
 	}
-
-	err = h.service.UpdateSchedule(payload.ID, payload.Schedule)
+	role, exsit := c.Get("role")
+	if !exsit {
+		log.Error("Not found role in token string")
+		c.JSON(http.StatusBadRequest, gin.H{"success": false, "message": "bad request"})
+		return
+	}
+	err = h.service.UpdateSchedule(role.(string),payload.ID, payload.Schedule)
 	if err != nil {
 		log.Error("error occrus:", err)
 		if strings.Contains(err.Error(), "validate") {
@@ -234,17 +257,22 @@ func (h *CrawlerHandler) Update(c *gin.Context) {
 	}
 
 	crawler := entities.Crawler{
-		Model: gorm.Model{ID: payload.ID},
-		FeedLink: payload.Crawler.FeedLink,
-		CrawlType: payload.Crawler.CrawlType,
-		ArticleDiv: payload.Crawler.ArticleDiv,
-		ArticleTitle: payload.Crawler.ArticleTitle,
+		Model:              gorm.Model{ID: payload.ID},
+		FeedLink:           payload.Crawler.FeedLink,
+		CrawlType:          payload.Crawler.CrawlType,
+		ArticleDiv:         payload.Crawler.ArticleDiv,
+		ArticleTitle:       payload.Crawler.ArticleTitle,
 		ArticleDescription: payload.Crawler.ArticleDescription,
-		ArticleLink: payload.Crawler.ArticleLink,
-		ArticleAuthors: payload.Crawler.ArticleAuthors,
+		ArticleLink:        payload.Crawler.ArticleLink,
+		ArticleAuthors:     payload.Crawler.ArticleAuthors,
 	}
-
-	err = h.service.Update(crawler)
+	role, exsit := c.Get("role")
+	if !exsit {
+		log.Error("Not found role in token string")
+		c.JSON(http.StatusBadRequest, gin.H{"success": false, "message": "bad request"})
+		return
+	}
+	err = h.service.Update(role.(string),crawler)
 	if err != nil {
 		log.Error("error occrus:", err)
 		if strings.Contains(err.Error(), "validate") {
@@ -255,4 +283,46 @@ func (h *CrawlerHandler) Update(c *gin.Context) {
 		return
 	}
 	c.JSON(http.StatusOK, gin.H{"success": true, "message": "update success"})
+}
+
+func (h *CrawlerHandler) GetCronjobOnHour(c *gin.Context) {
+	time := c.Query("time")
+	cronjobs, err := h.service.CronjobOnHour(time)
+	if err != nil {
+		log.Error(err)
+		c.JSON(http.StatusInternalServerError, gin.H{"success": false, "message": "Get cronjob failed"})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"success": true, "cronjobs": cronjobs})
+}
+
+func (h *CrawlerHandler) GetCronjobOnDay(c *gin.Context) {
+	time := c.Query("time")
+	cronjobs, err := h.service.CronjobOnDay(time)
+	if err != nil {
+		log.Error(err)
+		c.JSON(http.StatusInternalServerError, gin.H{"success": false, "message": "Get Cronjob failed"})
+		return
+	}
+
+	reponse := parseChartDayToResponse(cronjobs)
+
+	c.JSON(http.StatusOK, gin.H{"success": true, "cronjobs": reponse})
+}
+
+func parseChartDayToResponse(cronjobs *[24]services.ChartDay) [24]chartDayResponse {
+	response := [24]chartDayResponse{}
+	for index, cronjob := range cronjobs {
+		response[index].Hour = cronjob.Hour
+		response[index].AmountOfJob = cronjob.AmountOfJob
+		cronjobResponese := make([]cronjobRunTimes, 0)
+		for key, value := range cronjob.Cronjobs {
+			cronjobResponese = append(cronjobResponese, cronjobRunTimes{
+				Name:  key,
+				Times: value,
+			})
+		}
+		response[index].Cronjobs = cronjobResponese
+	}
+	return response
 }

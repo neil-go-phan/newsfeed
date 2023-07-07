@@ -1,7 +1,6 @@
 import axiosProtectedAPI from '@/helpers/axiosProtectedAPI';
 import React, { useEffect, useState } from 'react';
 import { Button } from 'react-bootstrap';
-import { useRouter } from 'next/router';
 import { alertError, alertSuccess } from '@/helpers/alert';
 import CategoriseTable from './table';
 import { ThreeDots } from 'react-loader-spinner';

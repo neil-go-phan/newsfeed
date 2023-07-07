@@ -38,7 +38,7 @@ func (repo *CronjobRepo) Get(lastTrack time.Time, now time.Time) (*[]entities.Cr
 	nowString := now.Format("2006-01-02 15:04:05")
 
 	err := repo.DB.
-		Where("start_at BETWEEN ? AND ?", lastTrackString, nowString).
+		Where("started_at BETWEEN ? AND ?", lastTrackString, nowString).
 		Find(&cronjobs).Error
 	if err != nil {
 		return &cronjobs, err
@@ -61,7 +61,7 @@ func (repo *CronjobRepo) UpdateResult(cronjob *entities.Cronjob) error {
 func (repo *CronjobRepo) GetRuning() (*[]entities.Cronjob, error) {
 	cronjobs := make([]entities.Cronjob, 0)
 	err := repo.DB.
-		Where("end_at IS NULL").
+		Where("ended_at IS NULL").
 		Find(&cronjobs).Error
 	if err != nil {
 		return &cronjobs, err

@@ -1,12 +1,14 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faNewspaper,
+  faUser,
   IconDefinition,
 } from '@fortawesome/free-regular-svg-icons';
 import {
   faFolder,
   faGauge,
   faListCheck,
+  faLock,
   faRss,
   faShapes,
   faSpider,
@@ -45,6 +47,12 @@ export default function SidebarNav() {
     <ul className="list-unstyled">
       <SidebarNavItem icon={faGauge} href={_ROUTES.ADMIN_PAGE}>
         Dashboard
+      </SidebarNavItem>
+      <SidebarNavItem icon={faLock} href={_ROUTES.ADMIN_ROLE}>
+        Roles
+      </SidebarNavItem>
+      <SidebarNavItem icon={faUser} href={_ROUTES.ADMIN_USERS}>
+        Users
       </SidebarNavItem>
       <SidebarNavItem icon={faShapes} href={_ROUTES.ADMIN_CATEGORIES}>
         Categories

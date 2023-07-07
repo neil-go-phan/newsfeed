@@ -8,6 +8,9 @@ import AdminCategories from './category';
 import AdminTopics from './topic';
 import AdminArticles from './article';
 import AdminArticlesSource from './articlesSource';
+import AdminDashboard from './dashboard';
+import AdminRoles from './role';
+import AdminUsers from './user';
 
 function AdminComponent() {
   const router = useRouter();
@@ -33,8 +36,12 @@ function AdminComponent() {
         return <AdminArticles />
       case _ROUTES.ADMIN_ARTICLES_SOURCE:
         return <AdminArticlesSource />
+      case _ROUTES.ADMIN_ROLE:
+        return <AdminRoles />
+      case _ROUTES.ADMIN_USERS:
+        return <AdminUsers />
       default:
-        return <CrawlerComponent />;
+        return <AdminDashboard />;
     }
   };
 

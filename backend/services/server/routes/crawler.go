@@ -31,6 +31,8 @@ func (crawlerRoutes *CrawlerRoutes) Setup(r *gin.Engine) {
 		route.GET("get/id", middlewares.CheckAccessToken(), crawlerRoutes.handler.Get)
 		route.GET("list/all", middlewares.CheckAccessToken(), crawlerRoutes.handler.ListAllPaging)
 
+		route.GET("cronjob/hour", middlewares.CheckAccessToken(), crawlerRoutes.handler.GetCronjobOnHour)
+		route.GET("cronjob/day", middlewares.CheckAccessToken(), crawlerRoutes.handler.GetCronjobOnDay)
 	}
 }
 

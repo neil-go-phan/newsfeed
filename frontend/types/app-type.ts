@@ -13,6 +13,13 @@ type LoginFormProperty = {
   password: string;
 };
 
+type User = {
+  id: number;
+  username: string;
+  email: string;
+  role_name: string;
+};
+
 type RegisterFormProperty = {
   email: string;
   username: string;
@@ -94,7 +101,7 @@ type UpdateArticleSourcePayload = {
   title: string;
   description: string;
   image: string;
-  topic_id:number;
+  topic_id: number;
 };
 
 type NewestSourceDashboard = {
@@ -131,9 +138,9 @@ type CrawlerTableRow = {
   id: number;
   source_link: string;
   feed_link: string;
-  crawl_type:string;
-  schedule:string;
-  articles_source_id:string;
+  crawl_type: string;
+  schedule: string;
+  articles_source_id: string;
 };
 
 type Category = {
@@ -151,3 +158,28 @@ type Topic = {
 };
 
 type Topics = Array<Topic>;
+
+type UserPermission = {
+  id: number;
+  entity: string;
+  method: string;
+};
+
+type UserRole = {
+  name: string;
+  permissions: Array<UserPermission>;
+};
+
+type Permission = {
+  id: number;
+  entity: string;
+  method: string;
+  description: string;
+};
+
+type Role = {
+  id: number;
+  name: string;
+  description: string;
+  permissions: Array<Permission>;
+};

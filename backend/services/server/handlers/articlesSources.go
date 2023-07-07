@@ -175,8 +175,14 @@ func (h *ArticlesSourceHandler) Delete(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"success": false, "message": "input invalid"})
 		return
 	}
+	role, exsit := c.Get("role")
+	if !exsit {
+		log.Error("Not found role in token string")
+		c.JSON(http.StatusBadRequest, gin.H{"success": false, "message": "bad request"})
+		return
+	}
 
-	err = h.service.Delete(payload.ID)
+	err = h.service.Delete(role.(string), payload.ID)
 	if err != nil {
 		log.Error("error occrus:", err)
 		c.JSON(http.StatusBadRequest, gin.H{"success": false, "message": err.Error()})
@@ -193,8 +199,13 @@ func (h *ArticlesSourceHandler) Update(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"success": false, "message": "input invalid"})
 		return
 	}
-
-	err = h.service.Update(payload)
+	role, exsit := c.Get("role")
+	if !exsit {
+		log.Error("Not found role in token string")
+		c.JSON(http.StatusBadRequest, gin.H{"success": false, "message": "bad request"})
+		return
+	}
+	err = h.service.Update(role.(string),payload)
 	if err != nil {
 		log.Error("error occrus:", err)
 		c.JSON(http.StatusBadRequest, gin.H{"success": false, "message": err.Error()})

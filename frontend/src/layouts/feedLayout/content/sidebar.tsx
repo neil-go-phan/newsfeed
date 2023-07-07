@@ -11,7 +11,7 @@ import {
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Image from 'next/image';
 import Link from 'next/link';
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 
 type Props = {
   isOpenSidebar: boolean;
@@ -29,13 +29,17 @@ const FeedsSidebar: React.FC<Props> = (props: Props) => {
     });
     return total;
   };
+  const [expanded, setExpanded] = useState(false);
+  const display: ArticlesSourceInfoes = expanded
+    ? followedSources
+    : followedSources!.slice(0, 5);
 
-  const unreadNumberToString = (unreadNumber : number):string => {
+  const unreadNumberToString = (unreadNumber: number): string => {
     if (unreadNumber <= 100) {
-      return unreadNumber.toString()
+      return unreadNumber.toString();
     }
-    return '100+'
-  }
+    return '100+';
+  };
   return (
     <div
       className={
@@ -98,11 +102,19 @@ const FeedsSidebar: React.FC<Props> = (props: Props) => {
           </Link>
         </div>
         <div className="listFeeds">
-          {followedSources.map((sourceFollowed, index) => (
+          {display.map((sourceFollowed, index) => (
             <div className="item" key={`navbar list feed ${index}`}>
-              <Link href={`${_ROUTES.READ_FEEDS_ARTICLES_SOURCE}?source=${sourceFollowed.id}`} className="itemInner">
+              <Link
+                href={`${_ROUTES.READ_FEEDS_ARTICLES_SOURCE}?source=${sourceFollowed.id}`}
+                className="itemInner"
+              >
                 <div className="sourceIcon">
-                  <Image alt={`${sourceFollowed.title} logo`} src={sourceFollowed.image} width={IMAGE_SIZE} height={IMAGE_SIZE}/>
+                  <Image
+                    alt={`${sourceFollowed.title} logo`}
+                    src={sourceFollowed.image}
+                    width={IMAGE_SIZE}
+                    height={IMAGE_SIZE}
+                  />
                 </div>
                 <div className="description">
                   <span>{sourceFollowed.title}</span>
@@ -113,6 +125,24 @@ const FeedsSidebar: React.FC<Props> = (props: Props) => {
               </Link>
             </div>
           ))}
+          {followedSources!.length > 5 ? (
+            <a className="showmore" onClick={() => setExpanded(!expanded)}>
+              {expanded ? 'Show less' : 'Show more...'}
+            </a>
+          ) : (
+            <></>
+          )}
+        </div>
+
+        <div className="addNew item">
+          <Link href={_ROUTES.FEEDS_SEARCH_WEBS} className="itemInner">
+            <div className="icon">
+              <FontAwesomeIcon icon={faPlus} />
+            </div>
+            <div className="description">
+              <span>Follow</span>
+            </div>
+          </Link>
         </div>
         <div className="addNew item">
           <Link href={_ROUTES.FEEDS_SEARCH_WEBS} className="itemInner">
@@ -120,7 +150,7 @@ const FeedsSidebar: React.FC<Props> = (props: Props) => {
               <FontAwesomeIcon icon={faPlus} />
             </div>
             <div className="description">
-              <span>Add new</span>
+              <span>Add new source</span>
             </div>
           </Link>
         </div>

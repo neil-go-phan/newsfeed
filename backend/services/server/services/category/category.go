@@ -11,21 +11,31 @@ import (
 const OTHERS_CATEGORY_ID = 1
 const OTHERS_CATEGORY_NAME = "Others"
 const ERROR_RAISE_WHEN_DELETE_A_CATEGORY_THEN_CREATE_IT_AGAIN = `duplicate key value violates unique constraint "categories_name_key"`
+const CATEGORY_ROLE_ENTITY = "CATEGORY"
+const CATEGORY_ROLE_CREATE_METHOD = "CREATE"
+const CATEGORY_ROLE_UPDATE_METHOD = "UPDATE"
+const CATEGORY_ROLE_DELETE_METHOD = "DELETE"
 
 type CategoryService struct {
 	repo          repository.CategoryRepository
 	topicServices services.TopicServices
+	roleServices  services.RoleServices
 }
 
-func NewCategoryService(repo repository.CategoryRepository, topicServices services.TopicServices) *CategoryService {
+func NewCategoryService(repo repository.CategoryRepository, topicServices services.TopicServices, roleServices services.RoleServices) *CategoryService {
 	categoryService := &CategoryService{
 		repo:          repo,
 		topicServices: topicServices,
+		roleServices:  roleServices,
 	}
 	return categoryService
 }
 
-func (s *CategoryService) CreateIfNotExist(category entities.Category) error {
+func (s *CategoryService) CreateIfNotExist(role string, category entities.Category) error {
+	isAllowed := s.roleServices.GrantPermission(role, CATEGORY_ROLE_ENTITY, CATEGORY_ROLE_CREATE_METHOD)
+	if !isAllowed {
+		return fmt.Errorf("unauthorized")
+	}
 	category.Name = strings.TrimSpace(category.Name)
 	err := validateCategoryName(category)
 	if err != nil {
@@ -65,7 +75,11 @@ func (s *CategoryService) ListAll() ([]services.CategoryResponse, error) {
 	return categoriesResponse, nil
 }
 
-func (s *CategoryService) UpdateName(payload services.UpdateNameCategoryPayload) error {
+func (s *CategoryService) UpdateName(role string, payload services.UpdateNameCategoryPayload) error {
+	isAllowed := s.roleServices.GrantPermission(role, CATEGORY_ROLE_ENTITY, CATEGORY_ROLE_UPDATE_METHOD)
+	if !isAllowed {
+		return fmt.Errorf("unauthorized")
+	}
 	category, newName := extractUpdateNamePayload(payload)
 	err := validateCategoryName(category)
 	if err != nil {
@@ -78,7 +92,11 @@ func (s *CategoryService) UpdateName(payload services.UpdateNameCategoryPayload)
 	return s.repo.Update(category, newName)
 }
 
-func (s *CategoryService) Delete(category entities.Category) error {
+func (s *CategoryService) Delete(role string, category entities.Category) error {
+	isAllowed := s.roleServices.GrantPermission(role, CATEGORY_ROLE_ENTITY, CATEGORY_ROLE_DELETE_METHOD)
+	if !isAllowed {
+		return fmt.Errorf("unauthorized")
+	}
 	category.Name = strings.TrimSpace(category.Name)
 	err := validateCategoryName(category)
 	if err != nil {

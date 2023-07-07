@@ -7,11 +7,10 @@ import {
 import { FollowedSourcesContext } from '@/common/contexts/followedSources';
 import { TriggerRefreshContext } from '@/common/contexts/triggerRefreshContext';
 import axiosProtectedAPI from '@/helpers/axiosProtectedAPI';
-import { faCheck, faRotateRight } from '@fortawesome/free-solid-svg-icons';
+import { faCheck } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useRouter } from 'next/router';
 import React, { useContext, useEffect, useState } from 'react';
-import Popup from 'reactjs-popup';
 
 type Props = {
   articlesSource: ArticlesSourceInfo | undefined;

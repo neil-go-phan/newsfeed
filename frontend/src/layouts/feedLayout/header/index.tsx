@@ -58,9 +58,9 @@ const FeedsHeader: React.FC<Props> = (props: Props) => {
             <MenuIcon className="icon" />
           </Button>
         </div>
-        <div className="searchBarHeader displaySidebar">
+        {/* <div className="searchBarHeader displaySidebar">
           <input placeholder="Search feeds" />
-        </div>
+        </div> */}
       </div>
       {isArticleViews ? (
         <div className="feeds__header--readingPart">

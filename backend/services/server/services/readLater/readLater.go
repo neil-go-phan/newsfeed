@@ -3,22 +3,25 @@ package readlaterservices
 import (
 	"server/entities"
 	"server/repository"
+	"server/services"
 )
 
 type ReadLaterService struct {
-	repo repository.ReadLaterRepository	
+	repo         repository.ReadLaterRepository
+	roleServices services.RoleServices
 }
 
-func NewReadLaterService(repo repository.ReadLaterRepository) *ReadLaterService {
+func NewReadLaterService(repo repository.ReadLaterRepository, roleServices services.RoleServices) *ReadLaterService {
 	readLaterService := &ReadLaterService{
-		repo: repo,
+		repo:         repo,
+		roleServices: roleServices,
 	}
 	return readLaterService
 }
 
 func (s *ReadLaterService) AddToReadLaterList(username string, articleID uint) error {
 	readLater := entities.ReadLater{
-		Username: username,
+		Username:  username,
 		ArticleID: articleID,
 	}
 
@@ -32,7 +35,7 @@ func (s *ReadLaterService) AddToReadLaterList(username string, articleID uint) e
 
 func (s *ReadLaterService) RemoveFromReadLaterList(username string, articleID uint) error {
 	readLater := entities.ReadLater{
-		Username: username,
+		Username:  username,
 		ArticleID: articleID,
 	}
 

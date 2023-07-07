@@ -10,24 +10,24 @@ import React, { PropsWithChildren, useEffect, useState } from 'react';
 const SCROLL_PIXEL = 300;
 
 function HomeLayout({ children }: PropsWithChildren) {
-  const [visible, setVisible] = useState(false);
+  // const [visible, setVisible] = useState(false);
 
-  useEffect(() => {
-    window.addEventListener('scroll', () => {
-      if (window.scrollY > SCROLL_PIXEL) {
-        setVisible(true);
-      } else {
-        setVisible(false);
-      }
-    });
-  }, []);
+  // useEffect(() => {
+  //   window.addEventListener('scroll', () => {
+  //     if (window.scrollY > SCROLL_PIXEL) {
+  //       setVisible(true);
+  //     } else {
+  //       setVisible(false);
+  //     }
+  //   });
+  // }, []);
 
-  const scrollToTop = () => {
-    window.scrollTo({
-      top: 0,
-      behavior: 'smooth',
-    });
-  };
+  // const scrollToTop = () => {
+  //   window.scrollTo({
+  //     top: 0,
+  //     behavior: 'smooth',
+  //   });
+  // };
   return (
     <>
       <Head>
@@ -39,16 +39,16 @@ function HomeLayout({ children }: PropsWithChildren) {
       <ProgressBar />
       <div className="landingPageLayout__wrapper">
         <NavbarComponent />
-        <div className="container">{children}</div>
+        <div className="">{children}</div>
         <Banner />
         <FooterComponent />
-        {visible ? (
+        {/* {visible ? (
           <div className="backToTopBtn" onClick={scrollToTop}>
             <FontAwesomeIcon icon={faArrowUp} />
           </div>
         ) : (
           <></>
-        )}
+        )} */}
       </div>
     </>
   );

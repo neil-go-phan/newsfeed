@@ -67,7 +67,6 @@ export default function ProfileNav() {
         onClose={handleCloseUserMenu}
       >
         <MenuItem onClick={handleCloseUserMenu}>Profile</MenuItem>
-        <MenuItem onClick={handleCloseUserMenu}>My account</MenuItem>
         <MenuItem onClick={handleLogout}>Logout</MenuItem>
       </Menu>
     </>

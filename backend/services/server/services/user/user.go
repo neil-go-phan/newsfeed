@@ -1,20 +1,30 @@
 package userservice
 
 import (
+	"encoding/base64"
 	"server/entities"
 	"server/repository"
 	"server/services"
-	"encoding/base64"
 	"strings"
 
 	"fmt"
+
 	log "github.com/sirupsen/logrus"
 )
 
-var SALT_SIZE uint8 = 8 // 8 byte
-var DEFAULT_ROLE string = "customer"
-var GORM_DUPLICATE_USERNAME_ERR_CONTAIN string = "users_username_key"
-var GORM_DUPLICATE_EMAIL_ERR_CONTAIN string = "users_email_key"
+const SALT_SIZE = 8 // 8 byte
+const DEFAULT_ROLE = "Free tier user"
+const PREMIUM_TIER = "Premium tier user"
+const GORM_DUPLICATE_USERNAME_ERR_CONTAIN = "users_username_key"
+const GORM_DUPLICATE_EMAIL_ERR_CONTAIN = "users_email_key"
+
+const USER_ROLE_ENTITY = "USER"
+const USER_ROLE_DELETE_METHOD = "DELETE"
+
+const ADMIN_ROLE_ENTITY = "ADMIN PAGE"
+const ADMIN_ROLE_ACCESS_PAGE_METHOD = "ACCESS"
+
+
 
 type UserService struct {
 	repo        repository.UserRepository
@@ -28,16 +38,63 @@ func NewUserService(repo repository.UserRepository, roleService services.RoleSer
 	}
 }
 
+func (s *UserService) AccessAdminPage(role string) error {
+	isAllowed := s.roleService.GrantPermission(role, ADMIN_ROLE_ENTITY, ADMIN_ROLE_ACCESS_PAGE_METHOD)
+	if !isAllowed {
+		return fmt.Errorf("unauthorized")
+	}
+	return nil
+}
+
 func (s *UserService) GetUser(username string) (*entities.User, error) {
 	return s.repo.Get(username)
 }
 
-func (s *UserService) ListUsers() (user *[]entities.User, err error) {
-	return s.repo.List()
+func (s *UserService) List(page int, pageSize int) ([]services.UserResponse, error) {
+	userResponse := make([]services.UserResponse, 0)
+	users, err := s.repo.List(page, pageSize)
+	if err != nil {
+		return userResponse, err
+	}
+	for _, user := range users {
+		userResponse = append(userResponse, castUserToResponse(user))
+	}
+	return userResponse, nil
 }
 
-func (s *UserService) DeleteUser(username string) error {
-	return s.repo.Delete(username)
+func (s *UserService) Delete(role string, id uint) error {
+	isAllowed := s.roleService.GrantPermission(role, USER_ROLE_ENTITY, USER_ROLE_DELETE_METHOD)
+	if !isAllowed {
+		return fmt.Errorf("unauthorized")
+	}
+
+	return s.repo.Delete(id)
+}
+
+func (s *UserService) Count() (int, error) {
+	return s.repo.Count()
+}
+
+func (s *UserService) ChangeRole(role string, id uint, newRole string) error {
+	return s.repo.ChangeRole(id, newRole)
+}
+
+func (s *UserService) UserUpgrateRole(role string, username string) (string, string, error) {
+	if role == PREMIUM_TIER {
+		return "", "", fmt.Errorf("you already a premium user")
+	}
+	err := s.repo.UserUpgrateRole(username)
+	if err != nil {
+		log.Errorf("error occrus when a user try to upgrate: %s\n", err)
+		return "", "", fmt.Errorf("internal server error")
+	}
+
+	accessToken, refreshToken, err := generateToken(username, PREMIUM_TIER)
+	if err != nil {
+		log.Errorf("error occrus when a user try to upgrate: %s\n", err)
+		return "", "", fmt.Errorf("internal server error")
+	}
+	return accessToken, refreshToken, nil
 }
 
 func (s *UserService) CreateUser(registerUserInput *services.RegisterUserInput) (*entities.User, error) {
