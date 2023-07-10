@@ -22,7 +22,7 @@
   - Log: Sentry
 - Deploy: 
   - Frontend: Vercel
-    - Link: 
+    - Link: https://newsfeed-taupe.vercel.app/
   - Backend: 
     - Digital Ocean droplets
     - Docker
