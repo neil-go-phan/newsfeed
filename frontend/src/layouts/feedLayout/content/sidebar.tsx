@@ -5,6 +5,7 @@ import {
   faBorderAll,
   faChartSimple,
   faGear,
+  faMoneyBill,
   faPlus,
   faStar,
 } from '@fortawesome/free-solid-svg-icons';
@@ -22,6 +23,7 @@ const IMAGE_SIZE = 20;
 
 const FeedsSidebar: React.FC<Props> = (props: Props) => {
   const { followedSources } = useContext(FollowedSourcesContext);
+
   const cacultateTotalUnreadArticle = (): number => {
     let total = 0;
     followedSources.forEach((followedSource) => {
@@ -77,6 +79,16 @@ const FeedsSidebar: React.FC<Props> = (props: Props) => {
             </div>
             <div className="description">
               <span>Library</span>
+            </div>
+          </Link>
+        </div>
+        <div className="item">
+          <Link href={_ROUTES.FEEDS_PLAN} className="itemInner">
+            <div className="icon">
+              <FontAwesomeIcon icon={faMoneyBill} />
+            </div>
+            <div className="description">
+              <span>Plan</span>
             </div>
           </Link>
         </div>
@@ -145,7 +157,7 @@ const FeedsSidebar: React.FC<Props> = (props: Props) => {
           </Link>
         </div>
         <div className="addNew item">
-          <Link href={_ROUTES.FEEDS_SEARCH_WEBS} className="itemInner">
+          <Link href={_ROUTES.FEEDS_ADD} className="itemInner">
             <div className="icon">
               <FontAwesomeIcon icon={faPlus} />
             </div>

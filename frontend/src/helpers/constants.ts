@@ -24,6 +24,8 @@ export const _ROUTES = {
   FEEDS_SEARCH_WEBS_RESULT: '/feeds/search/webs/results',
   FEEDS_SEARCH_WEBS_CATEGORY: '/feeds/search/webs/category',
   FEEDS_SEARCH_ARTICLES: '/feeds/search/articles',
+  FEEDS_ADD: '/feeds/add',
+  FEEDS_ADD_CUSTOM_CRAWLER:'/feeds/add/custom',
   FEEDS_PLAN: '/feeds/plan',
   READ_FEEDS: '/feeds/read/',
   READ_FEEDS_ALL_ARTICLES: '/feeds/read/all_articles',

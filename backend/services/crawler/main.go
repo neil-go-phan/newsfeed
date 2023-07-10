@@ -23,7 +23,7 @@ func init() {
 		LogFormat:       "[%lvl%]: %time% - %msg%\n",
 	}
 	log.SetFormatter(format)
-	hook, err := logrus_sentry.NewSentryHook("https://4cad04fffc3348dc8d14d1f592f1d014@o4505040225501184.ingest.sentry.io/4505066672947200", []log.Level{
+	hook, err := logrus_sentry.NewSentryHook("https://0ed788b229564c98996c08db89759152@o4505503137857536.ingest.sentry.io/4505503139823616", []log.Level{
 		log.PanicLevel,
 		log.FatalLevel,
 		log.ErrorLevel,

@@ -1,7 +1,7 @@
 package repository
 
 import (
-	"server/entities"
+	"crawler/entities"
 
 	"gorm.io/gorm"
 )

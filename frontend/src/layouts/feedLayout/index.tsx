@@ -10,11 +10,13 @@ import {
   SECTION_ALL_ARTICLES,
 } from '@/common/contexts/activeArticlesSectionContext';
 import { RoleContext } from '@/common/contexts/roleContext';
+import useWindowDimensions from '@/helpers/useWindowResize';
 
 const GET_FOLLOWED_ARTICLES_SOURCES_FAIL_MESSAGE =
   'get followed articles sources fail';
 
 function FeedsLayout({ children }: PropsWithChildren) {
+  const { width } = useWindowDimensions();
   const [isOpenSidebar, setIsOpenSidebar] = useState<boolean>(true);
   const [followedSources, setFollowedSources] = useState<ArticlesSourceInfoes>(
     []
@@ -22,15 +24,35 @@ function FeedsLayout({ children }: PropsWithChildren) {
   const [triggerRefresh, setTriggerRefresh] = useState<boolean>(true);
   const [activeSection, setActiveSection] =
     useState<string>(SECTION_ALL_ARTICLES);
-  const [role, setRole] = useState<UserRole>({name: '', permissions: []});
+  const [role, setRole] = useState<UserRole>({ name: '', permissions: [] });
+  
+  const [mobileDawerOpen, setMobileDawerOpen] = useState(false);
+
+  const handleDrawerToggle = () => {
+    setMobileDawerOpen((prevState) => !prevState);
+  };
 
   const handleToggleSidebar = () => {
-    setIsOpenSidebar(!isOpenSidebar);
+    if (width > 992) {
+      setIsOpenSidebar(!isOpenSidebar);
+    } else {
+      setMobileDawerOpen(!mobileDawerOpen);
+    }
   };
 
   const callAPIGetFollow = () => {
     requestGetFollowedSources();
   };
+
+  useEffect(() => {
+    if (width < 992) {
+      setIsOpenSidebar(false)
+    }
+    if (width >= 992) {
+      setMobileDawerOpen(false)
+    }
+  }, [width])
+  
 
   const requestGetFollowedSources = async () => {
     try {
@@ -51,9 +73,7 @@ function FeedsLayout({ children }: PropsWithChildren) {
 
   const requestGetRole = async () => {
     try {
-      const { data } = await axiosProtectedAPI.get(
-        'role/get'
-      );
+      const { data } = await axiosProtectedAPI.get('role/get');
       if (!data.success) {
         if (data.message) {
           throw data.message;
@@ -62,7 +82,7 @@ function FeedsLayout({ children }: PropsWithChildren) {
       }
       setRole(data.role);
     } catch (error: any) {
-      setRole({name: '', permissions: []});
+      setRole({ name: '', permissions: [] });
     }
   };
 
@@ -100,6 +120,8 @@ function FeedsLayout({ children }: PropsWithChildren) {
                     handleToggleSidebar={handleToggleSidebar}
                   />
                   <FeedsContent
+                    mobileOpen={mobileDawerOpen}
+                    handleDrawerToggle={handleDrawerToggle}
                     isOpenSidebar={isOpenSidebar}
                     children={children}
                   />

@@ -33,7 +33,7 @@ type NavPages = {
 export const pages: Array<NavPages> = [
   // { name: 'Features', link: _ROUTES.FEATURE_PAGE },
   { name: 'Pricing', link: _ROUTES.PRICING_PAGE },
-  { name: 'Discover', link: _ROUTES.DISCOVER_PAGE },
+  // { name: 'Discover', link: _ROUTES.DISCOVER_PAGE },
 ];
 
 // function NavbarComponent({ isLogin }: InferGetStaticPropsType<typeof getStaticProps>) {
@@ -228,7 +228,7 @@ function NavbarComponent() {
                   open={Boolean(anchorElUser)}
                   onClose={handleCloseUserMenu}
                 >
-                  <MenuItem onClick={handleCloseUserMenu}>Profile</MenuItem>
+                  {/* <MenuItem onClick={handleCloseUserMenu}>Profile</MenuItem> */}
                   <MenuItem onClick={handleLogout}>Logout</MenuItem>
                 </Menu>
               </div>

@@ -1,7 +1,6 @@
 import { _ROUTES } from '@/helpers/constants';
 import Link from 'next/link';
 import React from 'react';
-import Image from 'next/image';
 
 function IntroducionParagraph() {
   return (
@@ -11,7 +10,7 @@ function IntroducionParagraph() {
         <p className="py-3 px-lg-5 px-0 py-sm-4 mt-2 mx-auto">
           Stay informed with tailored news based on your interests and
           preferences. Our platform offers diverse sources, customization
-          options, real-time alerts, and a user-friendly interface. Trust in our
+          options, and a user-friendly interface. Trust in our
           commitment to accuracy, quality, and ethical journalism. Join us today
           for a personalized news experience.
         </p>
@@ -23,10 +22,10 @@ function IntroducionParagraph() {
             Create account
           </Link>
           <Link
-            className="featuresBtn btn-tertiary btn btn-lg ms-sm-2 ms-lg-3 mb-2"
-            href={_ROUTES.FEATURE_PAGE}
+            className="featuresBtn btn-tertiary btn ms-sm-2 ms-lg-3 mb-3"
+            href={_ROUTES.DISCOVER_PAGE}
           >
-            View features
+            Discover our servies
           </Link>
         </div>
         <div className="img position-relative mb-5 w-100">

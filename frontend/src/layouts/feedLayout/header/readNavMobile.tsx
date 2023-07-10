@@ -7,10 +7,18 @@ import {
 import { FollowedSourcesContext } from '@/common/contexts/followedSources';
 import { TriggerRefreshContext } from '@/common/contexts/triggerRefreshContext';
 import axiosProtectedAPI from '@/helpers/axiosProtectedAPI';
+import useWindowDimensions from '@/helpers/useWindowResize';
 import { faCheck } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import Box from '@mui/material/Box';
 import { useRouter } from 'next/router';
 import React, { useContext, useEffect, useState } from 'react';
+import { SIDEBAR_WIDTH } from '../content';
+import Typography from '@mui/material/Typography';
+import Divider from '@mui/material/Divider';
+import List from '@mui/material/List';
+import ListItem from '@mui/material/ListItem';
+import ListItemButton from '@mui/material/ListItemButton';
 
 type Props = {
   articlesSource: ArticlesSourceInfo | undefined;
@@ -18,7 +26,7 @@ type Props = {
 
 const MARK_ALL_AS_READ_FAIL_MESSAGE = 'request mark all article as read fail';
 
-const ReadNav: React.FC<Props> = (props: Props) => {
+const ReadNavMobile: React.FC<Props> = (props: Props) => {
   const [unread, setUnread] = useState<string>('0');
   const router = useRouter();
   const { followedSources } = useContext(FollowedSourcesContext);
@@ -110,35 +118,56 @@ const ReadNav: React.FC<Props> = (props: Props) => {
   };
 
   return (
-    <>
-      <div className="markAsRead leftBtn" onClick={handleMarkAllAsRead}>
-        <FontAwesomeIcon icon={faCheck} />
-        <span>Mark all as read</span>
-      </div>
-      <div
-        className={`articlesUnread leftBtn ${
-          activeSection === SECTION_UNREAD_ARTICLES ? 'active' : ''
-        }`}
-        onClick={() => setActiveSection(SECTION_UNREAD_ARTICLES)}
-      >
-        <span>{unread} Unread</span>
-      </div>
-      <div
-        className={`allArticles leftBtn ${
-          activeSection === SECTION_ALL_ARTICLES ? 'active' : ''
-        }`}
-        onClick={() => setActiveSection(SECTION_ALL_ARTICLES)}
-      >
-        All articles
-      </div>
-      <div
-        className={`readLater leftBtn ${
-          activeSection === SECTION_READ_LATER_ARTICLES ? 'active' : ''
-        }`}
-        onClick={() => setActiveSection(SECTION_READ_LATER_ARTICLES)}
-      >
-        Read later
-      </div>
+    <Box sx={{ width: SIDEBAR_WIDTH }} className="readNavMobile">
+      <Typography variant="h6">View nav</Typography>
+      <Divider />
+      <List>
+        <ListItem className="item">
+          <ListItemButton>
+            <div className="markAsRead leftBtn" onClick={handleMarkAllAsRead}>
+              <FontAwesomeIcon icon={faCheck} />
+              <span>Mark all as read</span>
+            </div>
+          </ListItemButton>
+        </ListItem>
+        <ListItem className="item">
+          <ListItemButton>
+            <div
+              className={`articlesUnread leftBtn ${
+                activeSection === SECTION_UNREAD_ARTICLES ? 'active' : ''
+              }`}
+              onClick={() => setActiveSection(SECTION_UNREAD_ARTICLES)}
+            >
+              <span>{unread} Unread</span>
+            </div>
+          </ListItemButton>
+        </ListItem>
+        <ListItem className="item">
+          <ListItemButton>
+            <div
+              className={`allArticles leftBtn ${
+                activeSection === SECTION_ALL_ARTICLES ? 'active' : ''
+              }`}
+              onClick={() => setActiveSection(SECTION_ALL_ARTICLES)}
+            >
+              All articles
+            </div>
+          </ListItemButton>
+        </ListItem>
+        <ListItem className="item">
+          <ListItemButton>
+            <div
+              className={`readLater leftBtn ${
+                activeSection === SECTION_READ_LATER_ARTICLES ? 'active' : ''
+              }`}
+              onClick={() => setActiveSection(SECTION_READ_LATER_ARTICLES)}
+            >
+              Read later
+            </div>
+          </ListItemButton>
+        </ListItem>
+      </List>
+
       {/* <div className="refresh">
         <div className="icon">
           <Popup
@@ -152,8 +181,8 @@ const ReadNav: React.FC<Props> = (props: Props) => {
         </div>
         <div className="newArticleNotification">{unread}</div>
       </div> */}
-    </>
+    </Box>
   );
 };
 
-export default ReadNav;
+export default ReadNavMobile;

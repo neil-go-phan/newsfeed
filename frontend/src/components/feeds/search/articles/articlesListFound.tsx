@@ -23,6 +23,7 @@ const ArticlesListFound: React.FC<Props> = (props: Props) => {
             item
             key={`article grid item from read feed ${article.title}`}
             xs={12}
+            sm={6}
             md={4}
           >
             <ArticleCard

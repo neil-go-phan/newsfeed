@@ -174,11 +174,11 @@ const ArticleSourceCard: React.FC<Props> = (props: Props) => {
           )}
         </div>
       </div>
-      <div className="articles col-9">
+      <div className="articles overflow-auto px-3 col-9">
         {articles.map((article) => (
           <div
             key={`article sources card ${article.title}`}
-            className="article col-4"
+            className="article col-12 col-md-6 col-lg-4"
           >
             <ArticleCard
               article={article}

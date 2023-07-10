@@ -67,13 +67,6 @@ function SourceComponent() {
     setPage(nextPage);
   };
 
-  const getArticlesSourceByID = (articlesSourceID: number) => {
-    const source = followedSources.find(
-      (articlesSource) => articlesSource.id === articlesSourceID
-    );
-    return source;
-  };
-
   const requestGetArticleSource = async (sourceID: number) => {
     try {
       const { data } = await axiosProtectedAPI.get(

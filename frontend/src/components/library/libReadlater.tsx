@@ -68,11 +68,11 @@ function LibReadlater() {
       </div>
       <div className="articlesList">
         {articles.length > 0 ? (
-          <div className="foundArticles">
+          <div className="foundArticles d-flex">
             <div className="left">
               <BigLibCard article={articles[FIRST_ARTICLE_INDEX]} />
             </div>
-            <div className="right">
+            <div className="right d-none d-md-block">
               {articles.map((article, index) => render(article, index))}
             </div>
           </div>

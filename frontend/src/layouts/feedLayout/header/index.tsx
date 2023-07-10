@@ -6,6 +6,14 @@ import ProfileNav from './profileNav';
 import { FollowedSourcesContext } from '@/common/contexts/followedSources';
 import SourceInfo from './sourceInfo';
 import ReadNav from './readNav';
+import { SIDEBAR_WIDTH } from '../content';
+import Drawer from '@mui/material/Drawer';
+import ReadNavMobile from './readNavMobile';
+import useWindowDimensions from '@/helpers/useWindowResize';
+import Box from '@mui/material/Box';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faEye } from '@fortawesome/free-regular-svg-icons';
+import IconButton from '@mui/material/IconButton';
 
 type Props = {
   isOpenSidebar: boolean;
@@ -31,10 +39,10 @@ const FeedsHeader: React.FC<Props> = (props: Props) => {
       const articlesSourceID: number = +articlesSourceIDString;
       setArticlesSource(getArticlesSourceByID(articlesSourceID));
     }
-    
+
     return () => {
-      setArticlesSource(undefined)
-    }
+      setArticlesSource(undefined);
+    };
   }, [router.asPath, followedSources]);
 
   const getArticlesSourceByID = (articlesSourceID: number) => {
@@ -43,6 +51,25 @@ const FeedsHeader: React.FC<Props> = (props: Props) => {
     );
     return source;
   };
+  // mobile screen hanle
+  const [mobileDawerOpen, setMobileDawerOpen] = useState(false);
+  const [isMobileScreen, setIsMobileScreen] = useState<boolean>(false);
+  const { width } = useWindowDimensions();
+
+  const handleDrawerToggle = () => {
+    setMobileDawerOpen((prevState) => !prevState);
+  };
+
+  useEffect(() => {
+    if (width >= 992) {
+      setMobileDawerOpen(false);
+      setIsMobileScreen(false);
+    }
+    if (width < 992) {
+      setIsMobileScreen(true);
+    }
+  }, [width]);
+  const drawer = <ReadNavMobile articlesSource={articlesSource} />;
 
   return (
     <div className="feeds__header">
@@ -58,17 +85,59 @@ const FeedsHeader: React.FC<Props> = (props: Props) => {
             <MenuIcon className="icon" />
           </Button>
         </div>
-        {/* <div className="searchBarHeader displaySidebar">
-          <input placeholder="Search feeds" />
-        </div> */}
+        <div className="searchBarHeader displaySidebar">
+          {/* <input placeholder="Search feeds" /> */}
+        </div>
       </div>
       {isArticleViews ? (
         <div className="feeds__header--readingPart">
           <div className="left">
-          <SourceInfo articlesSource={articlesSource} />
-          <ReadNav articlesSource={articlesSource}/>
+            <SourceInfo articlesSource={articlesSource} />
+            {isMobileScreen ? (
+              <></>
+            ) : (
+              <ReadNav articlesSource={articlesSource} />
+            )}
           </div>
           <div className="right">
+            {isMobileScreen ? (
+              <>
+                <IconButton
+                  size="large"
+                  aria-label="account of current user"
+                  aria-controls="menu-appbar"
+                  aria-haspopup="true"
+                  onClick={handleDrawerToggle}
+                  color="inherit"
+                  className='mx-3'
+                >
+                  <FontAwesomeIcon icon={faEye} />
+                </IconButton>
+
+                <Box component="nav">
+                  <Drawer
+                    anchor={'right'}
+                    variant="temporary"
+                    open={mobileDawerOpen}
+                    onClose={handleDrawerToggle}
+                    ModalProps={{
+                      keepMounted: true,
+                    }}
+                    sx={{
+                      display: { xs: 'block' },
+                      '&': {
+                        boxSizing: 'border-box',
+                        width: SIDEBAR_WIDTH,
+                      },
+                    }}
+                  >
+                    {drawer}
+                  </Drawer>
+                </Box>
+              </>
+            ) : (
+              <></>
+            )}
             <div className="userNav">
               <ProfileNav />
             </div>
