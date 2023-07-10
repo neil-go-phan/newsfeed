@@ -1,14 +1,11 @@
 import { Dropdown, Nav, NavItem } from 'react-bootstrap';
 import Image from 'next/image';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faUser } from '@fortawesome/free-regular-svg-icons';
 import { PropsWithChildren, useContext, useState } from 'react';
 import { IconDefinition } from '@fortawesome/fontawesome-svg-core';
 import { faPowerOff } from '@fortawesome/free-solid-svg-icons';
-import Popup from 'reactjs-popup';
 import { useRouter } from 'next/router';
 import { _ROUTES } from '@/helpers/constants';
-import AdminProfile from '@/components/admin/adminProfile';
 import { IsLoggedContext } from '@/common/contexts/isLoggedContext';
 import { deleteCookie } from 'cookies-next';
 
@@ -62,7 +59,7 @@ export default function HeaderProfileNav() {
           </div>
         </Dropdown.Toggle>
         <Dropdown.Menu className="pt-0">
-          <Dropdown.Header className="bg-light fw-bold">
+          {/* <Dropdown.Header className="bg-light fw-bold">
             Settings
           </Dropdown.Header>
           <Dropdown.Item onClick={() => setIsProfileOpen(!isProfileOpen)}>
@@ -70,9 +67,9 @@ export default function HeaderProfileNav() {
           </Dropdown.Item>
           <Popup modal open={isProfileOpen} onClose={handleIsProfileClose}>
             <AdminProfile handleIsProfileClose={handleIsProfileClose} />
-          </Popup>
+          </Popup> */}
 
-          <Dropdown.Divider />
+          {/* <Dropdown.Divider /> */}
 
           <Dropdown.Item onClick={handleLogout}>
             <ItemWithIcon icon={faPowerOff}>Logout</ItemWithIcon>
