@@ -24,7 +24,7 @@ type RegisterFormProperty = {
   email: string;
   username: string;
   password: string;
-  passwordConfirmation?: string;
+  passwordConfirmation: string | undefined;
 };
 
 type UrlFormProperty = {
