@@ -25,6 +25,11 @@ func (route *ArticlesSourceRoutes) Setup(r *gin.Engine) {
 		routes.GET("get/id", middlewares.CheckAccessToken(), route.handler.GetWithID)
 		routes.GET("get/most-active", middlewares.CheckAccessToken(), route.handler.GetMostActiveSources)
 		routes.GET("list/all", middlewares.CheckAccessToken(), route.handler.ListAll)
+		routes.GET("list/all/paging", middlewares.CheckAccessToken(), route.handler.ListAllPaging)
+		routes.GET("count/total", middlewares.CheckAccessToken(), route.handler.Count)
+		routes.GET("search/filter", middlewares.CheckAccessToken(), route.handler.SearchWithFilter)
+		routes.POST("delete/id", middlewares.CheckAccessToken(), route.handler.Delete)
+		routes.POST("update/id", middlewares.CheckAccessToken(), route.handler.Update)
 
 	}
 }

@@ -1,0 +1,40 @@
+version: "3.9"
+services:
+  postgres:
+    image: postgres:15.2-alpine
+    environment:
+      - POSTGRES_USER=root
+      - POSTGRES_PASSWORD=secret
+      - POSTGRES_DB=newsfeed
+      - TZ=Asia/Ho_Chi_Minh
+      - PGTZ=Asia/Ho_Chi_Minh
+    ports:
+      - 5432:5432
+
+  crawler:
+    build:
+      context: ./services/crawler
+      dockerfile: Dockerfile
+    environment:
+      - DB_SOURCE=postgresql://root:secret@postgres:5432/newsfeed?sslmode=disable
+      - GRPC_PORT=:8000
+    ports:
+      - "8000"
+    depends_on:
+      - postgres
+    entrypoint: ["/app/wait-for.sh", "postgres:5432", "--", "/app/main"]
+
+  server:
+    build:
+      context: ./services/server
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    environment:
+      - CRAWLER_ADDRESS=crawler:8000
+      - MIGRATION_URL=file://db/migrations
+      - DB_SOURCE=postgresql://root:secret@postgres:5432/newsfeed?sslmode=disable
+    depends_on:
+      - crawler
+      - postgres
+    entrypoint: ["/app/wait-for.sh", "postgres:5432", "--", "/app/main"]

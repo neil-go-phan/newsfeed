@@ -12,10 +12,10 @@ import (
 
 type ArticlesSourcesRepository interface {
 	GetWithTopicPaginate(topicID uint, page int, pageSize int) ([]entities.ArticlesSource, int64, error)
-	ListAll() ([]entities.ArticlesSource,error)
+	ListAll() ([]entities.ArticlesSource, error)
 	GetWithID(id uint) (entities.ArticlesSource, error)
-	
-	SearchByTitleAndDescriptionPaginate(keyword string, page int, pageSize int) ([]entities.ArticlesSource, int64, error)
+
+	Search(keyword string, page int, pageSize int) ([]entities.ArticlesSource, int64, error)
 
 	CreateIfNotExist(articlesSource entities.ArticlesSource) (entities.ArticlesSource, error)
 	UpdateTopicOneSource(articlesSource entities.ArticlesSource, newTopicId uint) error
@@ -24,6 +24,11 @@ type ArticlesSourcesRepository interface {
 	DecreaseFollowByOne(articlesSource entities.ArticlesSource) error
 
 	GetMostActiveSources() ([]MostActiveSource, error)
+	ListAllPaging(page int, pageSize int) ([]entities.ArticlesSource, error)
+	SearchWithFilter(keyword string, page int, pageSize int, topicID uint) ([]entities.ArticlesSource, int64, error)
+	Count() (int, error)
+	Delete(source entities.ArticlesSource) error
+	Update(articlesSource entities.ArticlesSource) error
 }
 
 type ArticlesSourcesRepo struct {
@@ -91,14 +96,14 @@ func (repo *ArticlesSourcesRepo) UpdateTopicAllSource(oldTopicId uint, newTopicI
 	return nil
 }
 
-func (repo *ArticlesSourcesRepo) SearchByTitleAndDescriptionPaginate(keyword string, page int, pageSize int) ([]entities.ArticlesSource, int64, error) {
+func (repo *ArticlesSourcesRepo) Search(keyword string, page int, pageSize int) ([]entities.ArticlesSource, int64, error) {
 	articlesSources := make([]entities.ArticlesSource, 0)
 	searchKeyword := fmt.Sprint("%" + strings.ToLower(keyword) + "%")
 	var found int64
 
 	err := repo.DB.
 		Scopes(helpers.Paginate(page, pageSize)).
-		Where("LOWER(title) LIKE ? or LOWER(description) LIKE ?", searchKeyword, searchKeyword).
+		Where("LOWER(title) LIKE ? or LOWER(description) LIKE ? or LOWER(link) LIKE ?", searchKeyword, searchKeyword, searchKeyword).
 		Find(&articlesSources).
 		Count(&found).Error
 	if err != nil {
@@ -156,7 +161,7 @@ func (repo *ArticlesSourcesRepo) GetMostActiveSources() ([]MostActiveSource, err
 	return articlesSource, nil
 }
 
-func (repo *ArticlesSourcesRepo) ListAll() ([]entities.ArticlesSource,error) {
+func (repo *ArticlesSourcesRepo) ListAll() ([]entities.ArticlesSource, error) {
 	sources := make([]entities.ArticlesSource, 0)
 	err := repo.DB.
 		Find(&sources).Error
@@ -176,4 +181,65 @@ func (repo *ArticlesSourcesRepo) GetWithID(id uint) (entities.ArticlesSource, er
 		return articlesSource, err
 	}
 	return articlesSource, nil
+}
+
+func (repo *ArticlesSourcesRepo) Count() (int, error) {
+	var count int64
+	err := repo.DB.Table("articles_sources").Count(&count).Error
+	if err != nil {
+		return 0, err
+	}
+	return int(count), nil
+}
+
+func (repo *ArticlesSourcesRepo) ListAllPaging(page int, pageSize int) ([]entities.ArticlesSource, error) {
+	articlesSources := make([]entities.ArticlesSource, 0)
+	err := repo.DB.
+		Scopes(helpers.Paginate(page, pageSize)).
+		Order("created_at desc").
+		Find(&articlesSources).Error
+	if err != nil {
+		return articlesSources, err
+	}
+	return articlesSources, nil
+}
+
+func (repo *ArticlesSourcesRepo) SearchWithFilter(keyword string, page int, pageSize int, topicID uint) ([]entities.ArticlesSource, int64, error) {
+	articlesSources := make([]entities.ArticlesSource, 0)
+	searchKeyword := fmt.Sprint("%" + strings.ToLower(keyword) + "%")
+	var found int64
+	err := repo.DB.
+		Scopes(helpers.Paginate(page, pageSize)).
+		Where("topic_id = ? AND (LOWER(title) LIKE ? or LOWER(description) LIKE ? or LOWER(link) LIKE ?)",topicID, searchKeyword, searchKeyword, searchKeyword).
+		Find(&articlesSources).
+		Count(&found).Error
+	if err != nil {
+		return articlesSources, found, err
+	}
+	return articlesSources, found, nil
+}
+
+func (repo *ArticlesSourcesRepo) Delete(source entities.ArticlesSource) error {
+	err := repo.DB.
+		Where("id = ?", source.ID).
+		Unscoped().
+		Delete(&source).Error
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (repo *ArticlesSourcesRepo) Update(articlesSource entities.ArticlesSource) error {
+	err := repo.DB.Model(&articlesSource).
+		Updates(entities.ArticlesSource{
+			Title: articlesSource.Title,
+			Description: articlesSource.Description,
+			Image: articlesSource.Image,
+			TopicID: articlesSource.TopicID,
+			}).Error
+	if err != nil {
+		return err
+	}
+	return nil
 }

@@ -71,6 +71,7 @@
           width: 270px;
           display: flex;
           align-items: center;
+          cursor: pointer;
           .icon {
             display: inline-block;
             margin: 0 10px;
@@ -87,7 +88,6 @@
             font-size: 16px;
             font-weight: 500;
             letter-spacing: -0.01rem;
-          
           }
         }
         .leftBtn {
@@ -154,6 +154,14 @@
           }
         }
       }
+      .right {
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        .readNavMobile {
+          padding: 20px;
+        }
+      }
     }
     &--searchView {
       flex-grow: 1;
@@ -175,6 +183,21 @@
       top: 0px;
       left: 0px;
       overflow-y: scroll;
+    }
+
+    &--sidebarMobile {
+      padding: 10px;
+      .item {
+        transition: .3;
+        cursor: pointer;
+        a {
+          text-decoration: none;
+          color: #1a2433;
+        }
+        &:hover {
+          background-color: #b8bbc0;
+        }
+      }
     }
 
     .sidebarReadingPartClose {

@@ -1,229 +1,121 @@
 import React, { useEffect, useState } from 'react';
-import { useRouter } from 'next/router';
 import axiosProtectedAPI from '@/helpers/axiosProtectedAPI';
-import {_ROUTES } from '@/helpers/constants';
-import { Column, usePagination, useTable } from 'react-table';
-import CrawlerAction from './crawlerAction';
-import { Button, Table } from 'react-bootstrap';
-import Popup from 'reactjs-popup';
-import UrlModal from './addCrawler/inputUrl';
-import { toastifyError } from '@/helpers/toastify';
+import { _ROUTES } from '@/helpers/constants';
+import { Button } from 'react-bootstrap';
 import Link from 'next/link';
+import { alertError } from '@/helpers/alert';
+import AdminCrawlersPagination from './pagination';
+import { ThreeDots } from 'react-loader-spinner';
+import CrawlersTable from './table';
 
-type CrawlerRow = {
-  index: number;
-  url: string;
-  article_div: string;
-  article_title: string;
-  article_description: string;
-  article_link: string;
-  next_page: string;
-  next_page_type: string;
-  action: boolean;
-};
-
-type Crawler = {
-  url: string;
-  article_div: string;
-  article_title: string;
-  article_description: string;
-  article_link: string;
-  next_page: string;
-  next_page_type: string;
-};
-
-const ERROR_OCCRUS_WHEN_LIST_CRAWLER = 'Error occurred while get list crawler'
+export const PAGE_SIZE = 10;
+const FIRST_PAGE = 1;
+const ERROR_OCCRUS_WHEN_LIST_CRAWLER = 'Error occurred while get list crawler';
 
 function CrawlerComponent() {
-  const [crawlers, setCrawlers] = useState<Array<Crawler>>();
-  const router = useRouter()
+  const [crawlers, setCrawlers] = useState<Array<CrawlerTableRow>>([]);
+  const [total, setTotal] = useState<number>(0);
+  const [found, setFound] = useState<number>(0);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [currentPage, setCurrentPage] = useState<number>(FIRST_PAGE);
+
+  const pageChangeHandler = (newCurrentPage: number) => {
+    setCurrentPage(newCurrentPage);
+    setIsLoading(true);
+    requestListAllNextPage(newCurrentPage, PAGE_SIZE);
+    return;
+  };
   
-  // const columns: Column<CrawlerRow>[] = React.useMemo(
-  //   () => [
-  //     {
-  //       Header: 'STT',
-  //       accessor: 'index',
-  //     },
-  //     {
-  //       Header: 'Url',
-  //       accessor: 'url',
-  //     },
-  //     {
-  //       Header: 'Article div',
-  //       accessor: 'article_div',
-  //     },
-  //     {
-  //       Header: 'Article title',
-  //       accessor: 'article_title',
-  //     },
-  //     {
-  //       Header: 'Article description',
-  //       accessor: 'article_description',
-  //     },
-  //     {
-  //       Header: 'Article link',
-  //       accessor: 'article_link',
-  //     },
-  //     {
-  //       Header: 'Next page',
-  //       accessor: 'next_page',
-  //     },
-  //     {
-  //       Header: 'Next page type',
-  //       accessor: 'next_page_type',
-  //     },
-  //     {
-  //       Header: 'Action',
-  //       accessor: 'action',
-  //       Cell: ({ row }) => (
-  //         <CrawlerAction
-  //           url={row.values.url}
-  //           handleDelete={handleDelete}
-  //           // handleUpdate={handleUpdate}
-  //         />
-  //       ),
-  //     },
-  //   ],
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  //   []
-  // );
+  const handleEdit = () => {
+    setIsLoading(true)
+    requestListAllNextPage(currentPage, PAGE_SIZE);
+  }
 
-  // const useCreateTableData = (crawlerRow: Array<Crawler> | undefined) => {
-  //   return React.useMemo(() => {
-  //     if (!crawlerRow) {
-  //       return [];
-  //     }
-  //     return crawlerRow.map((crawler, index) => ({
-  //       index: index + 1,
-  //       url: crawler.url,
-  //       article_div: crawler.article_div,
-  //       article_title: crawler.article_title,
-  //       article_description: crawler.article_description,
-  //       article_link: crawler.article_link,
-  //       next_page: crawler.next_page,
-  //       next_page_type: crawler.next_page_type,
-  //       action: false,
-  //     }));
-  //   }, [crawlerRow]);
-  // };
-
-  // const data = useCreateTableData(crawlers);
-
-  // const {
-  //   getTableProps,
-  //   getTableBodyProps,
-  //   headerGroups,
-  //   prepareRow,
-  //   page,
-  //   pageOptions,
-  //   state: { pageIndex },
-  //   previousPage,
-  //   nextPage,
-  //   canPreviousPage,
-  //   canNextPage,
-  // } = useTable(
-  //   {
-  //     columns,
-  //     data,
-  //     initialState: { pageIndex: 0 },
-  //   },
-  //   usePagination
-  // );
-
-  const handleDelete = () => {
-    requestListCrawler();
+  const requestListAll = async (page: number, pageSize: number) => {
+    try {
+      const { data } = await axiosProtectedAPI.get('/crawler/list/all', {
+        params: { page: page, page_size: pageSize },
+      });
+      if (!data.success) {
+        if (data.message) {
+          throw data.message;
+        }
+        throw ERROR_OCCRUS_WHEN_LIST_CRAWLER;
+      }
+      setCrawlers(data.crawlers);
+      setTotal(data.found);
+      setFound(data.found);
+      setIsLoading(false);
+    } catch (error: any) {
+      alertError(error);
+      setIsLoading(false);
+    }
   };
 
-  const requestListCrawler = async () => {
+  const requestListAllNextPage = async (page: number, pageSize: number) => {
     try {
-      const { data } = await axiosProtectedAPI.get('crawler/list');
-      setCrawlers(data.config_crawlers);
-    } catch (error) {
-      toastifyError(ERROR_OCCRUS_WHEN_LIST_CRAWLER)
+      const { data } = await axiosProtectedAPI.get('/crawler/list/all', {
+        params: { page: page, page_size: pageSize },
+      });
+      if (!data.success) {
+        if (data.message) {
+          throw data.message;
+        }
+        throw ERROR_OCCRUS_WHEN_LIST_CRAWLER;
+      }
+      setCrawlers(data.crawlers);
+      setIsLoading(false);
+    } catch (error: any) {
+      alertError(error);
+      setIsLoading(false);
     }
   };
 
   useEffect(() => {
-    // requestListCrawler();
-  }, [router.asPath]);
+    requestListAll(FIRST_PAGE, PAGE_SIZE);
+  }, []);
 
   return (
     <div className="adminCrawler">
-      <h2 className="adminCrawler__list--title">Crawler list</h2>
-      <div className="adminCrawler__addBtn">
-        <Button
-          type="submit"
-          variant="primary"
-        >
-          <Link href={_ROUTES.ADD_CRAWLER}>Add new crawler</Link>
-        </Button>
-      </div>
-        
-      {/* <div className="adminTags__list--table mt-3">
-        <Table bordered hover {...getTableProps()}>
-          <thead>
-            {headerGroups.map((headerGroup, index) => (
-              <tr
-                {...headerGroup.getHeaderGroupProps()}
-                key={`crawler-admin-tr-${index}`}
-              >
-                {headerGroup.headers.map((column, index) => (
-                  <th
-                    {...column.getHeaderProps()}
-                    key={`crawler-admin-tr-item-${index}`}
-                  >
-                    {column.render('Header')}
-                  </th>
-                ))}
-              </tr>
-            ))}
-          </thead>
-          <tbody {...getTableBodyProps()}>
-            {page.map((row) => {
-              prepareRow(row);
-              return (
-                <tr
-                  {...row.getRowProps()}
-                  key={`crawler-admin-row-tr-${row.index}`}
-                >
-                  {row.cells.map((cell, index) => {
-                    return (
-                      <td
-                        {...cell.getCellProps()}
-                        key={`crawler-admin-row-tr-item-${index}`}
-                      >
-                        {cell.render('Cell')}
-                      </td>
-                    );
-                  })}
-                </tr>
-              );
-            })}
-          </tbody>
-        </Table>
-        <div className="btnPaging">
-          <Button
-            onClick={() => previousPage()}
-            disabled={!canPreviousPage}
-            variant="primary"
-          >
-            Previous Page
-          </Button>
-          <Button
-            onClick={() => nextPage()}
-            disabled={!canNextPage}
-            variant="primary"
-          >
-            Next Page
-          </Button>
+      <h1 className="adminCrawler__title">Manage crawlers</h1>
+      <div className="adminCrawler__overview">
+        <div className="adminCrawler__overview--item">
           <p>
-            Page
-            <span>
-              {pageIndex + 1} of {pageOptions.length}
-            </span>
+            Total crawlers: <span>{total}</span>
           </p>
         </div>
-      </div> */}
+      </div>
+      <div className="adminCrawler__list">
+        <h2 className="adminCrawler__list--title">Crawler list</h2>
+        <div className="adminCrawler__addBtn mb-3">
+          <Button type="submit" variant="primary">
+            <Link href={_ROUTES.ADD_CRAWLER}>Add new crawler</Link>
+          </Button>
+        </div>
+        {!isLoading ? (
+          <CrawlersTable
+            crawlers={crawlers}
+            currentPage={currentPage!}
+            handleEdit={handleEdit}
+          />
+        ) : (
+          <div className="threeDotLoading">
+            <ThreeDots
+              height="50"
+              width="50"
+              radius="9"
+              color="#4fa94d"
+              ariaLabel="three-dots-loading"
+              visible={true}
+            />
+          </div>
+        )}
+        <AdminCrawlersPagination
+          totalRows={found!}
+          pageChangeHandler={pageChangeHandler}
+          currentPage={currentPage}
+        />
+      </div>
     </div>
   );
 }

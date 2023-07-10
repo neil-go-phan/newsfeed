@@ -164,7 +164,9 @@ const ArticleCard: React.FC<Props> = (props: Props) => {
         throw REQUEST_ADD_ARTICLE_TO_READ_LATER_LIST_FAIL_MESSAGE;
       }
       setIsReadLater(true);
-    } catch (error: any) {}
+    } catch (error: any) {
+      
+    }
   };
 
   const handleRequestRemoveArticleToReadLaterList = async (articleID: number) => {

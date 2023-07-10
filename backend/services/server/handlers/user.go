@@ -1,16 +1,17 @@
 package handlers
 
 import (
-	"server/helpers"
-	"server/services"
-	userservice "server/services/user"
 	"bytes"
 	"encoding/json"
 	"fmt"
 	"io"
-	"time"
 	"net/http"
 	"net/url"
+	"server/helpers"
+	"server/services"
+	userservice "server/services/user"
+	"strconv"
+	"time"
 
 	"github.com/gin-gonic/gin"
 	log "github.com/sirupsen/logrus"
@@ -23,12 +24,27 @@ type UserHandler struct {
 type UserHandlerInterface interface {
 	CheckAuth(c *gin.Context)
 	Token(c *gin.Context)
-	Register(c *gin.Context) 
+	Register(c *gin.Context)
 	Login(c *gin.Context)
 	GoogleOAuth(c *gin.Context)
+	AccessAdminPage(c *gin.Context)
+	ChangeRole(c *gin.Context)
+	List(c *gin.Context)
+	Delete(c *gin.Context)
+	Total(c *gin.Context)
+	UserUpgrateRole(c *gin.Context)
 }
 
 const GOOGLE_OATH_TOKEN_ROOT_URl = "https://oauth2.googleapis.com/token"
+
+type deleteUserPayload struct {
+	ID uint `json:"id"`
+}
+
+type changeRoleUserPayload struct {
+	ID      uint   `json:"id"`
+	NewRole string `json:"new_role"`
+}
 
 func NewUserHandler(service services.UserServices) *UserHandler {
 	return &UserHandler{
@@ -38,6 +54,131 @@ func NewUserHandler(service services.UserServices) *UserHandler {
 
 func (h *UserHandler) CheckAuth(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"success": true, "message": "Granted permission"})
+}
+
+func (h *UserHandler) AccessAdminPage(c *gin.Context) {
+	role, exsit := c.Get("role")
+	if !exsit {
+		log.Error("Not found role in token string")
+		c.JSON(http.StatusBadRequest, gin.H{"success": false, "message": "bad request"})
+		return
+	}
+
+	err := h.service.AccessAdminPage(role.(string))
+	if err != nil {
+		c.JSON(http.StatusUnauthorized, gin.H{"success": false, "message": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"success": true, "message": "Granted permission"})
+}
+
+func (h *UserHandler) List(c *gin.Context) {
+	page, err := strconv.Atoi(c.Query("page"))
+	if err != nil {
+		log.Error("error occrus:", err)
+		c.JSON(http.StatusBadRequest, gin.H{"success": false, "message": "input invalid"})
+		return
+	}
+
+	pageSize, err := strconv.Atoi(c.Query("page_size"))
+	if err != nil {
+		log.Error("error occrus:", err)
+		c.JSON(http.StatusBadRequest, gin.H{"success": false, "message": "input invalid"})
+		return
+	}
+	users, err := h.service.List(page, pageSize)
+	if err != nil {
+		log.Error(err)
+		c.JSON(http.StatusInternalServerError, gin.H{"success": false, "message": "internal server error"})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"success": true, "users": users})
+}
+
+func (h *UserHandler) Delete(c *gin.Context) {
+	var payload deleteUserPayload
+	err := c.BindJSON(&payload)
+	if err != nil {
+		log.Error("error occrus:", err)
+		c.JSON(http.StatusBadRequest, gin.H{"success": false, "message": "input invalid"})
+		return
+	}
+
+	role, exsit := c.Get("role")
+	if !exsit {
+		log.Error("Not found role in token string")
+		c.JSON(http.StatusBadRequest, gin.H{"success": false, "message": "bad request"})
+		return
+	}
+
+	err = h.service.Delete(role.(string), payload.ID)
+	if err != nil {
+		log.Error(err)
+		c.JSON(http.StatusBadRequest, gin.H{"success": false, "message": err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"success": true, "message": "delete success"})
+}
+
+func (h *UserHandler) ChangeRole(c *gin.Context) {
+	var payload changeRoleUserPayload
+	err := c.BindJSON(&payload)
+	if err != nil {
+		log.Error("error occrus:", err)
+		c.JSON(http.StatusBadRequest, gin.H{"success": false, "message": "input invalid"})
+		return
+	}
+
+	role, exsit := c.Get("role")
+	if !exsit {
+		log.Error("Not found role in token string")
+		c.JSON(http.StatusBadRequest, gin.H{"success": false, "message": "bad request"})
+		return
+	}
+
+	err = h.service.ChangeRole(role.(string), payload.ID, payload.NewRole)
+	if err != nil {
+		log.Error(err)
+		c.JSON(http.StatusBadRequest, gin.H{"success": false, "message": err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"success": true, "message": "delete success"})
+}
+
+func (h *UserHandler) UserUpgrateRole(c *gin.Context) {
+	role, exsit := c.Get("role")
+	if !exsit {
+		log.Error("Not found role in token string")
+		c.JSON(http.StatusBadRequest, gin.H{"success": false, "message": "bad request"})
+		return
+	}
+
+	username, exsit := c.Get("username")
+	if !exsit {
+		log.Error("Not found username in token string")
+		c.JSON(http.StatusBadRequest, gin.H{"success": false, "message": "bad request"})
+		return
+	}
+
+	accessToken, refreshToken, err := h.service.UserUpgrateRole(role.(string), username.(string))
+	if err != nil {
+		log.Error(err)
+		c.JSON(http.StatusBadRequest, gin.H{"success": false, "message": err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"success": true, "message": "upgrate tier success", "access_token": accessToken, "refresh_token": refreshToken})
+}
+
+func (h *UserHandler) Total(c *gin.Context) {
+
+	total, err := h.service.Count()
+	if err != nil {
+		log.Error(err)
+		c.JSON(http.StatusInternalServerError, gin.H{"success": false, "message": "internal server error"})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"success": true, "total": total})
 }
 
 func (h *UserHandler) Token(c *gin.Context) {
@@ -131,9 +272,8 @@ func (h *UserHandler) GoogleOAuth(c *gin.Context) {
 		return
 	}
 
-	c.Redirect(http.StatusTemporaryRedirect, fmt.Sprintf("%s%s?access_token=%s&refresh_token=%s",config.FrontEndOrigin, pathUrl, accessToken,refreshToken))
+	c.Redirect(http.StatusTemporaryRedirect, fmt.Sprintf("%s%s?access_token=%s&refresh_token=%s", config.FrontEndOrigin, pathUrl, accessToken, refreshToken))
 }
-
 
 func GetGoogleOauthToken(code string) (*services.GoogleOauthToken, error) {
 	resBody, err := sendRequestGetGoogleOauthToken(code)
@@ -154,7 +294,7 @@ func GetGoogleOauthToken(code string) (*services.GoogleOauthToken, error) {
 	return tokenBody, nil
 }
 
-func sendRequestGetGoogleOauthToken(code string) (bytes.Buffer, error){
+func sendRequestGetGoogleOauthToken(code string) (bytes.Buffer, error) {
 	var resBody bytes.Buffer
 	query := createQueryGetGoogleOauthToken(code)
 
@@ -173,7 +313,7 @@ func sendRequestGetGoogleOauthToken(code string) (bytes.Buffer, error){
 		return resBody, err
 	}
 	defer res.Body.Close()
-	
+
 	if res.StatusCode != http.StatusOK {
 		return resBody, fmt.Errorf("could not retrieve token")
 	}
@@ -185,7 +325,7 @@ func sendRequestGetGoogleOauthToken(code string) (bytes.Buffer, error){
 	return resBody, nil
 }
 
-func createQueryGetGoogleOauthToken(code string) (string) {
+func createQueryGetGoogleOauthToken(code string) string {
 	config, err := helpers.LoadEnv(".")
 	if err != nil {
 		log.Error(err)
@@ -226,7 +366,7 @@ func GetGoogleUser(access_token string, id_token string) (*services.GoogleUserRe
 	return userBody, nil
 }
 
-func sendRequestGetGoogleUser(access_token string, id_token string) (bytes.Buffer, error){
+func sendRequestGetGoogleUser(access_token string, id_token string) (bytes.Buffer, error) {
 	rootUrl := fmt.Sprintf("https://www.googleapis.com/oauth2/v1/userinfo?alt=json&access_token=%s", access_token)
 	var resBody bytes.Buffer
 	req, err := http.NewRequest("GET", rootUrl, nil)

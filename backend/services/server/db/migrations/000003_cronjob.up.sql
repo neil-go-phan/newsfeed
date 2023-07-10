@@ -13,4 +13,5 @@ CREATE TABLE cronjobs (
 ALTER TABLE
   cronjobs
 ADD
-  CONSTRAINT fk_cronjobs_crawler FOREIGN KEY (crawler_id) REFERENCES crawlers(id);
+  CONSTRAINT fk_cronjobs_crawler FOREIGN KEY (crawler_id) REFERENCES crawlers(id) ON DELETE CASCADE;
+

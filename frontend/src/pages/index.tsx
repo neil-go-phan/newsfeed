@@ -4,7 +4,11 @@ import type { NextPageWithLayout } from './_app';
 import type { ReactElement } from 'react';
 
 const Home: NextPageWithLayout = () => {
-  return <Landing />;
+  return (
+    <div className="container">
+      <Landing />
+    </div>
+  );
 };
 
 Home.getLayout = function getLayout(page: ReactElement) {

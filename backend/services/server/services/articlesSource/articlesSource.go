@@ -1,6 +1,7 @@
 package articlessourceservices
 
 import (
+	"fmt"
 	"server/entities"
 	"server/repository"
 	"server/services"
@@ -9,12 +10,18 @@ import (
 )
 
 type ArticlesSourceService struct {
-	repo repository.ArticlesSourcesRepository
+	repo         repository.ArticlesSourcesRepository
+	roleServices services.RoleServices
 }
 
-func NewArticlesSourceService(repo repository.ArticlesSourcesRepository) *ArticlesSourceService {
+const ARTICLE_SOURCES_ROLE_ENTITY = "ARTICLES"
+const ARTICLE_SOURCES_ROLE_UPDATE_METHOD = "UPDATE"
+const ARTICLE_SOURCES_ROLE_DELETE_METHOD = "DELETE"
+
+func NewArticlesSourceService(repo repository.ArticlesSourcesRepository, roleServices services.RoleServices) *ArticlesSourceService {
 	articlesSourceService := &ArticlesSourceService{
-		repo: repo,
+		repo:         repo,
+		roleServices: roleServices,
 	}
 	return articlesSourceService
 }
@@ -44,9 +51,9 @@ func (s *ArticlesSourceService) GetByTopicIDPaginate(topicID uint, page int, pag
 	return articlesSourcesResponse, found, nil
 }
 
-func (s *ArticlesSourceService) SearchByTitleAndDescriptionPaginate(keyword string, page int, pageSize int) ([]services.ArticlesSourceResponseRender, int64, error) {
+func (s *ArticlesSourceService) Search(keyword string, page int, pageSize int) ([]services.ArticlesSourceResponseRender, int64, error) {
 	articlesSourcesResponse := make([]services.ArticlesSourceResponseRender, 0)
-	articlesSources, found, err := s.repo.SearchByTitleAndDescriptionPaginate(keyword, page, pageSize)
+	articlesSources, found, err := s.repo.Search(keyword, page, pageSize)
 	if err != nil {
 		return articlesSourcesResponse, found, err
 	}
@@ -105,4 +112,67 @@ func (s *ArticlesSourceService) GetWithID(id uint) (services.ArticlesSourceRespo
 	}
 	articlesSourcesResponse = castEntityArticlesSourceToReponse(articlesSource)
 	return articlesSourcesResponse, nil
+}
+
+func (s *ArticlesSourceService) Count() (int, error) {
+	return s.repo.Count()
+}
+
+func (s *ArticlesSourceService) ListAllPaging(page int, pageSize int) ([]services.ArticlesSourceResponseRender, error) {
+	articlesSourcesResponse := make([]services.ArticlesSourceResponseRender, 0)
+	articlesSources, err := s.repo.ListAllPaging(page, pageSize)
+	if err != nil {
+		return articlesSourcesResponse, err
+	}
+	for _, articlesSource := range articlesSources {
+		articlesSourcesResponse = append(articlesSourcesResponse, castEntityArticlesSourceToReponse(articlesSource))
+
+	}
+	return articlesSourcesResponse, nil
+}
+
+func (s *ArticlesSourceService) SearchWithFilter(keyword string, page int, pageSize int, topicID uint) ([]services.ArticlesSourceResponseRender, int64, error) {
+	articlesSourcesResponse := make([]services.ArticlesSourceResponseRender, 0)
+
+	articlesSources, found, err := s.searchOptions(keyword, page, pageSize, topicID)
+	if err != nil {
+		return articlesSourcesResponse, found, err
+	}
+	for _, source := range articlesSources {
+		articlesSourcesResponse = append(articlesSourcesResponse, castEntityArticlesSourceToReponse(source))
+
+	}
+	return articlesSourcesResponse, found, nil
+}
+
+func (s *ArticlesSourceService) searchOptions(keyword string, page int, pageSize int, topicID uint) ([]entities.ArticlesSource, int64, error) {
+	// without key word
+	if keyword == "" {
+		return s.repo.GetWithTopicPaginate(topicID, page, pageSize)
+	}
+	if topicID == 0 {
+		return s.repo.Search(keyword, page, pageSize)
+	}
+	return s.repo.SearchWithFilter(keyword, page, pageSize, topicID)
+}
+
+func (s *ArticlesSourceService) Delete(role string, sourceID uint) error {
+	isAllowed := s.roleServices.GrantPermission(role, ARTICLE_SOURCES_ROLE_ENTITY, ARTICLE_SOURCES_ROLE_DELETE_METHOD)
+	if !isAllowed {
+		return fmt.Errorf("unauthorized")
+	}
+	source := entities.ArticlesSource{
+		Model: gorm.Model{
+			ID: sourceID,
+		},
+	}
+	return s.repo.Delete(source)
+}
+
+func (s *ArticlesSourceService) Update(role string, articlesSource entities.ArticlesSource) error {
+	isAllowed := s.roleServices.GrantPermission(role, ARTICLE_SOURCES_ROLE_ENTITY, ARTICLE_SOURCES_ROLE_UPDATE_METHOD)
+	if !isAllowed {
+		return fmt.Errorf("unauthorized")
+	}
+	return s.repo.Update(articlesSource)
 }

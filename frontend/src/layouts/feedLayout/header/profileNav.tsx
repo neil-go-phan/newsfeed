@@ -66,8 +66,7 @@ export default function ProfileNav() {
         open={Boolean(anchorElUser)}
         onClose={handleCloseUserMenu}
       >
-        <MenuItem onClick={handleCloseUserMenu}>Profile</MenuItem>
-        <MenuItem onClick={handleCloseUserMenu}>My account</MenuItem>
+        {/* <MenuItem onClick={handleCloseUserMenu}>Profile</MenuItem> */}
         <MenuItem onClick={handleLogout}>Logout</MenuItem>
       </Menu>
     </>

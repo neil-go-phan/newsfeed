@@ -15,25 +15,25 @@ import (
 
 const RSS_XPATH_QUERY = "link[type='application/rss+xml']"
 
-func TestGetRSSFeed(crawler entities.Crawler) (*gofeed.Feed, error) {
+func TestGetRSSFeed(crawler entities.Crawler) (*gofeed.Feed, string, error) {
 	feed, err := ParseRSS(crawler.SourceLink)
 	if err == nil {
-		return feed, nil
+		return feed, "", nil
 	}
 
 	link, ok := GetRSSLink(crawler.SourceLink)
 	if !ok {
-		return nil, fmt.Errorf("not found rss link")
+		return nil, "", fmt.Errorf("not found rss link")
 	}
 	log.Printf("export rss link success: %s", link)
 	feed, err = ParseRSS(link)
 	if err != nil {
-		return nil, err
+		return nil, "", err
 	}
-	return feed, nil
+	return feed, link, nil
 }
 
-func GetRSSFeed(feedLink string)  (*gofeed.Feed, error) {
+func GetRSSFeed(feedLink string) (*gofeed.Feed, error) {
 	feed, err := ParseRSS(feedLink)
 	if err == nil {
 		return feed, nil
@@ -56,7 +56,7 @@ func ParseRSS(url string) (*gofeed.Feed, error) {
 	feed, err := fp.ParseURL(url)
 	if err != nil {
 		return nil, err
-	} 
+	}
 	return feed, nil
 }
 
@@ -94,7 +94,7 @@ func ExportRSSLinkGoquery(doc *goquery.Document) (string, bool) {
 }
 
 func GetRSSWithChromedp(url string) (string, bool) {
-	ctx, cancel, err := GetDocWithChromedp(url) 
+	ctx, cancel, err := GetDocWithChromedp(url)
 	defer cancel()
 	if err != nil {
 		log.Error(err)
@@ -124,7 +124,7 @@ func ExportRSSLinkChromedp(ctx context.Context) (string, bool) {
 
 func getRSSNodes(ctx context.Context) ([]*cdp.Node, error) {
 	var rssNodes []*cdp.Node
-	findNodeCtx, cancel := context.WithTimeout(ctx, 1 * time.Second)
+	findNodeCtx, cancel := context.WithTimeout(ctx, 1*time.Second)
 	defer cancel()
 	err := chromedp.Run(findNodeCtx, chromedp.Nodes(RSS_XPATH_QUERY, &rssNodes))
 	if err != nil {
@@ -133,7 +133,7 @@ func getRSSNodes(ctx context.Context) ([]*cdp.Node, error) {
 	return rssNodes, nil
 }
 
-func exportRSSLinkFromNode(node *cdp.Node) (string, bool){
+func exportRSSLinkFromNode(node *cdp.Node) (string, bool) {
 	link, ok := node.Attribute("href")
 	return link, ok
 }

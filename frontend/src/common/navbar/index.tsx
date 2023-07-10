@@ -11,6 +11,7 @@ import Button from '@mui/material/Button';
 import MenuItem from '@mui/material/MenuItem';
 import Link from 'next/link';
 import React, { useEffect, useState } from 'react';
+import type { InferGetStaticPropsType, GetStaticProps } from 'next';
 import { AccountCircle, Feed } from '@mui/icons-material';
 import Divider from '@mui/material/Divider';
 import List from '@mui/material/List';
@@ -22,32 +23,34 @@ import { deleteCookie } from 'cookies-next';
 import { useRouter } from 'next/router';
 
 const drawerWidth = 240;
+
 type NavPages = {
   link: string;
   name: string;
 };
+
+
 export const pages: Array<NavPages> = [
-  { name: 'Features', link: _ROUTES.FEATURE_PAGE },
+  // { name: 'Features', link: _ROUTES.FEATURE_PAGE },
   { name: 'Pricing', link: _ROUTES.PRICING_PAGE },
-  { name: 'Discover', link: _ROUTES.DISCOVER_PAGE },
+  // { name: 'Discover', link: _ROUTES.DISCOVER_PAGE },
 ];
 
+// function NavbarComponent({ isLogin }: InferGetStaticPropsType<typeof getStaticProps>) {
 function NavbarComponent() {
-  const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(
-    null
-  );
+  const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null);
 
   const [mobileOpen, setMobileOpen] = useState(false);
-  const [auth, setAuth] = useState(true);
+  const [auth, setAuth] = useState(false);
   const router = useRouter();
-  useEffect(() => {
-    async function checkLogIn() {
-      const userChecked: boolean = await checkAuth();
-      setAuth(userChecked);
-    }
+  // useEffect(() => {
+  //   async function checkLogIn() {
+  //     const userChecked: boolean = await checkAuth();
+  //     setAuth(userChecked);
+  //   }
 
-    checkLogIn();
-  }, [auth]);
+  //   checkLogIn();
+  // }, [auth]);
 
   const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElUser(event.currentTarget);
@@ -155,7 +158,10 @@ function NavbarComponent() {
           <Feed
             sx={{ display: { xs: 'flex', md: 'none' }, mr: 1, color: 'black' }}
           />
-          <Link href={_ROUTES.LADING_PAGE} className="navbarComponent__brand--sm">
+          <Link
+            href={_ROUTES.LADING_PAGE}
+            className="navbarComponent__brand--sm"
+          >
             <Typography
               variant="h6"
               noWrap
@@ -222,8 +228,7 @@ function NavbarComponent() {
                   open={Boolean(anchorElUser)}
                   onClose={handleCloseUserMenu}
                 >
-                  <MenuItem onClick={handleCloseUserMenu}>Profile</MenuItem>
-                  <MenuItem onClick={handleCloseUserMenu}>My account</MenuItem>
+                  {/* <MenuItem onClick={handleCloseUserMenu}>Profile</MenuItem> */}
                   <MenuItem onClick={handleLogout}>Logout</MenuItem>
                 </Menu>
               </div>
@@ -246,5 +251,12 @@ function NavbarComponent() {
     </AppBar>
   );
 }
+
+export const getStaticProps: GetStaticProps<{
+  isLogin: boolean;
+}> = async () => {
+  const userChecked: boolean = await checkAuth();
+  return { props: { isLogin: userChecked } };
+};
 
 export default NavbarComponent;

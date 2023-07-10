@@ -5,13 +5,14 @@ import {
   faBorderAll,
   faChartSimple,
   faGear,
+  faMoneyBill,
   faPlus,
   faStar,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Image from 'next/image';
 import Link from 'next/link';
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 
 type Props = {
   isOpenSidebar: boolean;
@@ -22,6 +23,7 @@ const IMAGE_SIZE = 20;
 
 const FeedsSidebar: React.FC<Props> = (props: Props) => {
   const { followedSources } = useContext(FollowedSourcesContext);
+
   const cacultateTotalUnreadArticle = (): number => {
     let total = 0;
     followedSources.forEach((followedSource) => {
@@ -29,13 +31,17 @@ const FeedsSidebar: React.FC<Props> = (props: Props) => {
     });
     return total;
   };
+  const [expanded, setExpanded] = useState(false);
+  const display: ArticlesSourceInfoes = expanded
+    ? followedSources
+    : followedSources!.slice(0, 5);
 
-  const unreadNumberToString = (unreadNumber : number):string => {
+  const unreadNumberToString = (unreadNumber: number): string => {
     if (unreadNumber <= 100) {
-      return unreadNumber.toString()
+      return unreadNumber.toString();
     }
-    return '100+'
-  }
+    return '100+';
+  };
   return (
     <div
       className={
@@ -76,6 +82,16 @@ const FeedsSidebar: React.FC<Props> = (props: Props) => {
             </div>
           </Link>
         </div>
+        <div className="item">
+          <Link href={_ROUTES.FEEDS_PLAN} className="itemInner">
+            <div className="icon">
+              <FontAwesomeIcon icon={faMoneyBill} />
+            </div>
+            <div className="description">
+              <span>Plan</span>
+            </div>
+          </Link>
+        </div>
       </div>
       <div className="feedsNav">
         <div className="title">
@@ -98,11 +114,19 @@ const FeedsSidebar: React.FC<Props> = (props: Props) => {
           </Link>
         </div>
         <div className="listFeeds">
-          {followedSources.map((sourceFollowed, index) => (
+          {display.map((sourceFollowed, index) => (
             <div className="item" key={`navbar list feed ${index}`}>
-              <Link href={`${_ROUTES.READ_FEEDS_ARTICLES_SOURCE}?source=${sourceFollowed.id}`} className="itemInner">
+              <Link
+                href={`${_ROUTES.READ_FEEDS_ARTICLES_SOURCE}?source=${sourceFollowed.id}`}
+                className="itemInner"
+              >
                 <div className="sourceIcon">
-                  <Image alt={`${sourceFollowed.title} logo`} src={sourceFollowed.image} width={IMAGE_SIZE} height={IMAGE_SIZE}/>
+                  <Image
+                    alt={`${sourceFollowed.title} logo`}
+                    src={sourceFollowed.image}
+                    width={IMAGE_SIZE}
+                    height={IMAGE_SIZE}
+                  />
                 </div>
                 <div className="description">
                   <span>{sourceFollowed.title}</span>
@@ -113,14 +137,32 @@ const FeedsSidebar: React.FC<Props> = (props: Props) => {
               </Link>
             </div>
           ))}
+          {followedSources!.length > 5 ? (
+            <a className="showmore" onClick={() => setExpanded(!expanded)}>
+              {expanded ? 'Show less' : 'Show more...'}
+            </a>
+          ) : (
+            <></>
+          )}
         </div>
+
         <div className="addNew item">
           <Link href={_ROUTES.FEEDS_SEARCH_WEBS} className="itemInner">
             <div className="icon">
               <FontAwesomeIcon icon={faPlus} />
             </div>
             <div className="description">
-              <span>Add new</span>
+              <span>Follow</span>
+            </div>
+          </Link>
+        </div>
+        <div className="addNew item">
+          <Link href={_ROUTES.FEEDS_ADD} className="itemInner">
+            <div className="icon">
+              <FontAwesomeIcon icon={faPlus} />
+            </div>
+            <div className="description">
+              <span>Add new source</span>
             </div>
           </Link>
         </div>

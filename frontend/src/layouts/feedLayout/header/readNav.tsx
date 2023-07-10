@@ -7,11 +7,10 @@ import {
 import { FollowedSourcesContext } from '@/common/contexts/followedSources';
 import { TriggerRefreshContext } from '@/common/contexts/triggerRefreshContext';
 import axiosProtectedAPI from '@/helpers/axiosProtectedAPI';
-import { faCheck, faRotateRight } from '@fortawesome/free-solid-svg-icons';
+import { faCheck } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useRouter } from 'next/router';
 import React, { useContext, useEffect, useState } from 'react';
-import Popup from 'reactjs-popup';
 
 type Props = {
   articlesSource: ArticlesSourceInfo | undefined;
@@ -79,12 +78,9 @@ const ReadNav: React.FC<Props> = (props: Props) => {
 
   const requestMarkAllAsReadBySourceID = async (articlesSourceID: number) => {
     try {
-      const { data } = await axiosProtectedAPI.post(
-        'read/read/all/sourceid',
-        {
-          articles_source_id: articlesSourceID,
-        }
-      );
+      const { data } = await axiosProtectedAPI.post('read/read/all/sourceid', {
+        articles_source_id: articlesSourceID,
+      });
       if (!data.success) {
         if (data.message) {
           throw data.message;

@@ -20,7 +20,7 @@ type RegisterUserInput struct {
 	Username             string `json:"username" validate:"required"`
 	Password             string `json:"password" validate:"required"`
 	PasswordConfirmation string `json:"password_confirmation" validate:"required"`
-	Email                string `json:"email" validate:"required"`
+	Email                string `json:"email" validate:"required,email"`
 }
 
 type GoogleOauthToken struct {
@@ -114,9 +114,10 @@ type CronjobResponse struct {
 }
 
 type CronjobInChart struct {
-	Name    string `json:"name"`
-	StartAt string `json:"start_at"` // ex: "16:01"
-	EndAt   string `json:"end_at"`   // ex: "16:02"
+	Name             string `json:"name"`
+	StartAt          string `json:"start_at"` // ex: "16:01"
+	EndAt            string `json:"end_at"`   // ex: "16:02"
+	NewArticlesCount int32  `json:"new_articles_count"`
 }
 
 type ChartHour struct {
@@ -156,6 +157,7 @@ type ArticlesSourceResponseRender struct {
 	Image       string `json:"image"` // base64 image
 	Follower    int    `json:"follower"`
 	TopicID     uint   `json:"topic_id"`
+	FeedLink    string `json:"feed_link"`
 }
 type ArticlesSourceRecommended struct {
 	ID                   uint   `json:"id"`
@@ -177,4 +179,34 @@ type ArticlesSourceUserFollow struct {
 	Follower    int    `json:"follower"`
 	TopicID     uint   `json:"topic_id"`
 	Unread      int    `json:"unread"`
+}
+
+type CrawlerResponse struct {
+	ID               uint   `json:"id"`
+	SourceLink       string `json:"source_link"`
+	FeedLink         string `json:"feed_link"`
+	CrawlType        string `json:"crawl_type"`
+	Schedule         string `json:"schedule"`
+	ArticlesSourceID uint   `json:"articles_source_id"`
+}
+
+type PermissionResponse struct {
+	ID          uint   `json:"id" validate:"required,number"`
+	Entity      string `json:"entity" validate:"required,uppercase"`
+	Method      string `json:"method" validate:"required,uppercase"`
+	Description string `json:"description"`
+}
+
+type RoleResponse struct {
+	ID          uint                 `json:"id"`
+	Name        string               `json:"name" validate:"required"`
+	Description string               `json:"description" validate:"required"`
+	Permissions []PermissionResponse `json:"permissions"`
+}
+
+type UserResponse struct {
+	ID       uint   `json:"id"`
+	Username string `json:"username" validate:"required"`
+	Email    string `json:"email" validate:"required,email"`
+	RoleName string `json:"role_name"`
 }

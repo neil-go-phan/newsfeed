@@ -20,6 +20,7 @@ import (
 	userservices "server/services/user"
 	readservices "server/services/read"
 	readlaterservices "server/services/readLater"
+	"server/services/permission"
 	"github.com/google/wire"
 	"github.com/robfig/cron/v3"
 	"gorm.io/gorm"
@@ -44,6 +45,11 @@ func InitUser(db *gorm.DB) *routes.UserRoutes {
 
 func InitCrawler(db *gorm.DB, grpcClient pb.CrawlerServiceClient, cronjob *cron.Cron, jobIDMap map[string]cron.EntryID) *routes.CrawlerRoutes {
 	wire.Build(
+		repository.NewRoleRepo,
+		wire.Bind(new(repository.RoleRepository), new(*repository.RoleRepo)),
+		roleservice.NewRoleService,
+		wire.Bind(new(services.RoleServices), new(*roleservice.RoleService)),
+
 		repository.NewArticleRepo,
 		wire.Bind(new(repository.ArticleRepository), new(*repository.ArticleRepo)),
 		articleservices.NewArticleService,
@@ -72,6 +78,11 @@ func InitCrawler(db *gorm.DB, grpcClient pb.CrawlerServiceClient, cronjob *cron.
 
 func InitTopic(db *gorm.DB) *routes.TopicRoutes {
 	wire.Build(
+		repository.NewRoleRepo,
+		wire.Bind(new(repository.RoleRepository), new(*repository.RoleRepo)),
+		roleservice.NewRoleService,
+		wire.Bind(new(services.RoleServices), new(*roleservice.RoleService)),
+
 		repository.NewArticlesSourcesRepo,
 		wire.Bind(new(repository.ArticlesSourcesRepository), new(*repository.ArticlesSourcesRepo)),
 		articlessourceservices.NewArticlesSourceService,
@@ -90,6 +101,11 @@ func InitTopic(db *gorm.DB) *routes.TopicRoutes {
 
 func InitCategory(db *gorm.DB) *routes.CategoryRoutes {
 	wire.Build(
+		repository.NewRoleRepo,
+		wire.Bind(new(repository.RoleRepository), new(*repository.RoleRepo)),
+		roleservice.NewRoleService,
+		wire.Bind(new(services.RoleServices), new(*roleservice.RoleService)),
+
 		repository.NewArticlesSourcesRepo,
 		wire.Bind(new(repository.ArticlesSourcesRepository), new(*repository.ArticlesSourcesRepo)),
 		articlessourceservices.NewArticlesSourceService,
@@ -113,6 +129,11 @@ func InitCategory(db *gorm.DB) *routes.CategoryRoutes {
 
 func InitArticlesSources(db *gorm.DB) *routes.ArticlesSourceRoutes {
 	wire.Build(
+		repository.NewRoleRepo,
+		wire.Bind(new(repository.RoleRepository), new(*repository.RoleRepo)),
+		roleservice.NewRoleService,
+		wire.Bind(new(services.RoleServices), new(*roleservice.RoleService)),
+
 		repository.NewArticlesSourcesRepo,
 		wire.Bind(new(repository.ArticlesSourcesRepository), new(*repository.ArticlesSourcesRepo)),
 		articlessourceservices.NewArticlesSourceService,
@@ -126,6 +147,11 @@ func InitArticlesSources(db *gorm.DB) *routes.ArticlesSourceRoutes {
 
 func InitArticles(db *gorm.DB) *routes.ArticleRoutes {
 	wire.Build(
+		repository.NewRoleRepo,
+		wire.Bind(new(repository.RoleRepository), new(*repository.RoleRepo)),
+		roleservice.NewRoleService,
+		wire.Bind(new(services.RoleServices), new(*roleservice.RoleService)),
+
 		repository.NewArticleRepo,
 		wire.Bind(new(repository.ArticleRepository), new(*repository.ArticleRepo)),
 		articleservices.NewArticleService,
@@ -139,6 +165,11 @@ func InitArticles(db *gorm.DB) *routes.ArticleRoutes {
 
 func InitFollow(db *gorm.DB) *routes.FollowRoutes {
 	wire.Build(
+		repository.NewRoleRepo,
+		wire.Bind(new(repository.RoleRepository), new(*repository.RoleRepo)),
+		roleservice.NewRoleService,
+		wire.Bind(new(services.RoleServices), new(*roleservice.RoleService)),
+
 		repository.NewArticlesSourcesRepo,
 		wire.Bind(new(repository.ArticlesSourcesRepository), new(*repository.ArticlesSourcesRepo)),
 		articlessourceservices.NewArticlesSourceService,
@@ -168,8 +199,39 @@ func InitRead(db *gorm.DB) *routes.ReadRoutes {
 	return &routes.ReadRoutes{}
 }
 
+func InitRole(db *gorm.DB) *routes.RoleRoutes {
+	wire.Build(
+		repository.NewRoleRepo,
+		wire.Bind(new(repository.RoleRepository), new(*repository.RoleRepo)),
+		roleservice.NewRoleService,
+		wire.Bind(new(services.RoleServices), new(*roleservice.RoleService)),
+		handlers.NewRoleHandler,
+		wire.Bind(new(handlers.RoleHandlerInterface), new(*handlers.RoleHandler)),
+		routes.NewRoleRoutes,
+	)
+	return &routes.RoleRoutes{}
+}
+
+func InitPermission(db *gorm.DB) *routes.PermissionRoutes {
+	wire.Build(
+		repository.NewPermission,
+		wire.Bind(new(repository.PermissionRepository), new(*repository.PermissionRepo)),
+		permissionservice.NewPermissionService,
+		wire.Bind(new(services.PermissionServices), new(*permissionservice.PermissionService)),
+		handlers.NewPermissionHandler,
+		wire.Bind(new(handlers.PermissionHandlerInterface), new(*handlers.PermissionHandler)),
+		routes.NewPermissionRoutes,
+	)
+	return &routes.PermissionRoutes{}
+}
+
 func InitReadLater(db *gorm.DB) *routes.ReadLaterRoutes {
 	wire.Build(
+		repository.NewRoleRepo,
+		wire.Bind(new(repository.RoleRepository), new(*repository.RoleRepo)),
+		roleservice.NewRoleService,
+		wire.Bind(new(services.RoleServices), new(*roleservice.RoleService)),
+
 		repository.NewReadLater,
 		wire.Bind(new(repository.ReadLaterRepository), new(*repository.ReadLaterRepo)),
 		readlaterservices.NewReadLaterService,
@@ -180,26 +242,3 @@ func InitReadLater(db *gorm.DB) *routes.ReadLaterRoutes {
 	)
 	return &routes.ReadLaterRoutes{}
 }
-
-// func InitCronjob(db *gorm.DB, grpcClient pb.CrawlerServiceClient) *routes.CrawlerRoutes {
-// 	wire.Build(
-// 		repository.NewArticleRepo,
-// 		wire.Bind(new(repository.ArticleRepository), new(*repository.ArticleRepo)),
-// 		articleservices.NewArticleService,
-// 		wire.Bind(new(services.ArticleServices), new(*articleservices.ArticleService)),
-
-// 		repository.NewArticlesSourcesRepo,
-// 		wire.Bind(new(repository.ArticlesSourcesRepository), new(*repository.ArticlesSourcesRepo)),
-// 		articlessourceservices.NewArticlesSourceService,
-// 		wire.Bind(new(services.ArticlesSourceServices), new(*articlessourceservices.ArticlesSourceService)),
-
-// 		repository.NewCrawlerRepo,
-// 		wire.Bind(new(repository.CrawlerRepository), new(*repository.CrawlerRepo)),
-// 		crawlerservices.NewCrawlerService,
-// 		wire.Bind(new(services.CrawlerServices), new(*crawlerservices.CrawlerService)),
-// 		handlers.NewCrawlerHandler,
-// 		wire.Bind(new(handlers.CrawlerHandlerInterface), new(*handlers.CrawlerHandler)),
-// 		routes.NewCrawlerRoutes,
-// 	)
-// 	return &routes.CrawlerRoutes{}
-// }

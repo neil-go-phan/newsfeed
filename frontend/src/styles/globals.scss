@@ -8,6 +8,7 @@
 @import '@fontsource/roboto/700.css';
 
 @import 'react-select-search/style.css';
+@import "react-datepicker/dist/react-datepicker.css";
 
 // html *
 // {
@@ -39,10 +40,14 @@
 // pages
 @import "./pages/auth";
 @import "./pages/library";
+@import "./pages/landing";
+@import "./pages/pricing";
+@import "./pages/plan";
+@import "./pages/addSource";
 
 // components
 @import "./components/navbar";
-@import "./components/landing";
+
 @import "./components/banner";
 @import "./components/footer";
 @import "./components/admin";

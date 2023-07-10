@@ -1,6 +1,7 @@
 package topicservices
 
 import (
+	"fmt"
 	"server/entities"
 	"server/repository"
 	"server/services"
@@ -9,21 +10,31 @@ import (
 
 const OTHERS_TOPIC_ID = 1
 const OTHERS_TOPIC_NAME = "Others"
+const TOPIC_ROLE_ENTITY = "TOPIC"
+const TOPIC_ROLE_CREATE_METHOD = "CREATE"
+const TOPIC_ROLE_UPDATE_METHOD = "UPDATE"
+const TOPIC_ROLE_DELETE_METHOD = "DELETE"
 
 type TopicService struct {
 	repo                    repository.TopicRepository
 	articlesSourcesServices services.ArticlesSourceServices
+	roleServices            services.RoleServices
 }
 
-func NewTopicService(repo repository.TopicRepository, articlesSourcesServices services.ArticlesSourceServices) *TopicService {
+func NewTopicService(repo repository.TopicRepository, articlesSourcesServices services.ArticlesSourceServices, roleServices services.RoleServices) *TopicService {
 	topicService := &TopicService{
 		repo:                    repo,
 		articlesSourcesServices: articlesSourcesServices,
+		roleServices:            roleServices,
 	}
 	return topicService
 }
 
-func (s *TopicService) CreateIfNotExist(topic entities.Topic) error {
+func (s *TopicService) CreateIfNotExist(role string, topic entities.Topic) error {
+	isAllowed := s.roleServices.GrantPermission(role, TOPIC_ROLE_ENTITY, TOPIC_ROLE_CREATE_METHOD)
+	if !isAllowed {
+		return fmt.Errorf("unauthorized")
+	}
 	topic.Name = strings.TrimSpace(topic.Name)
 	err := validateTopic(topic)
 	if err != nil {
@@ -48,7 +59,11 @@ func (s *TopicService) UpdateWhenDeteleCategory(oldCategoryID uint, newCategoryI
 	return s.repo.UpdateWhenDeteleCategory(oldCategoryID, newCategoryID)
 }
 
-func (s *TopicService) Update(topic entities.Topic) error {
+func (s *TopicService) Update(role string, topic entities.Topic) error {
+	isAllowed := s.roleServices.GrantPermission(role, TOPIC_ROLE_ENTITY, TOPIC_ROLE_UPDATE_METHOD)
+	if !isAllowed {
+		return fmt.Errorf("unauthorized")
+	}
 	topic.Name = strings.TrimSpace(topic.Name)
 	err := validateTopic(topic)
 	if err != nil {
@@ -57,7 +72,11 @@ func (s *TopicService) Update(topic entities.Topic) error {
 	return s.repo.Update(topic)
 }
 
-func (s *TopicService) Delete(topic entities.Topic) error {
+func (s *TopicService) Delete(role string, topic entities.Topic) error {
+	isAllowed := s.roleServices.GrantPermission(role, TOPIC_ROLE_ENTITY, TOPIC_ROLE_DELETE_METHOD)
+	if !isAllowed {
+		return fmt.Errorf("unauthorized")
+	}
 	topic.Name = strings.TrimSpace(topic.Name)
 	err := validateTopic(topic)
 	if err != nil {
@@ -117,7 +136,7 @@ func (s *TopicService) SearchTopicAndArticlesSourcePaginate(keyword string, page
 		return []services.TopicResponse{}, []services.ArticlesSourceResponseRender{}, 0, err
 	}
 
-	articlesSources, articleSourcesFound, err := s.articlesSourcesServices.SearchByTitleAndDescriptionPaginate(keyword, page, pageSize)
+	articlesSources, articleSourcesFound, err := s.articlesSourcesServices.Search(keyword, page, pageSize)
 	if err != nil {
 		return []services.TopicResponse{}, []services.ArticlesSourceResponseRender{}, articleSourcesFound, err
 	}

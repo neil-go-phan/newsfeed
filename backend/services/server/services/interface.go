@@ -7,20 +7,36 @@ import (
 
 type UserServices interface {
 	GetUser(username string) (u *entities.User, err error)
-	ListUsers() (user *[]entities.User, err error)
+	List(page int, pageSize int) ([]UserResponse, error)
+	Delete(role string, id uint) error
+	ChangeRole(role string, id uint, newRole string) error
+	UserUpgrateRole(role string, username string) (string, string, error)
+	Count() (int, error)
+
 	CreateUser(registerUserInput *RegisterUserInput) (*entities.User, error)
-	// VerifyUser(username string, registerUserInput RegisterUserInput) (bool, error)
-	DeleteUser(username string) error
+
 	LoginWithUsername(inputUser *LoginUserInput) (accessToken string, refreshToken string, err error)
 	LoginWithEmail(inputUser *LoginUserInput) (accessToken string, refreshToken string, err error)
 	// UpdateUser(registerUserInput *RegisterUserInput) error
 	GoogleOAuth(googleUser *GoogleUserResult) (accessToken string, refreshToken string, err error)
+
+	AccessAdminPage(role string) error
 }
 
 type RoleServices interface {
-	ListRole() (role *[]entities.Role, err error)
+	List(page int, pageSize int) ([]RoleResponse, error)
 	Validate(roleName string) (err error)
-	GetRole(roleName string) (*entities.Role, error)
+	Get(roleName string) (RoleResponse, error)
+	Delete(id uint) error
+	Create(rolePayload RoleResponse) error
+	Count() (int, error)
+	Update(rolePayload RoleResponse) error
+	GrantPermission(userRole string, entity string, method string) bool
+	ListRoleName() ([]string, error) 
+}
+
+type PermissionServices interface {
+	List() ([]PermissionResponse, error)
 }
 
 type ArticleServices interface {
@@ -50,30 +66,44 @@ type ArticleServices interface {
 
 type ArticlesSourceServices interface {
 	GetByTopicIDPaginate(topicID uint, page int, pageSize int) ([]ArticlesSourceResponseRender, int64, error)
-	SearchByTitleAndDescriptionPaginate(keyword string, page int, pageSize int) ([]ArticlesSourceResponseRender, int64, error)
+	Search(keyword string, page int, pageSize int) ([]ArticlesSourceResponseRender, int64, error)
 	GetMostActiveSources() ([]ArticlesSourceRecommended, error)
 	GetWithID(id uint) (ArticlesSourceResponseRender, error)
 	ListAll() ([]ArticlesSourceResponseRender, error)
+	SearchWithFilter(keyword string, page int, pageSize int, topicID uint) ([]ArticlesSourceResponseRender, int64, error)
 
 	CreateIfNotExist(articlesSource entities.ArticlesSource) (entities.ArticlesSource, error)
 	UpdateTopicOneSource(articlesSource entities.ArticlesSource, newTopicId uint) error
 	UpdateTopicAllSource(oldTopicId uint, newTopicId uint) error
 	UserFollow(articlesSourceID uint) error
 	UserUnfollow(articlesSourceID uint) error
+
+	Count() (int, error)
+	ListAllPaging(page int, pageSize int) ([]ArticlesSourceResponseRender, error)
+	Delete(role string, sourceID uint) error
+	Update(role string, articlesSource entities.ArticlesSource) error
 }
 
 type CrawlerServices interface {
 	TestRSSCrawler(crawler entities.Crawler) (*ArticlesSourceResponseCrawl, []*ArticleResponse, error)
 	TestCustomCrawler(crawler entities.Crawler) (*ArticlesSourceResponseCrawl, []*ArticleResponse, error)
 
-	CreateCrawlerWithCorrespondingArticlesSource(payload CreateCrawlerPayload) error
+	CreateCrawlerWithCorrespondingArticlesSource(role string, payload CreateCrawlerPayload) error
 	GetHtmlPage(url *url.URL) error
+	Get(id uint) (*entities.Crawler, error)
 
 	CreateCrawlerCronjobFromDB() error
+	UpdateSchedule(role string, id uint, newSchedule string) error
+	Update(role string, crawler entities.Crawler) error
+	ListAllPaging(page int, pageSize int) ([]CrawlerResponse, int64, error)
+
+	CronjobOnDay(timeString string) (*[24]ChartDay, error)
+	CronjobOnHour(timeString string) (*[60]ChartHour, error)
 }
 
 type CronjobServices interface {
 	CreateCrawlerCronjob(crawler entities.Crawler)
+	RemoveCronjob(crawler entities.Crawler) error
 
 	GetCronjobRuntime() []CronjobResponse
 	CronjobOnHour(timeString string) (*[60]ChartHour, error)
@@ -86,9 +116,9 @@ type CategoryServices interface {
 	GetPagination(page int, pageSize int) ([]CategoryResponse, error)
 	Count() (int, error)
 
-	CreateIfNotExist(category entities.Category) error
-	Delete(category entities.Category) error
-	UpdateName(payload UpdateNameCategoryPayload) error
+	CreateIfNotExist(role string, category entities.Category) error
+	Delete(role string, category entities.Category) error
+	UpdateName(role string, payload UpdateNameCategoryPayload) error
 }
 
 type TopicServices interface {
@@ -99,9 +129,9 @@ type TopicServices interface {
 	SearchTopicAndArticlesSourcePaginate(keyword string, page int, pageSize int) ([]TopicResponse, []ArticlesSourceResponseRender, int64, error)
 	Count() (int, error)
 
-	CreateIfNotExist(topic entities.Topic) error
-	Delete(topic entities.Topic) error
-	Update(topic entities.Topic) error
+	CreateIfNotExist(role string, topic entities.Topic) error
+	Delete(role string, topic entities.Topic) error
+	Update(role string, topic entities.Topic) error
 	UpdateWhenDeteleCategory(oldCategoryID uint, newCategoryID uint) error
 }
 

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Tutorial from './tutorial';
 import ChooseHtmlClassForm from './chooseHtmlClassForm';
 import TestResult from '../testResult';
@@ -15,6 +15,8 @@ function AddCustomCrawler() {
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
   const [isRenderResult, setIsRenderResult] = useState<boolean>(false);
   const [topicName, setTopicName] = useState<string>('');
+  const [crawlerID, setCrawlerID] = useState<number>(0);
+  const [isUpdate, setIsUpdate] = useState<boolean>(false);
 
   const router = useRouter();
   const { url } = router.query;
@@ -23,6 +25,11 @@ function AddCustomCrawler() {
     setCrawler(crawler);
     setIsRenderResult(true);
   };
+
+  const handleUpdate = () => {
+    setIsConfirmModalOpen(true);
+
+  }
 
   const createCustomCrawler = (
     articlesSource: ArticlesSource,
@@ -35,8 +42,15 @@ function AddCustomCrawler() {
 
   const handleIsConfirmModalClose = () => {
     setIsConfirmModalOpen(false);
-    router.push(_ROUTES.ADD_CRAWLER)
+    router.push(_ROUTES.ADMIN_CRAWLER)
   };
+
+  useEffect(() => {
+    if (router.query.id) {
+      setCrawlerID(+router.query.id)
+      setIsUpdate(true)
+    }
+  }, [])
   return (
     <div className="addCustomCrawler">
       <Tutorial />
@@ -52,6 +66,9 @@ function AddCustomCrawler() {
             testType={CRAWLER_CUSTOM_TYPE}
             handleSubmitArticleSource={createCustomCrawler}
             crawler={crawler}
+            isUpdate={isUpdate}
+            triggerTestUpdate={false}
+            handleUpdate={handleUpdate}
           />
         ) : (
           <></>
@@ -67,6 +84,8 @@ function AddCustomCrawler() {
           crawler={crawler}
           topicName={topicName}
           handleIsConfirmModalClose={handleIsConfirmModalClose}
+          isUpdate={isUpdate}
+          crawlerID={crawlerID}
         />
       </Popup>
     </div>

@@ -1,0 +1,139 @@
+.plan {
+  max-width: 940px;
+  margin: 40px auto 0 auto;
+  text-align: left;
+  &__header {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 36px;
+  }
+  &__table {
+    border: 1px solid #e0e5eb;
+    border-radius: 5px;
+    margin-bottom: 40px;
+    font-size: 13px;
+    .table-header {
+      position: sticky;
+      top: 0;
+      z-index: 99;
+      background: #fefefe;
+      height: 100%;
+      .icon {
+        margin-top: 12px;
+        text-align: center;
+      }
+      .name {
+        margin-top: 4px;
+        text-align: center;
+        font-size: 12px;
+        font-weight: bold;
+        text-transform: uppercase;
+        letter-spacing: 0.02rem;
+      }
+      .price {
+        margin-top: 34px;
+        text-align: center;
+        color: #00a7f6;
+        font-size: 18px;
+        line-height: 16px;
+        font-weight: bold;
+        letter-spacing: -0.04rem;
+        span {
+          color: #828d9d;
+          font-size: 11px;
+          font-weight: normal;
+          letter-spacing: normal;
+        }
+      }
+      .introduce {
+        color: #828d9d;
+        margin-top: 8px;
+        text-align: center;
+        font-size: 12px;
+      }
+      .upTierBtn {
+        position: absolute;
+        bottom: 20px;
+        left: 16px;
+        right: 16px;
+        text-align: center;
+        button {
+          color: #fefefe;
+          background-color: #50c0ad;
+          border: 1px solid #50c0ad;
+          font-size: 14px;
+          line-height: 15px;
+          height: 32px;
+          padding: 8px 12px;
+          cursor: pointer;
+          margin: 0;
+          box-shadow: none;
+          border-radius: 3px;
+          font-weight: 500;
+          white-space: nowrap;
+        }
+      }
+    }
+    .table-cel {
+      position: relative;
+      border-right: 1px solid #e0e5eb;
+      border-bottom: 1px solid #e0e5eb;
+      .heading {
+        font-size: 18px;
+        font-weight: bold;
+      }
+      .description {
+        font-size: 14px;
+        margin: 12px 0;
+        line-height: 1.2rem;
+      }
+      .upgradeBtn {
+        text-align: left;
+        position: absolute;
+        bottom: 20px;
+        button {
+          color: #fefefe;
+          background-color: #50c0ad;
+          border: 1px solid #50c0ad;
+          font-size: 14px;
+          line-height: 15px;
+          height: 32px;
+          padding: 8px 12px;
+          cursor: pointer;
+          margin: 0;
+          box-shadow: none;
+          border-radius: 3px;
+          font-weight: 500;
+          white-space: nowrap;
+        }
+      }
+    }
+    .table-row {
+      .infoColumn {
+        background-color: #f1f5fa;
+        padding: 0px 20px;
+      }
+      .icon-check {
+        color: #50c0ad;
+        font-weight: bold;
+      }
+      .isCheck {
+        padding: 0px 16px;
+        .icon {
+          height: 100%;
+          width: 100%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+      }
+    }
+    .info {
+      background-color: #f1f5fa;
+      border-bottom: 1px solid #e0e5eb;
+      height: 260px;
+      box-sizing: border-box;
+      padding: 20px;
+    }
+  }
+}

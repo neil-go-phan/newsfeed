@@ -26,6 +26,14 @@ const Login: NextPage = () => {
     message: '',
   });
 
+  const handleRedirect = (link:string) => {
+    if (router.query.redirectTo) {
+      const newLink = `${link}?redirectTo=${router.query.redirectTo}`
+      return newLink
+    }
+    return link
+  } 
+
   const schema = yup.object().shape({
     username: yup.string().required('Username or email must not be empty'),
     password: yup
@@ -62,7 +70,12 @@ const Login: NextPage = () => {
         message: res.data.message,
       });
       logged?.setIsLogged(true);
-      router.push(_ROUTES.DASHBOARD_PAGE);
+      if (router.query.redirectTo) {
+        router.push(_ROUTES.FEEDS_PLAN)
+      } else {
+        router.push(_ROUTES.DASHBOARD_PAGE);
+      }
+      
     } catch (error: any) {
       setErrorMessage({
         trigger: true,
@@ -141,7 +154,7 @@ const Login: NextPage = () => {
                       <Button
                         className="px-4 text-white font-medium text-sm leading-snug uppercase rounded shadow-md hover:shadow-lg focus:shadow-lg focus:outline-none focus:ring-0 active:shadow-lg transition duration-150 ease-in-out w-full flex justify-center items-center mb-3 w-100"
                         style={{ backgroundColor: '#3b5998' }}
-                        href={getGoogleUrl(_ROUTES.TOKEN_REDIRECT)}
+                        href={getGoogleUrl(handleRedirect(_ROUTES.TOKEN_REDIRECT))}
                         role="button"
                         data-mdb-ripple="true"
                         data-mdb-ripple-color="light"
@@ -165,12 +178,12 @@ const Login: NextPage = () => {
                     <div className="text-center">
                       <h2>Register</h2>
                       <p>Register to experience all of our great features !</p>
-                      <Link href={_ROUTES.REGISTER_PAGE}>
+                      <Link href={handleRedirect(_ROUTES.REGISTER_PAGE)}>
                         <Button
                           className="btn btn-lg btn-outline-light mt-3"
                           type="button"
                         >
-                          Register Now!
+                          Register
                         </Button>
                       </Link>
                     </div>

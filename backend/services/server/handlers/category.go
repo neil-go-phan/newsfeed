@@ -39,8 +39,14 @@ func (h *CategoryHandler) Create(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"success": false, "message": "input invalid"})
 		return
 	}
+	role, exsit := c.Get("role")
+	if !exsit {
+		log.Error("Not found role in token string")
+		c.JSON(http.StatusBadRequest, gin.H{"success": false, "message": "bad request"})
+		return
+	}
 
-	err = h.service.CreateIfNotExist(category)
+	err = h.service.CreateIfNotExist(role.(string), category)
 	if err != nil {
 		log.Error("error occrus:", err)
 		c.JSON(http.StatusBadRequest, gin.H{"success": false, "message": err.Error()})
@@ -77,8 +83,13 @@ func (h *CategoryHandler) Delete(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"success": false, "message": "input invalid"})
 		return
 	}
-
-	err = h.service.Delete(category)
+	role, exsit := c.Get("role")
+	if !exsit {
+		log.Error("Not found role in token string")
+		c.JSON(http.StatusBadRequest, gin.H{"success": false, "message": "bad request"})
+		return
+	}
+	err = h.service.Delete(role.(string), category)
 	if err != nil {
 		log.Error("error occrus:", err)
 		c.JSON(http.StatusBadRequest, gin.H{"success": false, "message": err.Error()})
@@ -95,8 +106,13 @@ func (h *CategoryHandler) UpdateName(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"success": false, "message": "input invalid"})
 		return
 	}
-
-	err = h.service.UpdateName(payload)
+	role, exsit := c.Get("role")
+	if !exsit {
+		log.Error("Not found role in token string")
+		c.JSON(http.StatusBadRequest, gin.H{"success": false, "message": "bad request"})
+		return
+	}
+	err = h.service.UpdateName(role.(string), payload)
 	if err != nil {
 		log.Error("error occrus:", err)
 		c.JSON(http.StatusBadRequest, gin.H{"success": false, "message": err.Error()})

@@ -2,6 +2,7 @@ package repository
 
 import (
 	"server/entities"
+	"server/helpers"
 
 	"gorm.io/gorm"
 )
@@ -9,8 +10,13 @@ import (
 type UserRepository interface {
 	Create(userInput *entities.User) (*entities.User, error)
 	Get(username string) (u *entities.User, err error)
-	List() (user *[]entities.User, err error)
-	Delete(username string) error
+
+	List(page int, pageSize int) ([]entities.User, error)
+	Delete(id uint) error
+	ChangeRole(id uint, role string) error
+	UserUpgrateRole(username string) error
+	Count() (int, error)
+
 	Update(userInput *entities.User) error
 	GetWithEmail(email string) (*entities.User, error)
 	FindOrCreateWithEmail(*entities.User) (*entities.User, error)
@@ -19,6 +25,8 @@ type UserRepository interface {
 type UserRepo struct {
 	DB *gorm.DB
 }
+
+const PREMIUM_TIER = "Premium tier user"
 
 func NewUserRepo(db *gorm.DB) *UserRepo {
 	return &UserRepo{
@@ -32,6 +40,50 @@ func (repo *UserRepo) Create(userInput *entities.User) (*entities.User, error) {
 		return nil, err
 	}
 	return userInput, nil
+}
+
+func (repo *UserRepo) List(page int, pageSize int) ([]entities.User, error) {
+	users := make([]entities.User, 10)
+
+	err := repo.DB.Scopes(helpers.Paginate(page, pageSize)).Find(&users).Error
+	if err != nil {
+		return nil, err
+	}
+
+	return users, nil
+}
+
+func (repo *UserRepo) ChangeRole(id uint, role string) error {
+	err := repo.DB.
+		Model(&entities.User{}).
+		Where("id = ?", id).
+		Update("role_name", role).Error
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (repo *UserRepo) UserUpgrateRole(username string) error {
+	err := repo.DB.
+		Model(&entities.User{}).
+		Where("username = ?", username).
+		Update("role_name", PREMIUM_TIER).Error
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (repo *UserRepo) Count() (int, error) {
+	var count int64
+	err := repo.DB.Table("users").Count(&count).Error
+	if err != nil {
+		return 0, err
+	}
+	return int(count), nil
 }
 
 func (repo *UserRepo) Get(username string) (u *entities.User, err error) {
@@ -56,21 +108,8 @@ func (repo *UserRepo) GetWithEmail(email string) (*entities.User, error) {
 	return admin, nil
 }
 
-func (repo *UserRepo) List() (user *[]entities.User, err error) {
-	users := make([]entities.User, 10)
-	err = repo.DB.Select("role_name", "email", "username").Find(&users).Error
-	if err != nil {
-		return nil, err
-	}
-	return &users, nil
-}
-
-func (repo *UserRepo) Delete(username string) error {
-	user, err := getUser(username, repo)
-	if err != nil {
-		return err
-	}
-	err = repo.DB.Delete(&user).Error
+func (repo *UserRepo) Delete(id uint) error {
+	err := repo.DB.Unscoped().Delete(&entities.User{}, id).Error
 	if err != nil {
 		return err
 	}

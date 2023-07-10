@@ -144,7 +144,6 @@ func validateUserLoginWithUsername(user *services.LoginUserInput) error {
 	return nil
 }
 
-
 func validEmail(email string) error {
 	_, err := mail.ParseAddress(email)
 	return err
@@ -270,4 +269,13 @@ func createUserFromGoogleOAuth(googleUser *services.GoogleUserResult) (*entities
 		Salt:     base64.RawStdEncoding.EncodeToString(salt),
 	}
 	return user, nil
+}
+
+func castUserToResponse(user entities.User) services.UserResponse {
+	return services.UserResponse{
+		ID: user.ID,
+		Username: user.Username,
+		Email: user.Email,
+		RoleName: user.RoleName,
+	}
 }

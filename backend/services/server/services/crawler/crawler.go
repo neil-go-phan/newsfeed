@@ -22,17 +22,23 @@ type CrawlerService struct {
 	articlesSourceServices services.ArticlesSourceServices
 	cronjobService         services.CronjobServices
 	grpcClient             pb.CrawlerServiceClient
+	roleServices           services.RoleServices
 }
 
-const DEFAULT_SCHEDULE =  "@every 0h5m"
+const DEFAULT_SCHEDULE = "@every 0h5m"
+const CRAWLER_ROLE_ENTITY = "CRAWLER"
+const CRAWLER_ROLE_CREATE_METHOD = "CREATE"
+const CRAWLER_ROLE_UPDATE_METHOD = "UPDATE"
 
-func NewCrawlerService(repo repository.CrawlerRepository, articleService services.ArticleServices, articlesSourceServices services.ArticlesSourceServices, cronjobService services.CronjobServices, grpcClient pb.CrawlerServiceClient) *CrawlerService {
+
+func NewCrawlerService(repo repository.CrawlerRepository, articleService services.ArticleServices, articlesSourceServices services.ArticlesSourceServices, cronjobService services.CronjobServices, grpcClient pb.CrawlerServiceClient, roleServices services.RoleServices) *CrawlerService {
 	crawlerService := &CrawlerService{
 		repo:                   repo,
 		articleService:         articleService,
 		articlesSourceServices: articlesSourceServices,
 		cronjobService:         cronjobService,
 		grpcClient:             grpcClient,
+		roleServices:           roleServices,
 	}
 	return crawlerService
 }
@@ -67,7 +73,12 @@ func (s *CrawlerService) TestCustomCrawler(crawler entities.Crawler) (*services.
 	return articlesSource, articles, nil
 }
 
-func (s *CrawlerService) CreateCrawlerWithCorrespondingArticlesSource(payload services.CreateCrawlerPayload) error {
+func (s *CrawlerService) CreateCrawlerWithCorrespondingArticlesSource(role string, payload services.CreateCrawlerPayload) error {
+	isAllowed := s.roleServices.GrantPermission(role, CRAWLER_ROLE_ENTITY, CRAWLER_ROLE_CREATE_METHOD)
+	if !isAllowed {
+		return fmt.Errorf("unauthorized")
+	}
+
 	articlesSource, crawler := extractPayload(payload)
 	err := validateCreateCrawlerPayload(articlesSource, crawler)
 	if err != nil {
@@ -128,4 +139,63 @@ func (s *CrawlerService) CreateCrawlerCronjobFromDB() error {
 		s.cronjobService.CreateCrawlerCronjob(crawler)
 	}
 	return nil
+}
+
+func (s *CrawlerService) ListAllPaging(page int, pageSize int) ([]services.CrawlerResponse, int64, error) {
+	crawlerResponse := make([]services.CrawlerResponse, 0)
+	crawlers, found, err := s.repo.ListAllPaging(page, pageSize)
+	if err != nil {
+		return crawlerResponse, found, err
+	}
+	for _, crawler := range crawlers {
+		crawlerResponse = append(crawlerResponse, castCrawlerToResponse(crawler))
+	}
+	return crawlerResponse, found, nil
+}
+
+func (s *CrawlerService) UpdateSchedule(role string, id uint, newSchedule string) error {
+	isAllowed := s.roleServices.GrantPermission(role, CRAWLER_ROLE_ENTITY, CRAWLER_ROLE_UPDATE_METHOD)
+	if !isAllowed {
+		return fmt.Errorf("unauthorized")
+	}
+	crawler, err := s.repo.Get(id)
+	if err != nil {
+		return err
+	}
+
+	err = s.cronjobService.RemoveCronjob(*crawler)
+	if err != nil {
+		return err
+	}
+
+	crawler.Schedule = newSchedule
+
+	s.cronjobService.CreateCrawlerCronjob(*crawler)
+
+	err = s.repo.UpdateSchedule(id, newSchedule)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (s *CrawlerService) Get(id uint) (*entities.Crawler, error) {
+	return s.repo.Get(id)
+}
+
+func (s *CrawlerService) Update(role string, crawler entities.Crawler) error {
+	isAllowed := s.roleServices.GrantPermission(role, CRAWLER_ROLE_ENTITY, CRAWLER_ROLE_UPDATE_METHOD)
+	if !isAllowed {
+		return fmt.Errorf("unauthorized")
+	}
+	return s.repo.Update(crawler)
+}
+
+func (s *CrawlerService) CronjobOnDay(timeString string) (*[24]services.ChartDay, error) {
+	return s.cronjobService.CronjobOnDay(timeString)
+}
+
+func (s *CrawlerService) CronjobOnHour(timeString string) (*[60]services.ChartHour, error) {
+	return s.cronjobService.CronjobOnHour(timeString)
 }

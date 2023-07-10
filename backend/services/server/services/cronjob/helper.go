@@ -63,6 +63,7 @@ func newCronjobInChart(cronjob entities.Cronjob) services.CronjobInChart {
 		Name:    cronjob.Name,
 		StartAt: startAt,
 		EndAt:   endAt,
+		NewArticlesCount: cronjob.NewArticlesCount,
 	}
 }
 
@@ -168,13 +169,13 @@ func readDayFromFrontend(timeString string) (day time.Time, endOfDay time.Time, 
 }
 
 func fillDayChartData(cronjobs []entities.Cronjob, charts [24]services.ChartDay) [24]services.ChartDay{
-	for _, entityChart := range cronjobs {
-		hour := entityChart.StartedAt.Hour()
+	for _, cronjob := range cronjobs {
+		hour := cronjob.StartedAt.Hour()
 		charts[hour].AmountOfJob += 1
 		if charts[hour].Cronjobs == nil {
 			charts[hour].Cronjobs = map[string]int{}
 		}
-		charts[hour].Cronjobs[entityChart.Name] += 1
+		charts[hour].Cronjobs[cronjob.Name] += 1
 	}
 
 	return charts

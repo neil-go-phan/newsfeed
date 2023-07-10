@@ -100,7 +100,7 @@ const DashboardNewArticles: React.FC<Props> = (props: Props) => {
     }
   };
   return (
-    <div className='article col-3' onClick={handleModal}>
+    <div className='article my-3 my-md-0 col-6 col-md-3' onClick={handleModal}>
       <div className="img">
         <div
           className="bg"

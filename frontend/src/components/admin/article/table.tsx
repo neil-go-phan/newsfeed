@@ -1,6 +1,5 @@
 import React from 'react';
 import { Table } from 'react-bootstrap';
-import { ThreeDots } from 'react-loader-spinner';
 import AdminArticlesAction from './action';
 type Props = {
   articles: Articles;
@@ -12,19 +11,11 @@ const ArticlesTable: React.FC<Props> = (props: Props) => {
   if (props.articles.length === 0) {
     return (
       <div className="threeDotLoading">
-        <ThreeDots
-          height="50"
-          width="50"
-          radius="9"
-          color="#4fa94d"
-          ariaLabel="three-dots-loading"
-          visible={true}
-        />
+        Not found articles
       </div>
     );
   }
   return (
-    <>
       <div className="adminArticles__list--table">
         <Table responsive striped bordered hover>
           <thead>
@@ -41,7 +32,7 @@ const ArticlesTable: React.FC<Props> = (props: Props) => {
           </thead>
           <tbody>
             {props.articles.map((article, index) => (
-              <tr key={`article_crawler_test_${article.title}`}>
+              <tr key={`article_admin_${article.title}`}>
                 <td>{index + 1 + 10 * (props.currentPage - 1)}</td>
                 <td>
                   <p>{article.title}</p>
@@ -75,7 +66,7 @@ const ArticlesTable: React.FC<Props> = (props: Props) => {
           </tbody>
         </Table>
       </div>
-    </>
+
   );
 };
 

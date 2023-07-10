@@ -98,16 +98,16 @@ const BYPASS_SECURE_SCRIPT = `(function(w, n, wn) {
 
 })(window, navigator, window.navigator);`
 
-func validateCrawler(crawler entities.Crawler) (error) {
+func validateCrawler(crawler entities.Crawler) error {
 	_, err := url.ParseRequestURI(crawler.SourceLink)
 	if err != nil {
-		return  err
+		return err
 	}
 	return nil
 }
 
-func getTestRSSCrawlerResult(grpcClient pb.CrawlerServiceClient, crawler entities.Crawler) (*pb.TestResult, error){
-	ctx, cancle := context.WithTimeout(context.Background(), 1 * time.Minute)
+func getTestRSSCrawlerResult(grpcClient pb.CrawlerServiceClient, crawler entities.Crawler) (*pb.TestResult, error) {
+	ctx, cancle := context.WithTimeout(context.Background(), 1*time.Minute)
 	defer cancle()
 
 	in := helpers.CastEntityCrawlerToPbCrawler(crawler)
@@ -116,13 +116,13 @@ func getTestRSSCrawlerResult(grpcClient pb.CrawlerServiceClient, crawler entitie
 	if err != nil {
 		log.Error(err)
 		status, _ := status.FromError(err)
-		return nil, fmt.Errorf(status.Message()) 
+		return nil, fmt.Errorf(status.Message())
 	}
 	return result, nil
 }
 
-func getTestCustomCrawlerResult(grpcClient pb.CrawlerServiceClient, crawler entities.Crawler) (*pb.TestResult, error){
-	ctx, cancle := context.WithTimeout(context.Background(), 1 * time.Minute)
+func getTestCustomCrawlerResult(grpcClient pb.CrawlerServiceClient, crawler entities.Crawler) (*pb.TestResult, error) {
+	ctx, cancle := context.WithTimeout(context.Background(), 1*time.Minute)
 	defer cancle()
 
 	in := helpers.CastEntityCrawlerToPbCrawler(crawler)
@@ -131,29 +131,29 @@ func getTestCustomCrawlerResult(grpcClient pb.CrawlerServiceClient, crawler enti
 	if err != nil {
 		log.Error(err)
 		status, _ := status.FromError(err)
-		return nil, fmt.Errorf(status.Message()) 
+		return nil, fmt.Errorf(status.Message())
 	}
 	return result, nil
 }
 
 func extractPayload(payload services.CreateCrawlerPayload) (entities.ArticlesSource, entities.Crawler) {
 	articlesSource := entities.ArticlesSource{
-		Title: payload.ArticlesSource.Title,
+		Title:       payload.ArticlesSource.Title,
 		Description: payload.ArticlesSource.Description,
-		Link: payload.ArticlesSource.Link,
-		FeedLink: payload.ArticlesSource.FeedLink,
-		Image: payload.ArticlesSource.Image,
-		TopicID: payload.ArticlesSource.TopicID,
+		Link:        payload.ArticlesSource.Link,
+		FeedLink:    payload.ArticlesSource.FeedLink,
+		Image:       payload.ArticlesSource.Image,
+		TopicID:     payload.ArticlesSource.TopicID,
 	}
 	crawler := entities.Crawler{
-		SourceLink: payload.Crawler.SourceLink,
-		FeedLink: payload.Crawler.FeedLink,
-		CrawlType: payload.Crawler.CrawlType,
-		ArticleDiv: payload.Crawler.ArticleDiv,
-		ArticleTitle: payload.Crawler.ArticleTitle,
+		SourceLink:         payload.Crawler.SourceLink,
+		FeedLink:           payload.Crawler.FeedLink,
+		CrawlType:          payload.Crawler.CrawlType,
+		ArticleDiv:         payload.Crawler.ArticleDiv,
+		ArticleTitle:       payload.Crawler.ArticleTitle,
 		ArticleDescription: payload.Crawler.ArticleDescription,
-		ArticleLink: payload.Crawler.ArticleLink,
-		ArticleAuthors: payload.Crawler.ArticleAuthors,
+		ArticleLink:        payload.Crawler.ArticleLink,
+		ArticleAuthors:     payload.Crawler.ArticleAuthors,
 	}
 	return articlesSource, crawler
 }
@@ -173,13 +173,12 @@ func validateCreateCrawlerPayload(articleSource entities.ArticlesSource, crawler
 	if crawler.CrawlType == "feed" {
 		_, err := url.ParseRequestURI(crawler.FeedLink)
 		if err != nil {
-			return  err
+			return err
 		}
 	}
 
 	return nil
 }
-
 
 func createContext() (context.Context, context.CancelFunc) {
 	opts := append(chromedp.DefaultExecAllocatorOptions[:],
@@ -198,12 +197,12 @@ func createContext() (context.Context, context.CancelFunc) {
 
 func getDocTask(url string, htmlContent *string) chromedp.Tasks {
 	return chromedp.Tasks{
-		
+
 		addScriptByPassSecure(),
 
 		chromedp.Navigate(url),
 		chromedp.Sleep(6 * time.Second),
-		
+
 		getHtmlContent(htmlContent),
 	}
 }
@@ -266,4 +265,15 @@ func renderNode(n *html.Node) string {
 		log.Error(err)
 	}
 	return sb.String()
+}
+
+func castCrawlerToResponse(entityCrawler entities.Crawler) services.CrawlerResponse {
+	return services.CrawlerResponse{
+		ID:               entityCrawler.ID,
+		SourceLink:       entityCrawler.SourceLink,
+		FeedLink:         entityCrawler.FeedLink,
+		CrawlType:        entityCrawler.CrawlType,
+		Schedule:         entityCrawler.Schedule,
+		ArticlesSourceID: entityCrawler.ArticlesSourceID,
+	}
 }
