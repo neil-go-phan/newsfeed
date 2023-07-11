@@ -99,7 +99,7 @@ type CrawlerFromFrontend struct {
 	ArticleDescription string `json:"article_description"`
 	ArticleLink        string `json:"article_link"`
 	ArticleAuthors     string `json:"article_authors"`
-	// Schedule           string `json:"schedule"`
+	Schedule           string `json:"schedule"`
 }
 
 type CreateCrawlerPayload struct {
@@ -133,8 +133,9 @@ type ChartDay struct {
 }
 
 type UpdateNameCategoryPayload struct {
-	Category entities.Category `json:"category"`
-	NewName  string            `json:"new_name"`
+	Category        entities.Category `json:"category"`
+	NewName         string            `json:"new_name"`
+	NewIllustration string            `json:"new_illustration"`
 }
 
 type CategoryResponse struct {

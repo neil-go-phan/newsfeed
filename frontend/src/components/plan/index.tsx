@@ -1,20 +1,25 @@
 import Image from 'next/image';
-import React from 'react';
+import React, { useContext } from 'react';
 import { compareItems } from '../pricing/compare';
 import FeatureCel from './featureCel';
 import axiosProtectedAPI from '@/helpers/axiosProtectedAPI';
 import { alertError, alertSuccess } from '@/helpers/alert';
 import { setCookie } from 'cookies-next';
+import { RoleContext } from '@/common/contexts/roleContext';
 
 const ICON_SIZE = 60;
 
 const UPDATE_USER_ROLE_FAIL_MESSAGE = 'fali';
 const UPDATE_USER_ROLE_SUCCESS_MESSAGE = 'You have become a premium user';
+const GET_ROLE_FAIL_MESSAGE = 'fail';
 
 function UserPlan() {
   const handleUpgrateToPremium = () => {
     requestUpgrateToPremium();
   };
+
+  const { setRole } = useContext(RoleContext);
+
   const requestUpgrateToPremium = async () => {
     try {
       const { data } = await axiosProtectedAPI.get('/auth/update/premium');
@@ -27,8 +32,25 @@ function UserPlan() {
       setCookie('access_token', data.access_token);
       setCookie('refresh_token', data.refresh_token);
       alertSuccess(UPDATE_USER_ROLE_SUCCESS_MESSAGE);
+      requestGetRole();
     } catch (error: any) {
       alertError(error);
+    }
+  };
+  const requestGetRole = async () => {
+    try {
+      const { data } = await axiosProtectedAPI.get('role/get');
+      if (!data.success) {
+        if (data.message) {
+          throw data.message;
+        }
+        throw GET_ROLE_FAIL_MESSAGE;
+      }
+      setRole(data.role);
+    } catch (error: any) {
+      alertError(
+        'fail to get role, please logout and login again to update your role'
+      );
     }
   };
 
@@ -89,7 +111,7 @@ function UserPlan() {
         </div>
         <div className="table-row">
           {compareItems.map((item) => (
-            <FeatureCel item={item} />
+            <FeatureCel key={`feature cel ${item.description}`} item={item} />
           ))}
         </div>
       </div>

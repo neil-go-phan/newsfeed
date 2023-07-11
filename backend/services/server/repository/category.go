@@ -17,7 +17,7 @@ type CategoryRepository interface {
 
 	CreateIfNotExist(category entities.Category) error
 	Delete(category entities.Category) error
-	Update(category entities.Category, newName string) error
+	Update(category entities.Category) error
 }
 
 type CategoryRepo struct {
@@ -84,7 +84,7 @@ func (repo *CategoryRepo) Delete(category entities.Category) error {
 	return nil
 }
 
-func (repo *CategoryRepo) Update(category entities.Category, newName string) error {
+func (repo *CategoryRepo) Update(category entities.Category) error {
 	err := repo.DB.Model(&category).
 		Updates(entities.Category{Name: category.Name, Illustration: category.Illustration}).Error
 	if err != nil {

@@ -7,7 +7,8 @@ import axiosProtectedAPI from '@/helpers/axiosProtectedAPI';
 import { Button } from 'react-bootstrap';
 import { alertSuccess } from '@/helpers/alert';
 import { _ROUTES } from '@/helpers/constants';
-import { useRouter } from 'next/router';
+import OverlayLoading from '@/common/overlayLoading';
+
 type Props = {
   crawler: Crawler | undefined;
   articlesSources: ArticlesSource | undefined;
@@ -21,12 +22,12 @@ const ALERT_SUCCESS_MESSAGE = 'Create crawler success';
 const ALERT_UPDATE_SUCCESS_MESSAGE = 'Update crawler success';
 const IMAGE_SIZE_PIXEL = 50;
 const ERROR_MESSAGE_WHEN_CREATE_FAIL = 'error occrus when create crawler';
-const FAIL_MESSAGE = 'faillllllllllllll'
+const FAIL_MESSAGE = 'faillllllllllllll';
 
 const ConfirmModal: React.FC<Props> = (props: Props) => {
   const [image, setImage] = useState<string>('');
-  const router = useRouter();
   const [errorMessage, setErrorMessage] = useState<string>('');
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const requestCreateCrawler = async (payload: CreateCrawlerPayload) => {
     try {
@@ -38,25 +39,23 @@ const ConfirmModal: React.FC<Props> = (props: Props) => {
         setErrorMessage('');
         props.handleIsConfirmModalClose();
         alertSuccess(ALERT_SUCCESS_MESSAGE);
-        
       }
       if (!res?.data.success) {
         throw res;
       }
+      setIsLoading(false);
     } catch (error: any) {
       setErrorMessage(error.data.message || ERROR_MESSAGE_WHEN_CREATE_FAIL);
+      setIsLoading(false);
     }
   };
 
   const requestUpdate = async (id: number, crawler: Crawler) => {
     try {
-      const { data } = await axiosProtectedAPI.post(
-        '/crawler/update',
-        {
-          id: id,
-          crawler: crawler,
-        }
-      );
+      const { data } = await axiosProtectedAPI.post('/crawler/update', {
+        id: id,
+        crawler: crawler,
+      });
       if (!data.success) {
         if (data.message) {
           throw data.message;
@@ -65,7 +64,6 @@ const ConfirmModal: React.FC<Props> = (props: Props) => {
       }
       props.handleIsConfirmModalClose();
       alertSuccess(ALERT_UPDATE_SUCCESS_MESSAGE);
-      
     } catch (error: any) {
       setErrorMessage(error);
     }
@@ -77,6 +75,7 @@ const ConfirmModal: React.FC<Props> = (props: Props) => {
         articles_source: props.articlesSources,
         crawler: props.crawler,
       };
+      setIsLoading(true);
       requestCreateCrawler(payload);
     }
   };
@@ -227,6 +226,7 @@ const ConfirmModal: React.FC<Props> = (props: Props) => {
         </Button>
       )}
       {errorMessage !== '' && <p className="errorMessage">{errorMessage}</p>}
+      {isLoading ? <OverlayLoading /> : <></>}
     </div>
   );
 };

@@ -1,6 +1,7 @@
 package infras
 
 import (
+	"server/db/seed"
 	pb "server/proto"
 
 	"github.com/gin-gonic/gin"
@@ -22,6 +23,8 @@ func SetupRoute(db *gorm.DB, r *gin.Engine, grpcClient pb.CrawlerServiceClient, 
 	readLaterRoutes := InitizeReadLater(db)
 	roleRoutes := InitizeRole(db)
 	permissionRoutes := InitizePermission(db)
+
+	seed.Seed(db, grpcClient, jobIDMap)
 
 	userRoutes.Setup(r)
 	crawlerRoutes.Setup(r)

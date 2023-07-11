@@ -83,7 +83,7 @@ function UserAddCustomCrawler() {
         />
       </Popup>
     </div>
-  );
+  )
 }
 
 export default UserAddCustomCrawler;

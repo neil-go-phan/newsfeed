@@ -8,7 +8,7 @@ type Props = {
   name: string;
   illustration: string;
   isDisabled: boolean;
-  handleUpdateCategory: (id: number, oldName: string, newName: string) => void;
+  handleUpdateCategory: (id: number, oldName: string, newName: string, newIllustration: string) => void;
 };
 
 const UpdateBtn: React.FC<Props> = (props: Props) => {
@@ -18,7 +18,7 @@ const UpdateBtn: React.FC<Props> = (props: Props) => {
     setIsInputNameModalOpen(false);
   };
   const handleUpdateCategory = (newName: string, newIllustration:string) => {
-    props.handleUpdateCategory(props.id, props.name, newName);
+    props.handleUpdateCategory(props.id, props.name, newName, newIllustration);
     handleIsInputNameModalClose()
   };
 

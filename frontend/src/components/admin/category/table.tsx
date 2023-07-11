@@ -18,7 +18,12 @@ type CategoryRow = {
 type Props = {
   categories: Categories;
   currentPage: number;
-  handleUpdateCategory: (id: number, oldName: string, newName: string) => void;
+  handleUpdateCategory: (
+    id: number,
+    oldName: string,
+    newName: string,
+    newIllustration: string
+  ) => void;
   handleDeleteCategory: (id: number, name: string) => void;
 };
 

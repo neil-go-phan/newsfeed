@@ -6,6 +6,8 @@ import (
 	"server/repository"
 	"server/services"
 	"strings"
+
+	"gorm.io/gorm"
 )
 
 const OTHERS_CATEGORY_ID = 1
@@ -75,21 +77,21 @@ func (s *CategoryService) ListAll() ([]services.CategoryResponse, error) {
 	return categoriesResponse, nil
 }
 
-func (s *CategoryService) UpdateName(role string, payload services.UpdateNameCategoryPayload) error {
+func (s *CategoryService) Update(role string, payload services.UpdateNameCategoryPayload) error {
 	isAllowed := s.roleServices.GrantPermission(role, CATEGORY_ROLE_ENTITY, CATEGORY_ROLE_UPDATE_METHOD)
 	if !isAllowed {
 		return fmt.Errorf("unauthorized")
 	}
-	category, newName := extractUpdateNamePayload(payload)
-	err := validateCategoryName(category)
-	if err != nil {
-		return err
+
+	categoty := entities.Category{
+		Model: gorm.Model{
+			ID: payload.Category.ID,
+		},
+		Name: payload.NewName,
+		Illustration: payload.NewIllustration,
 	}
-	checkCategory, err := s.repo.Get(newName)
-	if checkCategory.Name == newName && err == nil {
-		return fmt.Errorf("category %s already exist", newName)
-	}
-	return s.repo.Update(category, newName)
+	
+	return s.repo.Update(categoty)
 }
 
 func (s *CategoryService) Delete(role string, category entities.Category) error {

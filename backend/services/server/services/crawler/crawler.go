@@ -30,7 +30,6 @@ const CRAWLER_ROLE_ENTITY = "CRAWLER"
 const CRAWLER_ROLE_CREATE_METHOD = "CREATE"
 const CRAWLER_ROLE_UPDATE_METHOD = "UPDATE"
 
-
 func NewCrawlerService(repo repository.CrawlerRepository, articleService services.ArticleServices, articlesSourceServices services.ArticlesSourceServices, cronjobService services.CronjobServices, grpcClient pb.CrawlerServiceClient, roleServices services.RoleServices) *CrawlerService {
 	crawlerService := &CrawlerService{
 		repo:                   repo,
@@ -89,8 +88,10 @@ func (s *CrawlerService) CreateCrawlerWithCorrespondingArticlesSource(role strin
 	if err != nil {
 		return err
 	}
+	if crawler.Schedule == "" {
+		crawler.Schedule = DEFAULT_SCHEDULE
+	}
 
-	crawler.Schedule = DEFAULT_SCHEDULE
 	crawler.ArticlesSourceID = articlesSource.ID
 
 	crawler, err = s.repo.CreateIfNotExist(crawler)

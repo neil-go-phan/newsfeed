@@ -154,6 +154,7 @@ func extractPayload(payload services.CreateCrawlerPayload) (entities.ArticlesSou
 		ArticleDescription: payload.Crawler.ArticleDescription,
 		ArticleLink:        payload.Crawler.ArticleLink,
 		ArticleAuthors:     payload.Crawler.ArticleAuthors,
+		Schedule:           payload.Crawler.Schedule,
 	}
 	return articlesSource, crawler
 }

@@ -14,7 +14,7 @@ const REQUEST_GET_TOPICS_BY_CATEGORY_FAIL_MESSAGE =
   'get topic by category fail';
 const REQUEST_GET_ARTICLES_SOURCES_BY_TOPIC_ID_FAIL_MESSAGE =
   'get articles sources by topic fail';
-const PAGE_SIZE = 10;
+const PAGE_SIZE = 2;
 const FIRST_PAGE = 1;
 
 function FilterByCategory() {
@@ -88,6 +88,11 @@ function FilterByCategory() {
         }
         throw REQUEST_GET_ARTICLES_SOURCES_BY_TOPIC_ID_FAIL_MESSAGE;
       }
+      if (data.articles_sources.length === PAGE_SIZE) {
+        setHasMore(true);
+      } else {
+        setHasMore(false);
+      }
       setArticlesSources(data.articles_sources);
       setFound(data.found);
       setIsLoadingArticlesSources(false);
@@ -113,7 +118,9 @@ function FilterByCategory() {
         }
         throw REQUEST_GET_ARTICLES_SOURCES_BY_TOPIC_ID_FAIL_MESSAGE;
       }
-      if (data.articles_sources.length === 0) {
+      if (data.articles_sources.length === PAGE_SIZE) {
+        setHasMore(true);
+      } else {
         setHasMore(false);
       }
       const newArticleSources = articlesSources.concat(data.articles_sources);

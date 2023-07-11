@@ -139,6 +139,11 @@ function SearchWebsResult() {
         }
         throw REQUEST_GET_ARTICLES_SOURCES_BY_TOPIC_ID_FAIL_MESSAGE;
       }
+      if (data.articles_sources.length === PAGE_SIZE) {
+        setHasMore(true);
+      } else {
+        setHasMore(false);
+      }
       setFound(data.found);
       setArticlesSources(data.articles_sources);
     } catch (error: any) {}
@@ -168,7 +173,7 @@ function SearchWebsResult() {
       setArticlesSources([...newArticleSources]);
     } catch (error: any) {}
   };
-
+  
   return (
     <div className="searchWebsResult">
       {topics.length !== 0 ? (

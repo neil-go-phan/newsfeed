@@ -44,9 +44,10 @@ export default function AdminCategories() {
   const handleUpdateCategory = (
     id: number,
     oldName: string,
-    newName: string
+    newName: string,
+    newIllustration: string
   ) => {
-    requestUpdateCategory(id, oldName, newName);
+    requestUpdateCategory(id, oldName, newName, newIllustration);
   };
   // TODO: refactor paging logic
   const pageChangeHandler = (currentPage: number) => {
@@ -77,11 +78,13 @@ export default function AdminCategories() {
   const requestUpdateCategory = async (
     id: number,
     name: string,
-    newName: string
+    newName: string,
+    newIllustration: string
   ) => {
     try {
-      const { data } = await axiosProtectedAPI.post('category/update/name', {
+      const { data } = await axiosProtectedAPI.post('category/update', {
         new_name: newName,
+        new_illustration: newIllustration,
         category: {
           name: name,
           id: id,
