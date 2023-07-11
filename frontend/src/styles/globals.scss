@@ -1,57 +1,57 @@
-@import "~nprogress/nprogress.css";
-@import "~bootstrap/scss/bootstrap";
+@import '~nprogress/nprogress.css';
+@import '~bootstrap/scss/bootstrap';
 @import 'react-toastify/dist/ReactToastify.css';
-@import "reactjs-popup/dist/index.css";
+@import 'reactjs-popup/dist/index.css';
 @import '@fontsource/roboto/300.css';
 @import '@fontsource/roboto/400.css';
 @import '@fontsource/roboto/500.css';
 @import '@fontsource/roboto/700.css';
 
 @import 'react-select-search/style.css';
-@import "react-datepicker/dist/react-datepicker.css";
+@import 'react-datepicker/dist/react-datepicker.css';
 
 // html *
 // {
 //    font-family: Arial !important;
 // }
 
-// mixin 
-@import "./common/mixin";
+// mixin
+@import './common/mixin';
 
 // variable
-@import "./variables/colors";
+@import './variables/colors';
 
 // commom
-@import "./common/scrollbar";
-@import "./common/errorMessage";
-@import "./common/backToTopBtn";
-@import "./common/bootstrapBtn";
-@import "./common/loading";
-@import "./common/articleCard";
-@import "./common/searchBar";
-@import "./common/articlesSourcesSearchResult";
+@import './common/scrollbar';
+@import './common/errorMessage';
+@import './common/backToTopBtn';
+@import './common/bootstrapBtn';
+@import './common/loading';
+@import './common/articleCard';
+@import './common/searchBar';
+@import './common/articlesSourcesSearchResult';
+@import './common/overlayLoading';
 
-// layout 
-@import "./layouts/auth";
-@import "./layouts/home";
-@import "./layouts/adminSidebar";
-@import "./layouts/feeds";
+// layout
+@import './layouts/auth';
+@import './layouts/home';
+@import './layouts/adminSidebar';
+@import './layouts/feeds';
 
 // pages
-@import "./pages/auth";
-@import "./pages/library";
-@import "./pages/landing";
-@import "./pages/pricing";
-@import "./pages/plan";
-@import "./pages/addSource";
+@import './pages/auth';
+@import './pages/library';
+@import './pages/landing';
+@import './pages/pricing';
+@import './pages/plan';
+@import './pages/addSource';
 
 // components
-@import "./components/navbar";
+@import './components/navbar';
 
-@import "./components/banner";
-@import "./components/footer";
-@import "./components/admin";
-@import "./components/addCrawler";
-@import "./components/feedsComponents";
-@import "./components/userDashboard";
-
+@import './components/banner';
+@import './components/footer';
+@import './components/admin';
+@import './components/addCrawler';
+@import './components/feedsComponents';
+@import './components/userDashboard';

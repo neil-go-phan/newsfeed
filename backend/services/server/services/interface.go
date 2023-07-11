@@ -118,7 +118,7 @@ type CategoryServices interface {
 
 	CreateIfNotExist(role string, category entities.Category) error
 	Delete(role string, category entities.Category) error
-	UpdateName(role string, payload UpdateNameCategoryPayload) error
+	Update(role string, payload UpdateNameCategoryPayload) error
 }
 
 type TopicServices interface {

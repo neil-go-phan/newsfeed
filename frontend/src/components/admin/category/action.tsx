@@ -8,7 +8,7 @@ type Props = {
   illustration: string;
   isDisabled: boolean;
   handleDeleteCategory: (id: number, name: string) => void;
-  handleUpdateCategory: (id: number, oldName: string, newName: string) => void;
+  handleUpdateCategory: (id: number, oldName: string, newName: string, newIllustration: string) => void;
 };
 
 const AdminCategoriesAction: React.FC<Props> = (props: Props) => {

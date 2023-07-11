@@ -384,7 +384,7 @@ const ArticlesSource: React.FC<Props> = (props: Props) => {
                   type="file"
                   name="source-logo"
                   id="file"
-                  accept=".jpef, .png, .jpg"
+                  accept=".jpef, .png, .jpg, .jpeg"
                   onChange={(event) => photoUpload(event)}
                   src={image}
                 />

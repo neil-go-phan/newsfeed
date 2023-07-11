@@ -6,7 +6,7 @@ import UserAddCustomCrawler from '@/components/userAddSource/addCrawler/addCusto
 const NewSource: NextPageWithLayout = () => {
   return (
     <div className="addSource">
-      <UserAddCustomCrawler />;
+      <UserAddCustomCrawler />
     </div>
   );
 };

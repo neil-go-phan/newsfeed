@@ -46,7 +46,7 @@ const UpdateCategoryModal: React.FC<Props> = (props: Props) => {
     defaultValues: useMemo(() => {
       return {
         name: props.oldName,
-        imgSize: DEFAULT_IMG_SIZE,
+        imgSize: DEFAULT_IMG_SIZE + 1,
       };
     }, [props]),
   });

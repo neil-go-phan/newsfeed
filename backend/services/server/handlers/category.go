@@ -22,7 +22,7 @@ type CategoryHandlerInterface interface {
 
 	Create(c *gin.Context)
 	Delete(c *gin.Context)
-	UpdateName(c *gin.Context)
+	Update(c *gin.Context)
 }
 
 func NewCategoryHandler(service services.CategoryServices) *CategoryHandler {
@@ -98,7 +98,7 @@ func (h *CategoryHandler) Delete(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"success": true, "message": "delete success"})
 }
 
-func (h *CategoryHandler) UpdateName(c *gin.Context) {
+func (h *CategoryHandler) Update(c *gin.Context) {
 	var payload services.UpdateNameCategoryPayload
 	err := c.BindJSON(&payload)
 	if err != nil {
@@ -112,7 +112,7 @@ func (h *CategoryHandler) UpdateName(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"success": false, "message": "bad request"})
 		return
 	}
-	err = h.service.UpdateName(role.(string), payload)
+	err = h.service.Update(role.(string), payload)
 	if err != nil {
 		log.Error("error occrus:", err)
 		c.JSON(http.StatusBadRequest, gin.H{"success": false, "message": err.Error()})
