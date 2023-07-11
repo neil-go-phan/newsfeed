@@ -1,23 +1,27 @@
 package seed
 
 import (
+	"fmt"
+	"math/rand"
 	"server/entities"
 	"server/repository"
 	"server/services"
 	articleservices "server/services/article"
 	articlessourceservices "server/services/articlesSource"
 	categoryservices "server/services/category"
+	"sync"
+	"time"
 
 	crawlerservices "server/services/crawler"
 	cronjobservices "server/services/cronjob"
 
-	// "server/services/follow"
+	"server/services/follow"
 	// "server/services/read"
 	// "server/services/readLater"
 	roleservice "server/services/role"
 	topicservices "server/services/topic"
 
-	// "server/services/user"
+	userservice "server/services/user"
 
 	pb "server/proto"
 
@@ -27,11 +31,14 @@ import (
 )
 
 const SUPERADMIN_ROLE = "Superadmin"
+const AMOUNT_OF_SEED_CRAWLER = 38;
 
 func Seed(db *gorm.DB, grpcClient pb.CrawlerServiceClient, jobIDMap map[string]cron.EntryID) {
 	seedCategory(db)
 	seedTopic(db)
 	seedCrawler(db, grpcClient, jobIDMap)
+	seedUser(db)
+	seedFollow(db)
 }
 
 func seedCategory(db *gorm.DB) {
@@ -1006,4 +1013,58 @@ func seedCrawler(db *gorm.DB, grpcClient pb.CrawlerServiceClient, jobIDMap map[s
 		}
 	}
 	log.Println("finish seed crawler and source")
+}
+
+func seedUser(db *gorm.DB) {
+	log.Println("start seed user")
+
+	userRepo := repository.NewUserRepo(db)
+	roleRepo := repository.NewRoleRepo(db)
+	roleService := roleservice.NewRoleService(roleRepo)
+	userService := userservice.NewUserService(userRepo, roleService)
+
+	const SHA512_1_TO_8 = "fa585d89c851dd338a70dcf535aa2a92fee7836dd6aff1226583e88e0996293f16bc009c652826e0fc5c706695a03cddce372f139eff4d13959da6f1f5d3eabe"
+
+	for i := 0; i < 50; i++ {
+		user := &services.RegisterUserInput{
+			Username: fmt.Sprint("userseed", i),
+			Email: fmt.Sprintf("userseed%v@gmail.com", i),
+			Password: SHA512_1_TO_8,
+			PasswordConfirmation: SHA512_1_TO_8,
+		}
+		userService.CreateUser(user)
+	}
+	log.Println("finish seed user")
+}
+
+func seedFollow(db *gorm.DB) {
+	log.Println("start seed user")
+	followRepo := repository.NewFollow(db)
+	articlesSourcesRepo := repository.NewArticlesSourcesRepo(db)
+	roleRepo := repository.NewRoleRepo(db)
+	roleService := roleservice.NewRoleService(roleRepo)
+	articlesSourceService := articlessourceservices.NewArticlesSourceService(articlesSourcesRepo, roleService)
+	followService := followservices.NewFollowService(followRepo, articlesSourceService)
+
+	var wg sync.WaitGroup
+
+	for i:= 1; i < 50; i++ {
+		wg.Add(1)
+		go func (i int)  {
+			username := fmt.Sprint("userseed", i)
+			for j := 0; j < randomInt(1, 20); j++ {
+				articlesSourceID := randomInt(1, AMOUNT_OF_SEED_CRAWLER)
+				followService.Follow(username, uint(articlesSourceID))
+			}
+			wg.Done()
+		}(i)
+	}
+	wg.Wait()
+	log.Println("finish seed user")
+}
+
+func randomInt(min int, max int) int {
+	seed := time.Now().UnixNano()
+	rand.New(rand.NewSource(seed))
+	return rand.Intn(max - min + 1) + min
 }
