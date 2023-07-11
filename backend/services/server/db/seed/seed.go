@@ -1032,7 +1032,10 @@ func seedUser(db *gorm.DB) {
 			Password: SHA512_1_TO_8,
 			PasswordConfirmation: SHA512_1_TO_8,
 		}
-		userService.CreateUser(user)
+		_,err := userService.CreateUser(user)
+		if err != nil {
+			log.Error("error when seed user: ", err)
+		}
 	}
 	log.Println("finish seed user")
 }
@@ -1054,7 +1057,10 @@ func seedFollow(db *gorm.DB) {
 			username := fmt.Sprint("userseed", i)
 			for j := 0; j < randomInt(1, 20); j++ {
 				articlesSourceID := randomInt(1, AMOUNT_OF_SEED_CRAWLER)
-				followService.Follow(username, uint(articlesSourceID))
+				err := followService.Follow(username, uint(articlesSourceID))
+				if err != nil {
+					log.Error("error when seed follow: ", err)
+				}
 			}
 			wg.Done()
 		}(i)
