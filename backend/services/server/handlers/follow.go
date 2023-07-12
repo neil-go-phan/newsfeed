@@ -13,6 +13,7 @@ type FollowHandler struct {
 	service services.FollowServices
 }
 
+//go:generate mockery --name FollowHandlerInterface
 type FollowHandlerInterface interface {
 	Follow(c *gin.Context)
 	Unfollow(c *gin.Context)

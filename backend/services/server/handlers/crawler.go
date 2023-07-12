@@ -20,6 +20,7 @@ type CrawlerHandler struct {
 	service services.CrawlerServices
 }
 
+//go:generate mockery --name CrawlerHandlerInterface
 type CrawlerHandlerInterface interface {
 	TestRSSCrawler(c *gin.Context)
 	TestCustomCrawler(c *gin.Context)

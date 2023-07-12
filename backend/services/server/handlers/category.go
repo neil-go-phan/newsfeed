@@ -14,6 +14,7 @@ type CategoryHandler struct {
 	service services.CategoryServices
 }
 
+//go:generate mockery --name CategoryHandlerInterface
 type CategoryHandlerInterface interface {
 	ListName(c *gin.Context)
 	ListAll(c *gin.Context)
@@ -149,7 +150,7 @@ func (h *CategoryHandler) Count(c *gin.Context) {
 	total, err := h.service.Count()
 	if err != nil {
 		log.Error("error occrus:", err)
-		c.JSON(http.StatusInternalServerError, gin.H{"success": false, "message": "server error"})
+		c.JSON(http.StatusInternalServerError, gin.H{"success": false, "message": "internal server error"})
 		return
 	}
 	c.JSON(http.StatusOK, gin.H{"success": true, "total": total})

@@ -14,6 +14,7 @@ type TopicHandler struct {
 	service services.TopicServices
 }
 
+//go:generate mockery --name TopicHandlerInterface
 type TopicHandlerInterface interface {
 	List(c *gin.Context)
 	GetPagination(c *gin.Context)

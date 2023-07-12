@@ -21,6 +21,7 @@ type UserHandler struct {
 	service services.UserServices
 }
 
+//go:generate mockery --name UserHandlerInterface
 type UserHandlerInterface interface {
 	CheckAuth(c *gin.Context)
 	Token(c *gin.Context)
@@ -313,6 +314,9 @@ func sendRequestGetGoogleOauthToken(code string) (bytes.Buffer, error) {
 		return resBody, err
 	}
 	defer res.Body.Close()
+
+	log.Println("res", res)
+	log.Println("err", err)
 
 	if res.StatusCode != http.StatusOK {
 		return resBody, fmt.Errorf("could not retrieve token")

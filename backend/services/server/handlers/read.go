@@ -12,6 +12,7 @@ type ReadHandler struct {
 	service services.ReadServices
 }
 
+//go:generate mockery --name ReadHandlerInterface
 type ReadHandlerInterface interface {
 	Read(c *gin.Context)
 	Unread(c *gin.Context)

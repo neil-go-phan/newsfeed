@@ -32,11 +32,6 @@ const IMAGE_SIZE = 20;
 const SideBarMobile: React.FC<Props> = (props: Props) => {
   const { followedSources } = useContext(FollowedSourcesContext);
   const router = useRouter();
-  useEffect(() => {
-    if (props.mobileOpen === true) {
-      props.handleDrawerToggle();
-    }
-  }, [router.asPath]);
 
   const cacultateTotalUnreadArticle = (): number => {
     let total = 0;
@@ -105,7 +100,7 @@ const SideBarMobile: React.FC<Props> = (props: Props) => {
           <ListItemButton>
             <Link href={_ROUTES.FEEDS_PLAN} className="d-flex">
               <div className="icon mx-4">
-              <FontAwesomeIcon icon={faMoneyBill} />
+                <FontAwesomeIcon icon={faMoneyBill} />
               </div>
               <div className="description">
                 <span>Plan</span>
@@ -158,9 +153,11 @@ const SideBarMobile: React.FC<Props> = (props: Props) => {
           ))}
         </List>
         {followedSources!.length > 5 ? (
-          <a className="showmore" onClick={() => setExpanded(!expanded)}>
-            {expanded ? 'Show less' : 'Show more...'}
-          </a>
+          <div className="showmore">
+            <a onClick={() => setExpanded(!expanded)}>
+              {expanded ? 'Show less' : 'Show more...'}
+            </a>
+          </div>
         ) : (
           <></>
         )}

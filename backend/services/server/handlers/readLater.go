@@ -12,6 +12,7 @@ type ReadLaterHandler struct {
 	service services.ReadLaterServices
 }
 
+//go:generate mockery --name ReadLaterHandlerInterface
 type ReadLaterHandlerInterface interface {
 	AddToReadLaterList(c *gin.Context)
 	RemoveFromReadLaterList(c *gin.Context)
