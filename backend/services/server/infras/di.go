@@ -40,7 +40,7 @@ func SetupRoute(db *gorm.DB, r *gin.Engine, grpcClient pb.CrawlerServiceClient, 
 
 	// cronjob Setup
 	go func() {
-		// crawlerRoutes.CreateCrawlerCronjobFromDB()
+		crawlerRoutes.CreateCrawlerCronjobFromDB()
 		cronjob.Run()
 	}()
 	

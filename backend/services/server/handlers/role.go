@@ -43,7 +43,7 @@ func (h *RoleHandler) Get(c *gin.Context) {
 		return
 	}
 	roleResponse, err := h.service.Get(role.(string))
-	if !exsit {
+	if err != nil {
 		log.Error(err)
 		c.JSON(http.StatusInternalServerError, gin.H{"success": false, "message": "internal server error"})
 		return
@@ -75,7 +75,6 @@ func (h *RoleHandler) List(c *gin.Context) {
 }
 
 func (h *RoleHandler) Total(c *gin.Context) {
-
 	total, err := h.service.Count()
 	if err != nil {
 		log.Error(err)
@@ -86,7 +85,6 @@ func (h *RoleHandler) Total(c *gin.Context) {
 }
 
 func (h *RoleHandler) ListNames(c *gin.Context) {
-
 	names, err := h.service.ListRoleName()
 	if err != nil {
 		log.Error(err)
@@ -95,7 +93,6 @@ func (h *RoleHandler) ListNames(c *gin.Context) {
 	}
 	c.JSON(http.StatusOK, gin.H{"success": true, "names": names})
 }
-
 
 func (h *RoleHandler) Delete(c *gin.Context) {
 	var payload deleteRolePayload
