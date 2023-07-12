@@ -1,4 +1,3 @@
-// get one (get full) - get 6 article (get image, title, published)
 package repository
 
 import (

@@ -5,6 +5,7 @@ import (
 	"server/entities"
 )
 
+//go:generate mockery --name UserServices
 type UserServices interface {
 	GetUser(username string) (u *entities.User, err error)
 	List(page int, pageSize int) ([]UserResponse, error)
@@ -23,6 +24,7 @@ type UserServices interface {
 	AccessAdminPage(role string) error
 }
 
+//go:generate mockery --name RoleServices
 type RoleServices interface {
 	List(page int, pageSize int) ([]RoleResponse, error)
 	Validate(roleName string) (err error)
@@ -35,10 +37,12 @@ type RoleServices interface {
 	ListRoleName() ([]string, error) 
 }
 
+//go:generate mockery --name PermissionServices
 type PermissionServices interface {
 	List() ([]PermissionResponse, error)
 }
 
+//go:generate mockery --name ArticleServices
 type ArticleServices interface {
 	SearchArticlesAcrossUserFollowedSources(username string, keyword string, page int, pageSize int) ([]ArticleResponse, int64, error)
 
@@ -64,6 +68,7 @@ type ArticleServices interface {
 	CreateIfNotExist(article *entities.Article) error
 }
 
+//go:generate mockery --name ArticlesSourceServices
 type ArticlesSourceServices interface {
 	GetByTopicIDPaginate(topicID uint, page int, pageSize int) ([]ArticlesSourceResponseRender, int64, error)
 	Search(keyword string, page int, pageSize int) ([]ArticlesSourceResponseRender, int64, error)
@@ -84,6 +89,7 @@ type ArticlesSourceServices interface {
 	Update(role string, articlesSource entities.ArticlesSource) error
 }
 
+//go:generate mockery --name CrawlerServices
 type CrawlerServices interface {
 	TestRSSCrawler(crawler entities.Crawler) (*ArticlesSourceResponseCrawl, []*ArticleResponse, error)
 	TestCustomCrawler(crawler entities.Crawler) (*ArticlesSourceResponseCrawl, []*ArticleResponse, error)
@@ -101,6 +107,7 @@ type CrawlerServices interface {
 	CronjobOnHour(timeString string) (*[60]ChartHour, error)
 }
 
+//go:generate mockery --name CronjobServices
 type CronjobServices interface {
 	CreateCrawlerCronjob(crawler entities.Crawler)
 	RemoveCronjob(crawler entities.Crawler) error
@@ -110,6 +117,7 @@ type CronjobServices interface {
 	CronjobOnDay(timeString string) (*[24]ChartDay, error)
 }
 
+//go:generate mockery --name CategoryServices
 type CategoryServices interface {
 	ListName() ([]CategoryResponse, error)
 	ListAll() ([]CategoryResponse, error)
@@ -121,6 +129,7 @@ type CategoryServices interface {
 	Update(role string, payload UpdateNameCategoryPayload) error
 }
 
+//go:generate mockery --name TopicServices
 type TopicServices interface {
 	List() ([]TopicResponse, error)
 	GetPagination(page int, pageSize int) ([]TopicResponse, error)
@@ -135,6 +144,7 @@ type TopicServices interface {
 	UpdateWhenDeteleCategory(oldCategoryID uint, newCategoryID uint) error
 }
 
+//go:generate mockery --name FollowServices
 type FollowServices interface {
 	Follow(username string, articlesSourceID uint) error
 	Unfollow(username string, articlesSourceID uint) error
@@ -142,6 +152,7 @@ type FollowServices interface {
 	GetNewestSourceUpdatedID(username string) ([]uint, error)
 }
 
+//go:generate mockery --name ReadServices
 type ReadServices interface {
 	MarkAllAsReadBySourceID(username string, articlesSourceID uint) error
 	MarkAllAsReadByUserFollowedSource(username string) error
@@ -149,6 +160,7 @@ type ReadServices interface {
 	MarkArticleAsUnRead(username string, articleID uint, articlesSourceID uint) error
 }
 
+//go:generate mockery --name ReadLaterServices
 type ReadLaterServices interface {
 	AddToReadLaterList(username string, articleID uint) error
 	RemoveFromReadLaterList(username string, articleID uint) error

@@ -173,6 +173,16 @@
     }
   }
   &__content {
+    .showmore {
+      text-align: center;
+      margin: 10px 0;
+      a {
+        font-size: 12px;
+        text-decoration: none;
+        color: #d1dae6;
+        cursor: pointer;
+      }
+    }
     position: relative;
     &--sidebar {
       background-color: #294973;
@@ -196,6 +206,16 @@
         }
         &:hover {
           background-color: #b8bbc0;
+        }
+      }
+      .showmore {
+        text-align: center;
+        margin: 10px 0;
+        a {
+          font-size: 12px;
+          text-decoration: none;
+          color: #1a2433;
+          cursor: pointer;
         }
       }
     }

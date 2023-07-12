@@ -12,6 +12,7 @@ type PermissionHandler struct {
 	service services.PermissionServices
 }
 
+//go:generate mockery --name PermissionHandlerInterface
 type PermissionHandlerInterface interface {
 	List(c *gin.Context)
 }

@@ -13,6 +13,7 @@ type ArticleHandler struct {
 	service services.ArticleServices
 }
 
+//go:generate mockery --name ArticleHandlerInterface
 type ArticleHandlerInterface interface {
 	GetArticlesPaginationByArticlesSourceID(c *gin.Context)
 	GetArticlesPaginationByUserFollowedSources(c *gin.Context)

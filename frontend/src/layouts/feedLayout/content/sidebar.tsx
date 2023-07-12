@@ -138,9 +138,11 @@ const FeedsSidebar: React.FC<Props> = (props: Props) => {
             </div>
           ))}
           {followedSources!.length > 5 ? (
-            <a className="showmore" onClick={() => setExpanded(!expanded)}>
-              {expanded ? 'Show less' : 'Show more...'}
-            </a>
+            <div className="showmore">
+              <a onClick={() => setExpanded(!expanded)}>
+                {expanded ? 'Show less' : 'Show more...'}
+              </a>
+            </div>
           ) : (
             <></>
           )}

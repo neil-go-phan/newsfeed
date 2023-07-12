@@ -31,8 +31,6 @@ func (userRoutes *UserRoutes) Setup(r *gin.Engine) {
 		authRoutes.POST("delete", middlewares.CheckAccessToken(), userRoutes.userHandler.Delete)
 		authRoutes.POST("update/role", middlewares.CheckAccessToken(), userRoutes.userHandler.ChangeRole)
 		authRoutes.GET("update/premium", middlewares.CheckAccessToken(), userRoutes.userHandler.UserUpgrateRole)
-
 		authRoutes.GET("count", middlewares.CheckAccessToken(), userRoutes.userHandler.Total)
-
 	}
 }

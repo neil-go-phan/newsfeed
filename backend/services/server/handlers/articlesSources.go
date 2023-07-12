@@ -14,6 +14,7 @@ type ArticlesSourceHandler struct {
 	service services.ArticlesSourceServices
 }
 
+//go:generate mockery --name ArticlesSourceHandlerInterface
 type ArticlesSourceHandlerInterface interface {
 	GetByTopicIDPaginate(c *gin.Context)
 	GetMostActiveSources(c *gin.Context)

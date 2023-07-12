@@ -146,7 +146,7 @@ function FilterByCategory() {
   return (
     <div className="filterCategory">
       <div className="filterCategory__returnBtn">
-        <div className="btn">
+        <div className="btn" onClick={() => router.push(_ROUTES.FEEDS_SEARCH_WEBS)}>
           <Link href={_ROUTES.FEEDS_SEARCH_WEBS}>
             <FontAwesomeIcon icon={faArrowLeft} />
           </Link>

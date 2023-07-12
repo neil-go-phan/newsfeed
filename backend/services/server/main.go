@@ -79,6 +79,8 @@ func main() {
 	log.Infoln("Setup routes")
 	r := gin.Default()
 	r.Use(middlewares.Cors())
+
+
 	
 	infras.SetupRoute(db, r, grpcClient, jobIDMap)
 

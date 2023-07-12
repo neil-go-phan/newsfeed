@@ -14,6 +14,7 @@ type RoleHandler struct {
 	service services.RoleServices
 }
 
+//go:generate mockery --name RoleHandlerInterface
 type RoleHandlerInterface interface {
 	Get(c *gin.Context)
 	List(c *gin.Context)
