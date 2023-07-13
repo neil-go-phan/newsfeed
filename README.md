@@ -1,6 +1,6 @@
 # Newsfeed
 ## Description
-- 
+- Newsfeed is a reliable and diverse news aggregation website. It offers a user-friendly interface and covers various categories such as politics, business, science, technology, entertainment, sports, and health. Users can access daily updates, in-depth analysis, and expert opinions. Newsfeed ensures accuracy throughautomated fact-checking. 
 ## Admin
 - To access: 
   - go to `/admin`
@@ -34,6 +34,8 @@
   - nodejs version >18.15
 - Add file .env following file .env.example
 - Config your firebase project
+  - Change to your VAPID_KEY in file .env frontend
+  - Generate your google credentials file, named it as 'newfeed_firebase.json' and copy it to '/backend/services/server' 
 - Frontend: 
   - Open terminal
   - CD to frontend folder
