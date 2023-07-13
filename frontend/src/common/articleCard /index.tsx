@@ -84,6 +84,18 @@ const ArticleCard: React.FC<Props> = (props: Props) => {
     }
   };
 
+  const removeClassAndStyle = (nodes:any) => {
+    const items = domutils.findAll((element) => {
+      return true;
+    }, nodes);
+  
+    items.forEach((item) => {
+      delete item.attribs.class;
+      delete item.attribs.style;
+      delete item.attribs.srcset;
+    });
+  };
+
   const handleChangeReadStatus = () => {
     if (!readStatus) {
       handleRequestMarkArticleAsRead(
@@ -190,6 +202,7 @@ const ArticleCard: React.FC<Props> = (props: Props) => {
       getThumbnail(newdom.childNodes);
       getShortContent(newdom.childNodes);
       addTargetBlankToLinkTag(newdom.childNodes);
+      removeClassAndStyle(newdom.childNodes);
       setDoc(newdom);
     }
     if (props.article.is_read !== undefined) {

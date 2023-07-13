@@ -67,6 +67,7 @@ const ContentModal: React.FC<Props> = (props: Props) => {
       }
     }
   }, []);
+
   return (
     <div className="articleCard__contentModal">
       <div className="title">
