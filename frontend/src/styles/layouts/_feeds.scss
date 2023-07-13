@@ -38,6 +38,9 @@
           color: $color-feeds-searchBar-display-sidebar-text-theme-1;
         }
       }
+      @include mobile {
+       width: fit-content;
+      }
     }
     .sidebarCloseHeader {
       background-color: transparent;
@@ -160,6 +163,22 @@
         justify-content: flex-end;
         .readNavMobile {
           padding: 20px;
+        }
+      }
+      @include mobile {
+        flex-grow: unset;
+        padding-right: 0;
+        padding-left: 0;
+        .left {
+          .sourceInfo {
+            width: fit-content;
+            span {
+              width: 100px;
+              white-space: nowrap;
+              overflow: hidden;
+              text-overflow: ellipsis;
+            }
+          }
         }
       }
     }

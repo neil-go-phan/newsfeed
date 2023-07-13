@@ -20,7 +20,7 @@ const REQUEST_FOLLOW_FAIL_MESSAGE = 'request follow artilces source fail';
 
 const SourceInfo: React.FC<Props> = (props: Props) => {
   const router = useRouter();
-  const { followedSources, callAPIGetFollow } = useContext(
+  const { callAPIGetFollow } = useContext(
     FollowedSourcesContext
   );
   const [anchorElSource, setAnchorElSource] = useState<null | HTMLElement>(

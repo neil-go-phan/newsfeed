@@ -12,6 +12,7 @@ import Link from 'next/link';
 import { Button } from 'react-bootstrap';
 
 const LOGO_SIZE = 100;
+const LOGO_SIZE_MOBILE = 50;
 const FIRST_PAGE = 1;
 const PAGE_SIZE = 6;
 const ALL_READ_IMAGE_SIZE = 250;
@@ -33,7 +34,7 @@ function SourceComponent() {
   const { followedSources, callAPIGetFollow } = useContext(
     FollowedSourcesContext
   );
-  const { height } = useWindowDimensions();
+  const { height, width } = useWindowDimensions();
   const [follower, setFollower] = useState<number>(0);
   useEffect(() => {
     setPage(FIRST_PAGE);
@@ -58,7 +59,7 @@ function SourceComponent() {
   }, [articlesSource]);
   const checkIsSourceFollowed = () => {
     return followedSources.some(
-      (articlesSource) => articlesSource.id === articlesSource.id
+      (follow) => follow.id === articlesSource!.id
     );
   };
   const handleRequestMoreArticles = () => {
@@ -235,7 +236,7 @@ function SourceComponent() {
                   }
                   height={'0'}
                   style={{ height: 'auto' }}
-                  width={LOGO_SIZE}
+                  width={width >= 996 ? LOGO_SIZE : LOGO_SIZE_MOBILE}
                 />
               </div>
               <div className="text col-8">
@@ -254,7 +255,7 @@ function SourceComponent() {
                   </p>
                 </div>
               </div>
-              <div className="action col-2">
+              <div className="action col-md-2 d-none d-md-block">
                 <div className="followBtn">
                   {isFollowed ? (
                     <Button variant="secondary mb-2" onClick={handleUnfollow}>
@@ -268,6 +269,19 @@ function SourceComponent() {
                 </div>
               </div>
             </div>
+            <div className="action d-block d-md-none my-3">
+                <div className="followBtn">
+                  {isFollowed ? (
+                    <Button variant="secondary mb-2" onClick={handleUnfollow}>
+                      Unfollow
+                    </Button>
+                  ) : (
+                    <Button variant="primary mb-2" onClick={handleFollow}>
+                      Follow
+                    </Button>
+                  )}
+                </div>
+              </div>
           </div>
         ) : (
           <></>

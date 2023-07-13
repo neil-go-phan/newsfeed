@@ -17,7 +17,6 @@
     }
   }
 
-
   &__sticky {
     position: sticky;
     z-index: 100;
@@ -282,12 +281,15 @@
           color: #707d90;
         }
       }
-      .action {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        margin-left: 40px;
-      }
     }
+    .action {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-left: 40px;
+    }
+  }
+  @include mobile {
+    padding: 0;
   }
 }

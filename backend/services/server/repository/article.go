@@ -165,10 +165,6 @@ func (repo *ArticleRepo) GetReadLaterListPaginationByArticlesSourceID(username s
 
 func (repo *ArticleRepo) GetReadLaterListPaginationByUserFollowedSource(username string, page int, pageSize int) ([]ArticleLeftJoinRead, error) {
 	articles := make([]ArticleLeftJoinRead, 0)
-	subQuery1 := repo.DB.
-		Model(&entities.Follow{}).
-		Select("articles_source_id").
-		Where("username = ?", username)
 
 	subQuery2 := repo.DB.
 		Model(&entities.ReadLater{}).
@@ -178,7 +174,6 @@ func (repo *ArticleRepo) GetReadLaterListPaginationByUserFollowedSource(username
 	err := repo.DB.
 		Model(&entities.Article{}).
 		Distinct("id", "title", "description", "link", "published", "authors", "articles.articles_source_id", "articles.created_at", "CASE WHEN r.username IS NULL THEN false ELSE true END AS is_read", "CASE WHEN rl.username IS NULL THEN false ELSE true END AS is_read_later").
-		Joins("JOIN (?) f on f.articles_source_id = articles.articles_source_id", subQuery1).
 		Joins("LEFT JOIN reads r on articles.id = r.article_id").
 		Joins("JOIN (?) rl on articles.id = rl.article_id", subQuery2).
 		Scopes(helpers.Paginate(page, pageSize)).

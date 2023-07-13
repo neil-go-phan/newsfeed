@@ -51,6 +51,24 @@ const ArticleCard: React.FC<Props> = (props: Props) => {
   const handleModal = () => {
     setIsContentModalOpen(!isContentModalOpen);
   };
+
+  useEffect(() => {
+    if (props.article.description !== '') {
+      const newdom = htmlparser2.parseDocument(props.article.description);
+      getThumbnail(newdom.childNodes);
+      getShortContent(newdom.childNodes);
+      addTargetBlankToLinkTag(newdom.childNodes);
+      removeClassAndStyle(newdom.childNodes);
+      setDoc(newdom);
+    }
+    if (props.article.is_read !== undefined) {
+      setReadStatus(props.article.is_read);
+    }
+    if (props.article.is_read_later !== undefined) {
+      setIsReadLater(props.article.is_read_later);
+    }
+  }, [props.article]);
+
   // TODO: fix any type
   const getThumbnail = (nodes: any) => {
     const item = domutils.findOne((element) => {
@@ -196,22 +214,6 @@ const ArticleCard: React.FC<Props> = (props: Props) => {
     } catch (error: any) {}
   };
 
-  useEffect(() => {
-    if (props.article.description !== '') {
-      const newdom = htmlparser2.parseDocument(props.article.description);
-      getThumbnail(newdom.childNodes);
-      getShortContent(newdom.childNodes);
-      addTargetBlankToLinkTag(newdom.childNodes);
-      removeClassAndStyle(newdom.childNodes);
-      setDoc(newdom);
-    }
-    if (props.article.is_read !== undefined) {
-      setReadStatus(props.article.is_read);
-    }
-    if (props.article.is_read_later !== undefined) {
-      setIsReadLater(props.article.is_read_later);
-    }
-  }, [props.article]);
   return (
     <>
       {base64Img !== '' ? (

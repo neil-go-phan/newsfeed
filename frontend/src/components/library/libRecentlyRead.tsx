@@ -60,7 +60,7 @@ function LibRecentlyRead() {
         {articles.length > 0 ? (
           <div className="list">
             {articles.map((article) => (
-              <RecentlyReadArticle article={article} />
+              <RecentlyReadArticle key={`recently read ${article.title}`} article={article} />
             ))}
           </div>
         ) : (
