@@ -22,7 +22,7 @@ services:
       - "8000"
     depends_on:
       - postgres
-    entrypoint: ["/app/wait-for.sh", "", "--", "/app/main"]
+    entrypoint: ["/app/wait-for.sh", "postgres:5432", "--", "/app/main"]
 
   server:
     build:
