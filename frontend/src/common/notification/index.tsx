@@ -7,7 +7,6 @@ function Notification() {
   useEffect(() => {
     requestPermission();
     const unsubscribe = onMessageListener().then((payload:any) => {
-      console.log("notification payload", payload)
       setNotification({
         title: payload?.notification?.title,
         body: payload?.notification?.body,
@@ -24,7 +23,7 @@ function Notification() {
       });
 });
     return () => {
-      unsubscribe.catch((err) => console.log('failed: ', err));
+      unsubscribe.catch();
     };
   }, []);
   return (

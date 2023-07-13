@@ -33,6 +33,7 @@
   - golang version >1.20
   - nodejs version >18.15
 - Add file .env following file .env.example
+- Config your firebase project
 - Frontend: 
   - Open terminal
   - CD to frontend folder
