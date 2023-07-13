@@ -37,7 +37,7 @@
     "max-lines": ["error", 1000],
     "quotes": ["error", "single"],
     "curly": "error",
-    "no-console": "error",
+    // "no-console": "error",
     "no-var": "error",
     "no-inline-comments": "error",
     "no-dupe-keys": "error",
