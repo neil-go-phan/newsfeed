@@ -34,6 +34,7 @@ const SUPERADMIN_ROLE = "Superadmin"
 const AMOUNT_OF_SEED_CRAWLER = 38;
 
 func Seed(db *gorm.DB, grpcClient pb.CrawlerServiceClient, jobIDMap map[string]cron.EntryID) {
+	time.Sleep(time.Duration(10) * time.Second)
 	seedCategory(db)
 	seedTopic(db)
 	seedCrawler(db, grpcClient, jobIDMap)
