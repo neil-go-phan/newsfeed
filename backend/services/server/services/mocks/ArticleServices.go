@@ -175,8 +175,8 @@ func (_m *ArticleServices) GetArticlesPaginationByUserFollowedSource(username st
 	return r0, r1
 }
 
-// GetMostReadInHour provides a mock function with given fields:
-func (_m *ArticleServices) GetMostReadInHour() (entities.Article, error) {
+// GetMostReadInDay provides a mock function with given fields:
+func (_m *ArticleServices) GetMostReadInDay() (entities.Article, error) {
 	ret := _m.Called()
 
 	var r0 entities.Article

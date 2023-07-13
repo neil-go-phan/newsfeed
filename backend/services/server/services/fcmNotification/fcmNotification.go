@@ -50,7 +50,7 @@ func (s *FcmNotificationService) SendArticleToAll() {
 	if err != nil {
 		log.Error(err)
 	}
-	article, err := s.articleService.GetMostReadInHour()
+	article, err := s.articleService.GetMostReadInDay()
 	if err != nil {
 		log.Error(err)
 	}
@@ -76,6 +76,28 @@ func (s *FcmNotificationService) CronjobPushNotification() {
 	}
 
 	log.Printf("create cronjob send article to all user hourly")
+}
+
+func (s *FcmNotificationService) SendNoti(message entities.NotificationMessage) {
+	log.Println("start send notification...")
+	list, err := s.repo.List()
+	if err != nil {
+		log.Error(err)
+	}
+
+	chunks := chunkSlice(list)
+	for _, chunk := range chunks {
+		tokens := getTokes(chunk)
+		message := &messaging.MulticastMessage{
+			Notification: &messaging.Notification{
+				Title: message.Title,
+				Body: message.Body,
+			},
+			Tokens: tokens,
+		}
+		s.SendMessages(message)
+	}
+	log.Println("finish send notification...")
 }
 
 func chunkSlice(slice []entities.FcmNotification) [][]entities.FcmNotification {

@@ -202,8 +202,8 @@ func (s *ArticleService) searchOptions(keyword string, page int, pageSize int, a
 	return s.repo.AdminSearchArticlesWithFilter(keyword, page, pageSize, articlesSourceID)
 }
 
-func (s *ArticleService) GetMostReadInHour() (entities.Article, error) {
+func (s *ArticleService) GetMostReadInDay() (entities.Article, error) {
 	now := time.Now()
-	previousHour := now.Add(time.Duration(-1) * time.Hour)
-	return s.repo.GetMostRead(previousHour, now)
+	previousDay := now.Add(time.Duration(-24) * time.Hour)
+	return s.repo.GetMostRead(previousDay, now)
 }
