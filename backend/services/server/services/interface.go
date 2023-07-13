@@ -60,7 +60,7 @@ type ArticleServices interface {
 	GetRecentlyReadArticle(username string, page int, pageSize int) ([]ArticleForReadResponse, error)
 
 	GetTredingArticle(username string) ([]TredingArticleResponse, error)
-	GetMostReadInHour() (entities.Article, error)
+	GetMostReadInDay() (entities.Article, error)
 	
 	ListAll(page int, pageSize int) ([]ArticleResponse, error)
 	Count() (int, error)
@@ -175,5 +175,6 @@ type FcmNotificationServices interface {
 	Create(fcmNotification entities.FcmNotification) error 
 	SendMessages(message *messaging.MulticastMessage) 
 	SendArticleToAll()
+	SendNoti(message entities.NotificationMessage)
 	CronjobPushNotification()
 }

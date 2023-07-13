@@ -60,21 +60,17 @@ func (_m *FcmNotificationServices) List() ([]entities.FcmNotification, error) {
 }
 
 // SendArticleToAll provides a mock function with given fields:
-func (_m *FcmNotificationServices) SendArticleToAll() error {
-	ret := _m.Called()
-
-	var r0 error
-	if rf, ok := ret.Get(0).(func() error); ok {
-		r0 = rf()
-	} else {
-		r0 = ret.Error(0)
-	}
-
-	return r0
+func (_m *FcmNotificationServices) SendArticleToAll() {
+	_m.Called()
 }
 
 // SendMessages provides a mock function with given fields: message
 func (_m *FcmNotificationServices) SendMessages(message *messaging.MulticastMessage) {
+	_m.Called(message)
+}
+
+// SendNoti provides a mock function with given fields: message
+func (_m *FcmNotificationServices) SendNoti(message entities.NotificationMessage) {
 	_m.Called(message)
 }
 

@@ -21,6 +21,7 @@ func (h *FcmNotificationRoutes) Setup(r *gin.Engine) {
 	route := r.Group("notification")
 	{
 		route.GET("create/token", middlewares.CheckAccessToken(), h.handler.Create)
+		route.POST("noti", middlewares.CheckAccessToken(), h.handler.SentNoti)
 	}
 }
 

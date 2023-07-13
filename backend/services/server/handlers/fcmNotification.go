@@ -17,6 +17,7 @@ type FcmNotificationHandler struct {
 type FcmNotificationHandlerInterface interface {
 	Create(c *gin.Context)
 	CreateCronjob() 
+	SentNoti(c *gin.Context)
 }
 
 func NewFcmNotificationHandler(service services.FcmNotificationServices) *FcmNotificationHandler {
@@ -33,7 +34,7 @@ func (h *FcmNotificationHandler) Create(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"success": false, "message": "bad request"})
 		return
 	}
-	log.Println("token",token)
+
 	entity := entities.FcmNotification{
 		Username: username.(string),
 		FirebaseToken: token,
@@ -47,6 +48,20 @@ func (h *FcmNotificationHandler) Create(c *gin.Context) {
 	}
 	c.JSON(http.StatusOK, gin.H{"success": true, "message": "create success"})
 }
+
+func (h *FcmNotificationHandler) SentNoti(c *gin.Context) {
+	var payload entities.NotificationMessage
+	err := c.BindJSON(&payload)
+	if err != nil {
+		log.Error("error occrus:", err)
+		c.JSON(http.StatusBadRequest, gin.H{"success": false, "message": "input invalid"})
+		return
+	}
+
+	h.service.SendNoti(payload)
+	c.JSON(http.StatusOK, gin.H{"success": true, "message": "sent"})
+}
+
 
 func (h *FcmNotificationHandler) CreateCronjob() {
 	h.service.CronjobPushNotification()
