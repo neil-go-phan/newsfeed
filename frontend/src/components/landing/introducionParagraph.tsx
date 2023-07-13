@@ -10,9 +10,9 @@ function IntroducionParagraph() {
         <p className="py-3 px-lg-5 px-0 py-sm-4 mt-2 mx-auto">
           Stay informed with tailored news based on your interests and
           preferences. Our platform offers diverse sources, customization
-          options, and a user-friendly interface. Trust in our
-          commitment to accuracy, quality, and ethical journalism. Join us today
-          for a personalized news experience.
+          options, and a user-friendly interface. Trust in our commitment to
+          accuracy, quality, and ethical journalism. Join us today for a
+          personalized news experience.
         </p>
         <div className="landing__introductionParagraph--buttons pb-2 mb-2 pb-sm-5 mb-sm-5">
           <Link
@@ -23,9 +23,9 @@ function IntroducionParagraph() {
           </Link>
           <Link
             className="featuresBtn btn-tertiary btn ms-sm-2 ms-lg-3 mb-3"
-            href={_ROUTES.DISCOVER_PAGE}
+            href={_ROUTES.PRICING_PAGE}
           >
-            Discover our servies
+            Choose your plan
           </Link>
         </div>
         <div className="img position-relative mb-5 w-100">
