@@ -25,6 +25,7 @@ RUN apk update && apk upgrade && \
        
 WORKDIR /app
 COPY .env .
+COPY newfeed_firebase.json .
 COPY db/migrations ./db/migrations
 COPY --from=builder /app/main .
 
