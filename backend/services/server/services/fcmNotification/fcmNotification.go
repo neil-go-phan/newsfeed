@@ -70,7 +70,7 @@ func (s *FcmNotificationService) SendArticleToAll() {
 }
 
 func (s *FcmNotificationService) CronjobPushNotification() {
-	_, err := s.cron.AddFunc("@every 0h1m", func() { s.SendArticleToAll() })
+	_, err := s.cron.AddFunc("@every 1h0m", func() { s.SendArticleToAll() })
 	if err != nil {
 		log.Error("error occurred while seting up cronjob: ", err)
 	}
