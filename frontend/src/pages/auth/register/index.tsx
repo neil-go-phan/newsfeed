@@ -12,7 +12,7 @@ import {
   Row,
 } from 'react-bootstrap';
 import { useRouter } from 'next/router';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -20,6 +20,7 @@ import cryptoJS from 'crypto-js';
 import { _REGEX, _ROUTES } from '@/helpers/constants';
 import axiosClient from '@/helpers/axiosClient';
 import AuthLayout from '@/layouts/authLayout';
+import { checkAuth } from '@/helpers/checkAuth';
 
 const Register: NextPage = () => {
   const router = useRouter();
@@ -28,6 +29,25 @@ const Register: NextPage = () => {
     trigger: false,
     message: '',
   });
+  const [auth, setAuth] = useState(false);
+  useEffect(() => {
+    async function checkLogIn() {
+      const userChecked: boolean = await checkAuth();
+      setAuth(userChecked);
+    }
+
+    checkLogIn();
+  }, []);
+
+  useEffect(() => {
+    if (auth) {
+      if (router.query.redirectTo) {
+        router.push(_ROUTES.FEEDS_PLAN);
+      } else {
+        router.push(_ROUTES.DASHBOARD_PAGE);
+      }
+    }
+  }, [auth]);
   const schema = yup.object().shape({
     email: yup
       .string()
@@ -89,7 +109,11 @@ const Register: NextPage = () => {
       });
     }
   };
-
+  if (auth) {
+    return (
+      <></>
+    )
+  }
   return (
     <AuthLayout>
       <div className="auth__register min-vh-100 d-flex flex-row align-items-center dark:bg-transparent">

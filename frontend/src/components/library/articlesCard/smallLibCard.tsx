@@ -53,6 +53,7 @@ const SmallLibCard: React.FC<Props> = (props: Props) => {
       const newdom = htmlparser2.parseDocument(props.article.description);
       getThumbnail(newdom.childNodes);
       addTargetBlankToLinkTag(newdom.childNodes);
+      removeClassAndStyle(newdom.childNodes)
       setDoc(newdom);
     }
     if (props.article.is_read !== undefined) {
@@ -133,6 +134,18 @@ const SmallLibCard: React.FC<Props> = (props: Props) => {
         item.attribs = { ...item.attribs, target: '_blank' };
       });
     }
+  };
+
+  const removeClassAndStyle = (nodes:any) => {
+    const items = domutils.findAll((element) => {
+      return true;
+    }, nodes);
+  
+    items.forEach((item) => {
+      delete item.attribs.class;
+      delete item.attribs.style;
+      delete item.attribs.srcset;
+    });
   };
 
   const handleRequestMarkArticleAsRead = async (

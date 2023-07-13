@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUser } from '@fortawesome/free-regular-svg-icons';
 import { faLock } from '@fortawesome/free-solid-svg-icons';
 import { Button, Col, Container, Form, InputGroup, Row } from 'react-bootstrap';
-import { useContext, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import { setCookie } from 'cookies-next';
 import { useForm, SubmitHandler } from 'react-hook-form';
@@ -17,6 +17,7 @@ import Link from 'next/link';
 import { getGoogleUrl } from '@/helpers/getGoogleUrl';
 import Image from 'next/image';
 import AuthLayout from '@/layouts/authLayout';
+import { checkAuth } from '@/helpers/checkAuth';
 
 const Login: NextPage = () => {
   const router = useRouter();
@@ -25,14 +26,33 @@ const Login: NextPage = () => {
     trigger: false,
     message: '',
   });
-
-  const handleRedirect = (link:string) => {
-    if (router.query.redirectTo) {
-      const newLink = `${link}?redirectTo=${router.query.redirectTo}`
-      return newLink
+  const [auth, setAuth] = useState(false);
+  useEffect(() => {
+    async function checkLogIn() {
+      const userChecked: boolean = await checkAuth();
+      setAuth(userChecked);
     }
-    return link
-  } 
+
+    checkLogIn();
+  }, []);
+
+  useEffect(() => {
+    if (auth) {
+      if (router.query.redirectTo) {
+        router.push(_ROUTES.FEEDS_PLAN);
+      } else {
+        router.push(_ROUTES.DASHBOARD_PAGE);
+      }
+    }
+  }, [auth]);
+
+  const handleRedirect = (link: string) => {
+    if (router.query.redirectTo) {
+      const newLink = `${link}?redirectTo=${router.query.redirectTo}`;
+      return newLink;
+    }
+    return link;
+  };
 
   const schema = yup.object().shape({
     username: yup.string().required('Username or email must not be empty'),
@@ -71,11 +91,10 @@ const Login: NextPage = () => {
       });
       logged?.setIsLogged(true);
       if (router.query.redirectTo) {
-        router.push(_ROUTES.FEEDS_PLAN)
+        router.push(_ROUTES.FEEDS_PLAN);
       } else {
         router.push(_ROUTES.DASHBOARD_PAGE);
       }
-      
     } catch (error: any) {
       setErrorMessage({
         trigger: true,
@@ -84,7 +103,11 @@ const Login: NextPage = () => {
     }
     reset({ password: '' });
   };
-
+  if (auth) {
+    return (
+      <></>
+    )
+  }
   return (
     <AuthLayout>
       <div className="auth__login min-vh-100 d-flex flex-row align-items-center">
@@ -154,7 +177,9 @@ const Login: NextPage = () => {
                       <Button
                         className="px-4 text-white font-medium text-sm leading-snug uppercase rounded shadow-md hover:shadow-lg focus:shadow-lg focus:outline-none focus:ring-0 active:shadow-lg transition duration-150 ease-in-out w-full flex justify-center items-center mb-3 w-100"
                         style={{ backgroundColor: '#3b5998' }}
-                        href={getGoogleUrl(handleRedirect(_ROUTES.TOKEN_REDIRECT))}
+                        href={getGoogleUrl(
+                          handleRedirect(_ROUTES.TOKEN_REDIRECT)
+                        )}
                         role="button"
                         data-mdb-ripple="true"
                         data-mdb-ripple-color="light"

@@ -109,7 +109,7 @@ const FeedsHeader: React.FC<Props> = (props: Props) => {
                   aria-haspopup="true"
                   onClick={handleDrawerToggle}
                   color="inherit"
-                  className='mx-3'
+                  className='mx-md-3'
                 >
                   <FontAwesomeIcon icon={faEye} />
                 </IconButton>

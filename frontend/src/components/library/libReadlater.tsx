@@ -47,7 +47,7 @@ function LibReadlater() {
   const render = (article: Article, index: number) => {
     if (index !== FIRST_ARTICLE_INDEX) {
       return (
-          <SmallLibCard article={article} />
+          <SmallLibCard key={`small lib card ${article.title}`} article={article} />
       );
     }
   };

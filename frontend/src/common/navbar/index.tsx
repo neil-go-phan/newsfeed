@@ -10,15 +10,13 @@ import Container from '@mui/material/Container';
 import Button from '@mui/material/Button';
 import MenuItem from '@mui/material/MenuItem';
 import Link from 'next/link';
-import React, { useEffect, useState } from 'react';
-import type { InferGetStaticPropsType, GetStaticProps } from 'next';
+import React, {  useState } from 'react';
 import { AccountCircle, Feed } from '@mui/icons-material';
 import Divider from '@mui/material/Divider';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
 import Drawer from '@mui/material/Drawer';
-import { checkAuth } from '@/helpers/checkAuth';
 import { deleteCookie } from 'cookies-next';
 import { useRouter } from 'next/router';
 
@@ -43,14 +41,7 @@ function NavbarComponent() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [auth, setAuth] = useState(false);
   const router = useRouter();
-  // useEffect(() => {
-  //   async function checkLogIn() {
-  //     const userChecked: boolean = await checkAuth();
-  //     setAuth(userChecked);
-  //   }
 
-  //   checkLogIn();
-  // }, [auth]);
 
   const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElUser(event.currentTarget);
@@ -251,12 +242,5 @@ function NavbarComponent() {
     </AppBar>
   );
 }
-
-export const getStaticProps: GetStaticProps<{
-  isLogin: boolean;
-}> = async () => {
-  const userChecked: boolean = await checkAuth();
-  return { props: { isLogin: userChecked } };
-};
 
 export default NavbarComponent;
