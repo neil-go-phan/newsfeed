@@ -13,7 +13,6 @@ const app = initializeApp(firebaseConfig);
 const messaging = (await isSupported()) ? getMessaging(app) : null;
 
 export const requestPermission = () => {
-  console.log('messaging', messaging)
   if (messaging) {
     Notification.requestPermission().then((permission) => {
       if (permission === 'granted') {
