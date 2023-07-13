@@ -88,7 +88,7 @@ const DashboardFeeds: React.FC<Props> = (props: Props) => {
       </div>
       <div className="articles row">
         {articles.map((article) => (
-          <DashboardNewArticles article={article} articlesSource={articlesSource}/>
+          <DashboardNewArticles key={`dashboard article ${article.title}`} article={article} articlesSource={articlesSource}/>
         ))}
       </div>
     </div>

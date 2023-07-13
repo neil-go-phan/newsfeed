@@ -15,12 +15,16 @@ import (
 	crawlerservices "server/services/crawler"
 	cronjobservices "server/services/cronjob"
 	followservices "server/services/follow"
+	readservices "server/services/read"
+	readlaterservices "server/services/readLater"
 	roleservice "server/services/role"
 	topicservices "server/services/topic"
 	userservices "server/services/user"
-	readservices "server/services/read"
-	readlaterservices "server/services/readLater"
+
+	"server/services/fcmNotification"
 	"server/services/permission"
+
+	"firebase.google.com/go/messaging"
 	"github.com/google/wire"
 	"github.com/robfig/cron/v3"
 	"gorm.io/gorm"
@@ -241,4 +245,27 @@ func InitReadLater(db *gorm.DB) *routes.ReadLaterRoutes {
 		routes.NewReadLaterRoutes,
 	)
 	return &routes.ReadLaterRoutes{}
+}
+
+func InitFcmNotification(db *gorm.DB,fcmClient *messaging.Client, cron *cron.Cron) *routes.FcmNotificationRoutes {
+	wire.Build(
+		repository.NewRoleRepo,
+		wire.Bind(new(repository.RoleRepository), new(*repository.RoleRepo)),
+		roleservice.NewRoleService,
+		wire.Bind(new(services.RoleServices), new(*roleservice.RoleService)),
+
+		repository.NewArticleRepo,
+		wire.Bind(new(repository.ArticleRepository), new(*repository.ArticleRepo)),
+		articleservices.NewArticleService,
+		wire.Bind(new(services.ArticleServices), new(*articleservices.ArticleService)),
+
+		repository.NewFcmNotification,
+		wire.Bind(new(repository.FcmNotificationRepository), new(*repository.FcmNotificationRepo)),
+		notificationservices.NewFcmNotificationService,
+		wire.Bind(new(services.FcmNotificationServices), new(*notificationservices.FcmNotificationService)),
+		handlers.NewFcmNotificationHandler,
+		wire.Bind(new(handlers.FcmNotificationHandlerInterface), new(*handlers.FcmNotificationHandler)),
+		routes.NewFcmNotificationRoutes,
+	)
+	return &routes.FcmNotificationRoutes{}
 }

@@ -22,13 +22,15 @@ type ArticleRepository interface {
 	GetRecentlyReadArticle(username string, page int, pageSize int) ([]ArticleLeftJoinRead, error)
 	GetTredingArticle(username string) ([]TredingArticle, error)
 
+	GetMostRead(from time.Time, to time.Time) (entities.Article, error) 
+	
 	ListAll(page int, pageSize int) ([]entities.Article, error)
 	Count() (int, error)
 	Delete(article entities.Article) error
 
 	AdminSearchArticles(keyword string, page int, pageSize int) ([]entities.Article, int64, error)
 	AdminSearchArticlesWithFilter(keyword string, page int, pageSize int, articlesSourceID uint) ([]entities.Article, int64, error)
-	
+
 	CountArticleCreateAWeekAgoByArticlesSourceID(articlesSourceID uint) (int64, error)
 	CreateIfNotExist(article *entities.Article) error
 }
@@ -393,4 +395,27 @@ func (repo *ArticleRepo) Delete(article entities.Article) error {
 		return err
 	}
 	return nil
+}
+
+func (repo *ArticleRepo) GetMostRead(from time.Time, to time.Time) (entities.Article, error) {
+	fromString := from.Format("2006-01-02 15:04:05")
+	toString := to.Format("2006-01-02 15:04:05")
+	article := entities.Article{}
+	subQuery1 := repo.DB.
+		Model(&entities.Read{}).
+		Select("article_id", "count(article_id) as read").
+		Where("created_at between ? AND ?", fromString, toString).
+		Group("article_id").
+		Order("read desc").
+		Limit(1)
+
+		err := repo.DB.
+		Select("id", "title", "description", "link", "published", "authors", "articles.articles_source_id", "articles.created_at").
+		Joins("JOIN (?) r on articles.id = r.article_id", subQuery1).
+		Order("r.read desc").
+		First(&article).Error
+	if err != nil {
+		return article, err
+	}
+	return article, nil
 }

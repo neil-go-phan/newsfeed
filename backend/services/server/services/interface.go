@@ -3,6 +3,8 @@ package services
 import (
 	"net/url"
 	"server/entities"
+
+	"firebase.google.com/go/messaging"
 )
 
 //go:generate mockery --name UserServices
@@ -34,7 +36,7 @@ type RoleServices interface {
 	Count() (int, error)
 	Update(rolePayload RoleResponse) error
 	GrantPermission(userRole string, entity string, method string) bool
-	ListRoleName() ([]string, error) 
+	ListRoleName() ([]string, error)
 }
 
 //go:generate mockery --name PermissionServices
@@ -58,7 +60,8 @@ type ArticleServices interface {
 	GetRecentlyReadArticle(username string, page int, pageSize int) ([]ArticleForReadResponse, error)
 
 	GetTredingArticle(username string) ([]TredingArticleResponse, error)
-
+	GetMostReadInHour() (entities.Article, error)
+	
 	ListAll(page int, pageSize int) ([]ArticleResponse, error)
 	Count() (int, error)
 	Delete(articleID uint) error
@@ -164,4 +167,13 @@ type ReadServices interface {
 type ReadLaterServices interface {
 	AddToReadLaterList(username string, articleID uint) error
 	RemoveFromReadLaterList(username string, articleID uint) error
+}
+
+//go:generate mockery --name FcmNotificationServices
+type FcmNotificationServices interface {
+	List() ([]entities.FcmNotification, error)
+	Create(fcmNotification entities.FcmNotification) error 
+	SendMessages(message *messaging.MulticastMessage) 
+	SendArticleToAll()
+	CronjobPushNotification()
 }

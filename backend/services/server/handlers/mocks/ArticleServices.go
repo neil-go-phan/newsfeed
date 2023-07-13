@@ -175,6 +175,30 @@ func (_m *ArticleServices) GetArticlesPaginationByUserFollowedSource(username st
 	return r0, r1
 }
 
+// GetMostReadInHour provides a mock function with given fields:
+func (_m *ArticleServices) GetMostReadInHour() (entities.Article, error) {
+	ret := _m.Called()
+
+	var r0 entities.Article
+	var r1 error
+	if rf, ok := ret.Get(0).(func() (entities.Article, error)); ok {
+		return rf()
+	}
+	if rf, ok := ret.Get(0).(func() entities.Article); ok {
+		r0 = rf()
+	} else {
+		r0 = ret.Get(0).(entities.Article)
+	}
+
+	if rf, ok := ret.Get(1).(func() error); ok {
+		r1 = rf()
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
 // GetReadLaterListPaginationByArticlesSourceID provides a mock function with given fields: username, articlesSourceID, page, pageSize
 func (_m *ArticleServices) GetReadLaterListPaginationByArticlesSourceID(username string, articlesSourceID uint, page int, pageSize int) ([]services.ArticleForReadResponse, error) {
 	ret := _m.Called(username, articlesSourceID, page, pageSize)

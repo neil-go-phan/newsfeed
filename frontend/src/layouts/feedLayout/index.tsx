@@ -11,6 +11,7 @@ import {
 } from '@/common/contexts/activeArticlesSectionContext';
 import { RoleContext } from '@/common/contexts/roleContext';
 import useWindowDimensions from '@/helpers/useWindowResize';
+import Notification from '@/common/notification';
 
 const GET_FOLLOWED_ARTICLES_SOURCES_FAIL_MESSAGE =
   'get followed articles sources fail';
@@ -97,6 +98,7 @@ function FeedsLayout({ children }: PropsWithChildren) {
 
   return (
     <>
+    <Notification />
       <Head>
         <title>Your feeds </title>
         <meta name="description" content="Neil intern demo 2" />
