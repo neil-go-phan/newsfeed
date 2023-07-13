@@ -26,9 +26,9 @@ export default function App(props: MyAppProps) {
   return (
     <CacheProvider value={emotionCache}>
       <SSRProvider>
-        <CssBaseline />
-        {getLayout(<Component {...pageProps} />)}
-        <ToastContainer />
+          <CssBaseline />
+          {getLayout(<Component {...pageProps} />)}
+          <ToastContainer />
       </SSRProvider>
     </CacheProvider>
   );

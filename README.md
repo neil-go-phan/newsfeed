@@ -20,6 +20,7 @@
   - Database: postgres
   - Code convention: golangci-lint
   - Log: Sentry
+  - Realtime push notification: Firebase cloud messages
 - Deploy: 
   - Frontend: Vercel
     - Link: https://newsfeed-taupe.vercel.app/

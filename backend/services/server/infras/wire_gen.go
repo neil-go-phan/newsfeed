@@ -7,6 +7,7 @@
 package infras
 
 import (
+	"firebase.google.com/go/messaging"
 	"github.com/robfig/cron/v3"
 	"gorm.io/gorm"
 	"server/handlers"
@@ -18,6 +19,7 @@ import (
 	"server/services/category"
 	"server/services/crawler"
 	"server/services/cronjob"
+	"server/services/fcmNotification"
 	"server/services/follow"
 	"server/services/permission"
 	"server/services/read"
@@ -145,4 +147,16 @@ func InitizeReadLater(db *gorm.DB) *routes.ReadLaterRoutes {
 	readLaterHandler := handlers.NewReadLaterHandler(readLaterService)
 	readLaterRoutes := routes.NewReadLaterRoutes(readLaterHandler)
 	return readLaterRoutes
+}
+
+func InitizeFcmNotification(db *gorm.DB, fcmClient *messaging.Client, cron2 *cron.Cron) *routes.FcmNotificationRoutes {
+	fcmNotificationRepo := repository.NewFcmNotification(db)
+	articleRepo := repository.NewArticleRepo(db)
+	roleRepo := repository.NewRoleRepo(db)
+	roleService := roleservice.NewRoleService(roleRepo)
+	articleService := articleservices.NewArticleService(articleRepo, roleService)
+	fcmNotificationService := notificationservices.NewFcmNotificationService(fcmNotificationRepo, articleService, fcmClient, cron2)
+	fcmNotificationHandler := handlers.NewFcmNotificationHandler(fcmNotificationService)
+	fcmNotificationRoutes := routes.NewFcmNotificationRoutes(fcmNotificationHandler)
+	return fcmNotificationRoutes
 }
