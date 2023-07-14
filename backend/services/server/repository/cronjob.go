@@ -7,6 +7,7 @@ import (
 	"gorm.io/gorm"
 )
 
+//go:generate mockery --name CronjobRepository
 type CronjobRepository interface {
 	Create(cronjob *entities.Cronjob) (*entities.Cronjob, error)
 	Get(lastTrack time.Time, now time.Time) (*[]entities.Cronjob, error)

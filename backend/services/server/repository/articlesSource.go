@@ -10,6 +10,7 @@ import (
 	"gorm.io/gorm"
 )
 
+//go:generate mockery --name ArticlesSourcesRepository
 type ArticlesSourcesRepository interface {
 	GetWithTopicPaginate(topicID uint, page int, pageSize int) ([]entities.ArticlesSource, int64, error)
 	ListAll() ([]entities.ArticlesSource, error)

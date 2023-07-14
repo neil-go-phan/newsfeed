@@ -6,6 +6,7 @@ import (
 	"gorm.io/gorm"
 )
 
+//go:generate mockery --name FcmNotificationRepository
 type FcmNotificationRepository interface {
 	Create(FcmNotification entities.FcmNotification) error
 	List() ([]entities.FcmNotification, error)

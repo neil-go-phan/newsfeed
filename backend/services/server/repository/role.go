@@ -11,6 +11,7 @@ type RoleRepo struct {
 	DB *gorm.DB
 }
 
+//go:generate mockery --name RoleRepository
 type RoleRepository interface {
 	Get(roleName string) (entities.Role, error)
 	List(page int, pageSize int) ([]entities.Role, error)

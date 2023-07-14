@@ -7,6 +7,7 @@ import (
 	"gorm.io/gorm"
 )
 
+//go:generate mockery --name FollowRepository
 type FollowRepository interface {
 	GetByUsername(username string) ([]entities.Follow, error)
 	GetNewestFeedsUpdated(username string) ([]entities.Follow, error)

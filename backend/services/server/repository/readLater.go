@@ -6,6 +6,7 @@ import (
 	"gorm.io/gorm"
 )
 
+//go:generate mockery --name ReadLaterRepository
 type ReadLaterRepository interface {
 	Create(readLater entities.ReadLater) error
 	Delete(readLater entities.ReadLater) error

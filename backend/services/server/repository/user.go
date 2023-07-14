@@ -7,6 +7,7 @@ import (
 	"gorm.io/gorm"
 )
 
+//go:generate mockery --name UserRepository
 type UserRepository interface {
 	Create(userInput *entities.User) (*entities.User, error)
 	Get(username string) (u *entities.User, err error)
@@ -17,7 +18,6 @@ type UserRepository interface {
 	UserUpgrateRole(username string) error
 	Count() (int, error)
 
-	Update(userInput *entities.User) error
 	GetWithEmail(email string) (*entities.User, error)
 	FindOrCreateWithEmail(*entities.User) (*entities.User, error)
 }
@@ -113,14 +113,6 @@ func (repo *UserRepo) Delete(id uint) error {
 	if err != nil {
 		return err
 	}
-	return nil
-}
-
-func (repo *UserRepo) Update(userInput *entities.User) error {
-	// err := repo.DB.Model(&userInput).Where("username = ?", userInput.Username).Updates(map[string]interface{}{"full_name": userInput.FullName, "role": userInput.Role}).Error
-	// if err != nil {
-	// 	return err
-	// }
 	return nil
 }
 

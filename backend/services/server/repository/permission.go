@@ -6,6 +6,7 @@ import (
 	"gorm.io/gorm"
 )
 
+//go:generate mockery --name PermissionRepository
 type PermissionRepository interface {
 	List() ([]entities.Permission, error)
 }

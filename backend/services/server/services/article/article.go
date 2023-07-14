@@ -52,7 +52,7 @@ func (s *ArticleService) GetArticlesPaginationByUserFollowedSource(username stri
 	return articlesResponse, nil
 }
 
-func (s *ArticleService) GetUnreadArticlesPaginationByArticlesSourceID( username string, articlesSourceID uint, page int, pageSize int) ([]services.ArticleForReadResponse, error) {
+func (s *ArticleService) GetUnreadArticlesPaginationByArticlesSourceID(username string, articlesSourceID uint, page int, pageSize int) ([]services.ArticleForReadResponse, error) {
 	articlesResponse := make([]services.ArticleForReadResponse, 0)
 
 	articles, err := s.repo.GetUnreadArticlesPaginationByArticlesSourceID(username, articlesSourceID, page, pageSize)
@@ -66,7 +66,7 @@ func (s *ArticleService) GetUnreadArticlesPaginationByArticlesSourceID( username
 	return articlesResponse, nil
 }
 
-func (s *ArticleService) GetUnreadArticlesByUserFollowedSource( username string, page int, pageSize int) ([]services.ArticleForReadResponse, error) {
+func (s *ArticleService) GetUnreadArticlesByUserFollowedSource(username string, page int, pageSize int) ([]services.ArticleForReadResponse, error) {
 	articlesResponse := make([]services.ArticleForReadResponse, 0)
 
 	articles, err := s.repo.GetUnreadArticlesByUserFollowedSource(username, page, pageSize)

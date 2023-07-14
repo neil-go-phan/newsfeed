@@ -7,6 +7,7 @@ import (
 	"gorm.io/gorm"
 )
 
+//go:generate mockery --name ReadRepository
 type ReadRepository interface {
 	SelectByUsernameOnDay(username string, day time.Time) ([]entities.Read, error)
 	SelectByUsernameAndSourceIDOnDay(username string, articlesSourceID uint, day time.Time) ([]entities.Read, error)
@@ -49,6 +50,7 @@ func (repo *ReadRepo) Delete(read entities.Read) error {
 func (repo *ReadRepo) CountByUsernameAndSourceID(read entities.Read) (int64, error) {
 	var count int64
 	err := repo.DB.
+		Table("reads").
 		Where(entities.Read{Username: read.Username, ArticlesSourceID: read.ArticlesSourceID}).
 		Count(&count).Error
 	if err != nil {

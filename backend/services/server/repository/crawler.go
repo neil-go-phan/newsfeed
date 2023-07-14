@@ -8,6 +8,7 @@ import (
 	"gorm.io/gorm"
 )
 
+//go:generate mockery --name CrawlerRepository
 type CrawlerRepository interface {
 	Get(id uint) (*entities.Crawler, error)
 	List() ([]entities.Crawler, error) 

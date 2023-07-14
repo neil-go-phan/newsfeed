@@ -9,6 +9,7 @@ import (
 	"gorm.io/gorm"
 )
 
+//go:generate mockery --name TopicRepository
 type TopicRepository interface {
 	List() ([]entities.Topic, error)
 	GetPagination(page int, pageSize int) ([]entities.Topic, error)

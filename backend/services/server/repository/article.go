@@ -10,6 +10,7 @@ import (
 	"gorm.io/gorm"
 )
 
+//go:generate mockery --name ArticleRepository
 type ArticleRepository interface {
 	SearchArticlesAcrossUserFollowedSources(username string, keyword string, page int, pageSize int) ([]entities.Article, int64, error)
 	GetArticlesPaginationByArticlesSourceID(articlesSourceID uint, page int, pageSize int) ([]entities.Article, int64, error)

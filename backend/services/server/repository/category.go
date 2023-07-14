@@ -8,6 +8,7 @@ import (
 	"gorm.io/gorm"
 )
 
+//go:generate mockery --name CategoryRepository
 type CategoryRepository interface {
 	Get(name string) (entities.Category, error)
 	ListName() ([]entities.Category, error)
