@@ -15,7 +15,7 @@ import (
 	crawlerservices "server/services/crawler"
 	cronjobservices "server/services/cronjob"
 
-	"server/services/follow"
+	followservices "server/services/follow"
 	// "server/services/read"
 	// "server/services/readLater"
 	roleservice "server/services/role"
@@ -31,13 +31,13 @@ import (
 )
 
 const SUPERADMIN_ROLE = "Superadmin"
-const AMOUNT_OF_SEED_CRAWLER = 38;
+const AMOUNT_OF_SEED_CRAWLER = 38
 
-func Seed(db *gorm.DB, grpcClient pb.CrawlerServiceClient, jobIDMap map[string]cron.EntryID) {
-	time.Sleep(time.Duration(10) * time.Second)
+func Seed(db *gorm.DB, grpcClient pb.CrawlerServiceClient, jobIDMap map[string]cron.EntryID, cronjob *cron.Cron) {
+	time.Sleep(time.Duration(5) * time.Second)
 	seedCategory(db)
 	seedTopic(db)
-	seedCrawler(db, grpcClient, jobIDMap)
+	seedCrawler(db, grpcClient, jobIDMap, cronjob)
 	seedUser(db)
 	seedFollow(db)
 }
@@ -191,7 +191,7 @@ func seedTopic(db *gorm.DB) {
 	log.Println("finish seed topics")
 }
 
-func seedCrawler(db *gorm.DB, grpcClient pb.CrawlerServiceClient, jobIDMap map[string]cron.EntryID) {
+func seedCrawler(db *gorm.DB, grpcClient pb.CrawlerServiceClient, jobIDMap map[string]cron.EntryID, cronjob *cron.Cron) {
 	log.Println("start seed crawler")
 	var payloads = []services.CreateCrawlerPayload{
 		{
@@ -995,7 +995,6 @@ func seedCrawler(db *gorm.DB, grpcClient pb.CrawlerServiceClient, jobIDMap map[s
 		},
 	}
 
-	cronjob := cron.New()
 	crawlerRepo := repository.NewCrawlerRepo(db)
 	articleRepo := repository.NewArticleRepo(db)
 	roleRepo := repository.NewRoleRepo(db)
@@ -1028,12 +1027,12 @@ func seedUser(db *gorm.DB) {
 
 	for i := 0; i < 50; i++ {
 		user := &services.RegisterUserInput{
-			Username: fmt.Sprint("userseed", i),
-			Email: fmt.Sprintf("userseed%v@gmail.com", i),
-			Password: SHA512_1_TO_8,
+			Username:             fmt.Sprint("userseed", i),
+			Email:                fmt.Sprintf("userseed%v@gmail.com", i),
+			Password:             SHA512_1_TO_8,
 			PasswordConfirmation: SHA512_1_TO_8,
 		}
-		_,err := userService.CreateUser(user)
+		_, err := userService.CreateUser(user)
 		if err != nil {
 			log.Error("error when seed user: ", err)
 		}
@@ -1052,9 +1051,9 @@ func seedFollow(db *gorm.DB) {
 
 	var wg sync.WaitGroup
 
-	for i:= 1; i < 50; i++ {
+	for i := 1; i < 50; i++ {
 		wg.Add(1)
-		go func (i int)  {
+		go func(i int) {
 			username := fmt.Sprint("userseed", i)
 			for j := 0; j < randomInt(1, 20); j++ {
 				articlesSourceID := randomInt(1, AMOUNT_OF_SEED_CRAWLER)
@@ -1073,5 +1072,5 @@ func seedFollow(db *gorm.DB) {
 func randomInt(min int, max int) int {
 	seed := time.Now().UnixNano()
 	rand.New(rand.NewSource(seed))
-	return rand.Intn(max - min + 1) + min
+	return rand.Intn(max-min+1) + min
 }
