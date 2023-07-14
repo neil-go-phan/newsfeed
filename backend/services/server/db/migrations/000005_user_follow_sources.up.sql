@@ -75,30 +75,6 @@ AFTER
 INSERT
   ON reads FOR EACH ROW EXECUTE FUNCTION decrease_unread();
 
--- CREATE
--- OR REPLACE FUNCTION increase_unread() RETURNS TRIGGER AS $$ 
--- BEGIN 
---   IF OLD.username IS NOT NULL THEN
---     UPDATE
---       follows
---     SET
---      unread = unread + 1
---     WHERE
---       username = OLD.username
---       AND articles_source_id = OLD.articles_source_id;
-
---   END IF;
-
---   RETURN OLD;
-
--- END;
-
--- $$ LANGUAGE plpgsql;
-
--- CREATE TRIGGER trg_increase_unread
--- AFTER
---   DELETE ON reads FOR EACH ROW EXECUTE FUNCTION increase_unread();
-
 CREATE OR REPLACE FUNCTION increase_unread() RETURNS TRIGGER AS $$
 DECLARE
   article_created_at timestamp with time zone;

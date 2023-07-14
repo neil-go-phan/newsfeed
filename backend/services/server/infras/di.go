@@ -32,8 +32,8 @@ func SetupRoute(db *gorm.DB, r *gin.Engine, grpcClient pb.CrawlerServiceClient, 
 	roleRoutes := InitizeRole(db)
 	permissionRoutes := InitizePermission(db)
 	notificationRoutes := InitizeFcmNotification(db, fcmClient, cronjob)
-	
-	seed.Seed(db, grpcClient, jobIDMap)
+
+	seed.Seed(db, grpcClient, jobIDMap, cronjob)
 
 	userRoutes.Setup(r)
 	crawlerRoutes.Setup(r)
